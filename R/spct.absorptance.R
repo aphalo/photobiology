@@ -58,15 +58,25 @@
 #'
 #' @export
 #'
-absorptance <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) UseMethod("absorptance")
+absorptance <- function(spct,
+                        w.band,
+                        quantity,
+                        wb.trim,
+                        use.hinges,
+                        ...) UseMethod("absorptance")
 
 #' @describeIn absorptance Default for generic function
 #'
 #' @export
 #'
-absorptance.default <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) {
+absorptance.default <- function(spct,
+                                w.band,
+                                quantity,
+                                wb.trim,
+                                use.hinges,
+                                ...) {
   warning("'absorptance' is not defined for objects of class ", class(spct)[1])
-  return(NA_real_)
+  NA_real_
 }
 
 #' @describeIn absorptance Specialization for filter spectra
@@ -74,13 +84,13 @@ absorptance.default <- function(spct, w.band, quantity, wb.trim, use.hinges, ...
 #' @export
 #'
 absorptance.filter_spct <-
-  function(spct, w.band = NULL,
+  function(spct, 
+           w.band = NULL,
            quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = NULL,
            naming = "default",
            ... ) {
-
     # we look for multiple spectra in long form
     if (getMultipleWl(spct) > 1) {
       # convert to a collection of spectra
@@ -98,8 +108,9 @@ absorptance.filter_spct <-
     }
 
     if (getTfrType(spct) != "internal") {
-      warning("Internal absorptance cannot be calculated from total transmittance alone")
-      return(NA)
+      warning("Internal absorptance cannot be calculated from ",
+              "total transmittance alone")
+      NA_real_
     } else {
       absorptance_spct(spct = spct,
                        w.band = w.band,
@@ -115,13 +126,13 @@ absorptance.filter_spct <-
 #' @export
 #'
 absorptance.object_spct <-
-  function(spct, w.band = NULL,
+  function(spct, 
+           w.band = NULL,
            quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = NULL,
            naming = "default",
            ...)  {
-
     # we look for multiple spectra in long form
     if (getMultipleWl(spct) > 1) {
       # convert to a collection of spectra
@@ -168,168 +179,168 @@ absorptance.object_spct <-
 #'
 #' @keywords internal
 #'
-absorptance_spct <-
-  function(spct,
-           w.band,
-           quantity,
-           wb.trim,
-           use.hinges,
-           naming,
-           ...) {
+absorptance_spct <- function(spct,
+                             w.band,
+                             quantity,
+                             wb.trim,
+                             use.hinges,
+                             naming,
+                             ...) {
+  summary.name <-
+    switch(quantity,
+           total = "Afr",
+           average = "Afr(wl)",
+           mean = "Afr(wl)",
+           contribution = "Afr/Afrtot",
+           contribution.pc = "Afr/Afrtot[%]",
+           relative = "Afr/Afrsum",
+           relative.pc = "Afr/Afrsum[%]",
+           stop("Unrecognized 'quantity' : \"", quantity, "\"")
+    )
 
-    summary.name <-
-      switch(quantity,
-             total = "Afr",
-             average = "Afr(wl)",
-             mean = "Afr(wl)",
-             contribution = "Afr/Afrtot",
-             contribution.pc = "Afr/Afrtot[%]",
-             relative = "Afr/Afrsum",
-             relative.pc = "Afr/Afrsum[%]",
-             stop("Unrecognized 'quantity' : \"", quantity, "\"")
-      )
+  if (is_normalized(spct)) {
+    warning("The spectral data has been normalized,",
+            "making impossible to calculate absorptance")
+    return(NA_real_)
+  }
+  if (is_scaled(spct)) {
+    warning("Summary calculated from rescaled data")
+  }
 
-    if (is_normalized(spct)) {
-      warning("The spectral data has been normalized,",
-              "making impossible to calculate absorptance")
-      return(NA_real_)
-    }
-    if (is_scaled(spct)) {
-      warning("Summary calculated from rescaled data")
-    }
-
-    # we calculate absorptance
-    Tfr.type <- getTfrType(spct)
-    Rfr.type <- getRfrType(spct)
-    if (is.filter_spct(spct) && Tfr.type == "internal") {
-      Rfr.type <- "unknown" # otherwise NA would require special handling
-      A2T(spct, action = "add", byref = TRUE)
-      temp.spct <- tibble::tibble(w.length = spct[["w.length"]],
-                                     Afr = 1 - spct[["Tfr"]])
-    } else if (Tfr.type == "total" && Rfr.type == "total") {
-      temp.spct <- tibble::tibble(w.length = spct[["w.length"]],
-                               Afr = 1 - spct[["Tfr"]] - spct[["Rfr"]])
-     } else if (Tfr.type == "internal" && Rfr.type == "total") {
-      temp.spct <- tibble::tibble(w.length = spct[["w.length"]],
-                                   Afr = (1 - spct[["Tfr"]]) * (1 - spct[["Rfr"]]))
-    } else if (Tfr.type == "unknown" || Rfr.type == "unknown") {
-      warning("'unknown' Tfr.type or Rfr.type, skipping absorptance calculation")
-      absorptance <- NA
-      attr(absorptance, "radiation.unit") <- paste("absorptance", quantity)
-      return(absorptance)
-    } else if (Rfr.type == "specular") {
-      warning("'specular' Rfr.type, skipping absorptance calculation")
-      absorptance <- NA
-      attr(absorptance, "radiation.unit") <- paste("absorptance", quantity)
-      return(absorptance)
-    } else {
-      stop("Failed assertion with Tfr.type: ", Tfr.type, "and Rfr.type: ", Rfr.type)
-    }
-    temp.spct <- setGenericSpct(temp.spct)
-
-    if (length(w.band) == 0) {
-      # whole range of spectrum
-      w.band <- waveband(spct)
-    }
-    if (is.numeric(w.band)) {
-      w.band <- waveband(w.band)
-    }
-    if (is.waveband(w.band)) {
-      # if the argument is a single w.band, we enclose it in a list
-      # so that it can be handled below as a normal case.
-      w.band <- list(w.band)
-    }
-    # we trim the wavebands so that they are within the range of spct
-    w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
-    # if the elements of the list are named we collect them
-    wb.number <- length(w.band) # number of wavebands in list
-    wb.name <- names(w.band) # their names in the list
-    # if no names returned, we fill the vector with "".
-    if (is.null(wb.name)) {
-      wb.name <- character(wb.number)
-    }
-
-    # hinges
-    if (is.null(use.hinges)) {
-      use.hinges <- auto_hinges(temp.spct[["w.length"]])
-    }
-    # we collect all hinges and insert them in one go
-    if (use.hinges) {
-      all.hinges <- NULL
-      for (wb in w.band) {
-        all.hinges <- c(all.hinges, wb[["hinges"]])
-      }
-      if (!is.null(all.hinges)) {
-        temp.spct <- insert_spct_hinges(temp.spct, all.hinges)
-      }
-    }
-
-    # We iterate through the list of wavebands collecting the absorptances,
-    # and waveband names.
-    absorptance <- numeric(length(w.band))
-    i <- 0L
-    for (wb in w.band) {
-      i <- i + 1L
-      # weighting functions are not meaningful
-      if (is_effective(wb)) {
-        warning("Using wavelength range from a weighted waveband object.")
-        wb <- waveband(wl_range(wb))
-      }
-      # we get names from wb if needed
-      if (wb.name[i] == "") {
-        if (naming == "short") {
-          wb.name[i] <- labels(wb)[["label"]] # short name
-        } else {
-          wb.name[i] <- labels(wb)[["name"]] # full name
-        }
-      }
-
-      # we calculate the average absorptance.
-      absorptance[i] <-
-        integrate_spct(trim_spct(temp.spct, wb,
-                                 use.hinges = FALSE))
-    }
-
-    if (quantity %in% c("contribution", "contribution.pc")) {
-      total <- absorptance_spct(spct, w.band = NULL,
-                                quantity = "total",
-                                wb.trim = wb.trim,
-                                use.hinges = use.hinges,
-                                naming = naming)
-      absorptance <- absorptance / total
-      if (quantity == "contribution.pc") {
-        absorptance <- absorptance * 1e2
-      }
-    } else if (quantity %in% c("relative", "relative.pc")) {
-      total <- sum(absorptance)
-      absorptance <- absorptance / total
-      if (quantity == "relative.pc") {
-        absorptance <- absorptance * 1e2
-      }
-    } else if (quantity %in% c("average", "mean")) {
-      absorptance <- absorptance / sapply(w.band, wl_expanse)
-    }
-
-    if (length(absorptance) == 0) {
-      absorptance <- NA_real_
-      names(absorptance) <- "out of range"
-    } else if (naming %in% c("long", "default")) {
-      names(absorptance) <- paste(summary.name, wb.name, sep = "_")
-    } else if (naming == "short") {
-      names(absorptance) <- wb.name
-    } else if (naming != "none") {
-      warning("Argument to 'naming' unrecognized, assuming \"none\".")
-    }
-
+  # we calculate absorptance
+  Tfr.type <- getTfrType(spct)
+  Rfr.type <- getRfrType(spct)
+  if (is.filter_spct(spct) && Tfr.type == "internal") {
+    Rfr.type <- "unknown" # otherwise NA would require special handling
+    A2T(spct, action = "add", byref = TRUE)
+    temp.spct <- tibble::tibble(w.length = spct[["w.length"]],
+                                    Afr = 1 - spct[["Tfr"]])
+  } else if (Tfr.type == "total" && Rfr.type == "total") {
+    temp.spct <- tibble::tibble(w.length = spct[["w.length"]],
+                              Afr = 1 - spct[["Tfr"]] - spct[["Rfr"]])
+  } else if (Tfr.type == "internal" && Rfr.type == "total") {
+    temp.spct <- tibble::tibble(w.length = spct[["w.length"]],
+                                Afr = (1 - spct[["Tfr"]]) * (1 - spct[["Rfr"]]))
+  } else if (Tfr.type == "unknown" || Rfr.type == "unknown") {
+    warning("'unknown' Tfr.type or Rfr.type, skipping absorptance calculation")
+    absorptance <- NA
     attr(absorptance, "radiation.unit") <- paste("absorptance", quantity)
     return(absorptance)
+  } else if (Rfr.type == "specular") {
+    warning("'specular' Rfr.type, skipping absorptance calculation")
+    absorptance <- NA
+    attr(absorptance, "radiation.unit") <- paste("absorptance", quantity)
+    return(absorptance)
+  } else {
+    stop("Failed assertion with Tfr.type: ", Tfr.type, 
+         "and Rfr.type: ", Rfr.type)
   }
+  temp.spct <- setGenericSpct(temp.spct)
+
+  if (length(w.band) == 0) {
+    # whole range of spectrum
+    w.band <- waveband(spct)
+  }
+  if (is.numeric(w.band)) {
+    w.band <- waveband(w.band)
+  }
+  if (is.waveband(w.band)) {
+    # if the argument is a single w.band, we enclose it in a list
+    # so that it can be handled below as a normal case.
+    w.band <- list(w.band)
+  }
+  # we trim the wavebands so that they are within the range of spct
+  w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
+  # if the elements of the list are named we collect them
+  wb.number <- length(w.band) # number of wavebands in list
+  wb.name <- names(w.band) # their names in the list
+  # if no names returned, we fill the vector with "".
+  if (is.null(wb.name)) {
+    wb.name <- character(wb.number)
+  }
+
+  # hinges
+  if (is.null(use.hinges)) {
+    use.hinges <- auto_hinges(temp.spct[["w.length"]])
+  }
+  # we collect all hinges and insert them in one go
+  if (use.hinges) {
+    all.hinges <- NULL
+    for (wb in w.band) {
+      all.hinges <- c(all.hinges, wb[["hinges"]])
+    }
+    if (!is.null(all.hinges)) {
+      temp.spct <- insert_spct_hinges(temp.spct, all.hinges)
+    }
+  }
+
+  # We iterate through the list of wavebands collecting the absorptances,
+  # and waveband names.
+  absorptance <- numeric(length(w.band))
+  i <- 0L
+  for (wb in w.band) {
+    i <- i + 1L
+    # weighting functions are not meaningful
+    if (is_effective(wb)) {
+      warning("Using wavelength range from a weighted waveband object.")
+      wb <- waveband(wl_range(wb))
+    }
+    # we get names from wb if needed
+    if (wb.name[i] == "") {
+      if (naming == "short") {
+        wb.name[i] <- labels(wb)[["label"]] # short name
+      } else {
+        wb.name[i] <- labels(wb)[["name"]] # full name
+      }
+    }
+
+    # we calculate the average absorptance.
+    absorptance[i] <-
+      integrate_spct(trim_spct(temp.spct, wb,
+                               use.hinges = FALSE))
+  }
+
+  if (quantity %in% c("contribution", "contribution.pc")) {
+    total <- absorptance_spct(spct, w.band = NULL,
+                              quantity = "total",
+                              wb.trim = wb.trim,
+                              use.hinges = use.hinges,
+                              naming = naming)
+    absorptance <- absorptance / total
+    if (quantity == "contribution.pc") {
+      absorptance <- absorptance * 1e2
+    }
+  } else if (quantity %in% c("relative", "relative.pc")) {
+    total <- sum(absorptance)
+    absorptance <- absorptance / total
+    if (quantity == "relative.pc") {
+      absorptance <- absorptance * 1e2
+    }
+  } else if (quantity %in% c("average", "mean")) {
+    absorptance <- absorptance / sapply(w.band, wl_expanse)
+  }
+
+  if (length(absorptance) == 0) {
+    absorptance <- NA_real_
+    names(absorptance) <- "out of range"
+  } else if (naming %in% c("long", "default")) {
+    names(absorptance) <- paste(summary.name, wb.name, sep = "_")
+  } else if (naming == "short") {
+    names(absorptance) <- wb.name
+  } else if (naming != "none") {
+    warning("Argument to 'naming' unrecognized, assuming \"none\".")
+  }
+
+  attr(absorptance, "radiation.unit") <- paste("absorptance", quantity)
+  absorptance
+}
 
 # filter_mspct methods -----------------------------------------------
 
 #' @describeIn absorptance Calculates absorptance from a \code{filter_mspct}
 #'
-#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
+#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
 #'
@@ -380,8 +391,9 @@ absorptance.filter_mspct <-
 #' @export
 #'
 absorptance.object_mspct <-
-  function(spct, w.band=NULL,
-           quantity="average",
+  function(spct,
+           w.band = NULL,
+           quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = NULL,
            naming = "default",

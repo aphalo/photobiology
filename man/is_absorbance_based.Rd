@@ -16,7 +16,8 @@ is_transmittance_based(x)
 \item{x}{an R object}
 }
 \value{
-\code{is_absorbance_based} returns a logical value, \code{TRUE} if its argument is a \code{filter_spct}
+\code{is_absorbance_based} returns a logical value, \code{TRUE}
+  if its argument is a \code{filter_spct}
   object that contains spectral absorbance data and \code{FALSE} otherwise,
   but returns \code{NA} for any other R object, including those belonging
   other \code{generic_spct}-derived classes.

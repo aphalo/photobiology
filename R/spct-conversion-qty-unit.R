@@ -244,7 +244,7 @@ T2A.filter_spct <- function(x,
       }
       if (strict.A && getTfrType(x) == "total") {
         if (exists("Rfr", x, inherits = FALSE) ||
-            !is.na(getFilterProperties(x)[["Rfr.constant"]])) {
+              !is.na(getFilterProperties(x)[["Rfr.constant"]])) {
           x <- convertTfrType(x, Tfr.type = "internal")
         } else {
           warning("Attenuance computed from total Tfr.")
@@ -283,15 +283,16 @@ T2A.filter_spct <- function(x,
     assign(name, x, parent.frame(), inherits = TRUE)
   }
   if (any(is.infinite(x[["A"]]))) {
-    warning("'Inf' absorbance values generated as some Tfr values were equal to zero!")
+    warning("'Inf' absorbance values generated as some Tfr values ",
+            "were equal to zero!")
   }
   return(x)
 }
 
 #' @describeIn T2A Method for collections of filter spectra
 #'
-#' @param .parallel	if \code{TRUE}, apply function in parallel, using parallel backend
-#'   provided by foreach
+#' @param .parallel	if \code{TRUE}, apply function in parallel, using parallel
+#'   backend provided by foreach.
 #' @param .paropts a list of additional options passed into the foreach function
 #'   when parallel computation is enabled. This is important if (for example)
 #'   your code relies on external data or packages: use the .export and
@@ -983,7 +984,7 @@ e2q.source_spct <- function(x,
   }
 
   if (action == "replace" &&
-      exists("s.e.irrad", x, inherits = FALSE)) {
+        exists("s.e.irrad", x, inherits = FALSE)) {
     x[["s.e.irrad"]] <- NULL
   }
 
@@ -1109,7 +1110,7 @@ e2q.response_mspct <- function(x,
           .paropts = .paropts)
 }
 
-# photon to energy ---------------------------------------------------------------------
+# photon to energy ------------------------------------------------------------
 
 #' Convert photon-based quantities into energy-based quantities
 #'

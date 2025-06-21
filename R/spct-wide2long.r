@@ -1,9 +1,9 @@
 #' Convert spectrum from wide to long form
 #'
-#' @details Only objects of classes raw_spct, cps_spct, and object_spct normally contain
-#' multiple columns of spectral data. These are supported as well as
-#' generic_spct. Is the wide spectra contain multiple spectra in long form,
-#' the original \code{idfactor} is preserved.
+#' @details Only objects of classes raw_spct, cps_spct, and object_spct
+#' normally contain multiple columns of spectral data. These are supported
+#' as well as generic_spct. Is the wide spectra contain multiple spectra
+#' in long form, the original \code{idfactor} is preserved.
 #'
 #' Spectra that are already in long form, if passed as argument, are returned
 #' unchanged.
@@ -36,8 +36,7 @@ spct_wide2long <- function(spct,
                            fixed.cols = "w.length",
                            idfactor = "spct.idx",
                            rm.spct.class = FALSE,
-                           ...)
-{
+                           ...) {
   orig.idfactor <- getIdFactor(spct)
   if (!is.na(orig.idfactor)) {
     if (idfactor == orig.idfactor) {
@@ -82,24 +81,33 @@ spct_wide2long <- function(spct,
       spct.slice[[idfactor]] <- i
       long.spct <- rbind(long.spct, spct.slice)
     }
-    long.spct[[idfactor]] <- factor(long.spct[[idfactor]], levels = varying.cols)
+    long.spct[[idfactor]] <-
+      factor(long.spct[[idfactor]], levels = varying.cols)
     if (!rm.spct.class) {
       if (old.class[1] == "raw_spct") {
         setRawSpct(long.spct,
                    multiple.wl = num.cols * orig.multiple.wl,
-                   idfactor = ifelse(is.na(orig.idfactor), idfactor, orig.idfactor))
+                   idfactor = ifelse(is.na(orig.idfactor),
+                                     idfactor,
+                                     orig.idfactor))
       } else if (old.class[1] == "cps_spct") {
         setCpsSpct(long.spct,
                    multiple.wl = num.cols * orig.multiple.wl,
-                   idfactor = ifelse(is.na(orig.idfactor), idfactor, orig.idfactor))
+                   idfactor = ifelse(is.na(orig.idfactor),
+                                     idfactor,
+                                     orig.idfactor))
       } else if (old.class[1] == "calibration_spct") {
         setCalibrationSpct(long.spct,
-                   multiple.wl = num.cols * orig.multiple.wl,
-                   idfactor = ifelse(is.na(orig.idfactor), idfactor, orig.idfactor))
+                           multiple.wl = num.cols * orig.multiple.wl,
+                           idfactor = ifelse(is.na(orig.idfactor),
+                                             idfactor,
+                                             orig.idfactor))
       } else {
         setGenericSpct(long.spct,
                        multiple.wl = num.cols * orig.multiple.wl,
-                       idfactor = ifelse(is.na(orig.idfactor), idfactor, orig.idfactor))
+                       idfactor = ifelse(is.na(orig.idfactor),
+                                         idfactor,
+                                         orig.idfactor))
       }
     }
     long.spct

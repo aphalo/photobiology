@@ -69,10 +69,11 @@ difference among then is in the wavebands used.
 \note{
 Some NDxI indexes are directly based on satellite instrument data, such
   as those in the Landsat satellites. To simulate such indexes using spectral
-  reflectande as input, constructors of \code{waveband} definitions from package
-  'photobiologyWavebands' can be useful.
+  reflectande as input, constructors of \code{waveband} definitions from
+  package 'photobiologyWavebands' can be useful.
 
-\code{normalised_diff_ind()} is a synonym for \code{normalized_diff_ind()}.
+\code{normalised_diff_ind()} is a synonym for
+  \code{normalized_diff_ind()}.
 
 \code{NDxI()} is a shorthand for \code{normalized_diff_ind()}.
 }

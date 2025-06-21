@@ -36,7 +36,7 @@ clean.default <- function(x, range, range.s.data, fill, ...) {
 clean.source_spct <-
   function(x,
            range = x,
-           range.s.data = c(0,NA),
+           range.s.data = c(0, NA),
            fill = range.s.data,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -71,13 +71,14 @@ clean.filter_spct <-
            range = x,
            range.s.data = NULL,
            fill = range.s.data,
-           qty.out = getOption("photobiology.filter.qty", default = "transmittance"),
+           qty.out =
+             getOption("photobiology.filter.qty", default = "transmittance"),
            ...) {
     if (is.null(range.s.data)) {
       if (qty.out %in% c("transmittance", "absorptance")) {
-        range.s.data <- c(0,1)
+        range.s.data <- c(0, 1)
       } else {
-        range.s.data <- c(0,NA)
+        range.s.data <- c(0, NA)
       }
       fill <- range.s.data
     }
@@ -166,47 +167,51 @@ clean.object_spct <-
            fill = range.s.data,
            min.Afr = NULL,
            ...) {
-   # remember that we should not call here any function that calls clean!!
-   z <- clean_spct(x = x,
-                   range = range,
-                   range.s.data = range.s.data,
-                   fill = fill,
-                   col.names = "Tfr",
-                   ...)
-   z <- clean_spct(x = z,
-                   range = range,
-                   range.s.data = range.s.data,
-                   fill = fill,
-                   col.names = "Rfr",
-                   ...)
+    # remember that we should not call here any function that calls clean!!
+    z <- clean_spct(x = x,
+                    range = range,
+                    range.s.data = range.s.data,
+                    fill = fill,
+                    col.names = "Tfr",
+                    ...)
+    z <- clean_spct(x = z,
+                    range = range,
+                    range.s.data = range.s.data,
+                    fill = fill,
+                    col.names = "Rfr",
+                    ...)
 
-   # we need to protect from rounding errors
-   if (getTfrType(x) == "total") {
-     Afr <- 1 - (z[["Rfr"]] + z[["Tfr"]])
-   } else if (getTfrType(x) == "internal") {
-     Afr <- 1 - (z[["Rfr"]] + z[["Tfr"]] * (1 - z[["Rfr"]]))
-   } else {
-     stop("Bad Tfr.type attribute: ", getTfrType(x))
-   }
+    # we need to protect from rounding errors
+    if (getTfrType(x) == "total") {
+      Afr <- 1 - (z[["Rfr"]] + z[["Tfr"]])
+    } else if (getTfrType(x) == "internal") {
+      Afr <- 1 - (z[["Rfr"]] + z[["Tfr"]] * (1 - z[["Rfr"]]))
+    } else {
+      stop("Bad Tfr.type attribute: ", getTfrType(x))
+    }
 
-   # By default retain old behaviour, but warn only in case of relevant deviations
-   if (!length(min.Afr) && any(Afr < -1e-5)) {
-     warning("Off-range Afr = 1 - (Tfr + Rfr): ", signif(min(Afr), 2), " set to 0")
-   }
+    # By default retain old behaviour, but warn only in case of relevant
+    # deviations
+    if (!length(min.Afr) && any(Afr < -1e-5)) {
+      warning("Off-range Afr = 1 - (Tfr + Rfr): ", signif(min(Afr), 2),
+              " set to 0")
+    }
 
-   if (!length(min.Afr)) {
-     min.Afr = 0
-   }
+    if (!length(min.Afr)) {
+      min.Afr = 0
+    }
 
-   delta <- ifelse(Afr < min.Afr, -Afr + min.Afr, 0)
+    delta <- ifelse(Afr < min.Afr, -Afr + min.Afr, 0)
 
-   if (any(delta != 0)) {
-     # we apply the correction proportionally, which guarantees that
-     # we do not male Rfr < 0 or Tfr < 0!!
-     z[["Rfr"]] <- z[["Rfr"]] - (delta * z[["Rfr"]]) / (z[["Rfr"]] + z[["Tfr"]])
-     z[["Tfr"]] <- z[["Tfr"]] - (delta * z[["Tfr"]]) / (z[["Rfr"]] + z[["Tfr"]])
-   }
-   z
+    if (any(delta != 0)) {
+      # we apply the correction proportionally, which guarantees that
+      # we do not male Rfr < 0 or Tfr < 0!!
+      z[["Rfr"]] <- 
+        z[["Rfr"]] - (delta * z[["Rfr"]]) / (z[["Rfr"]] + z[["Tfr"]])
+      z[["Tfr"]] <-
+        z[["Tfr"]] - (delta * z[["Tfr"]]) / (z[["Rfr"]] + z[["Tfr"]])
+    }
+    z
   }
 
 #' @describeIn clean Replace off-range values in a response spectrum
@@ -218,7 +223,8 @@ clean.response_spct <-
            range = x,
            range.s.data = c(0,NA),
            fill = range.s.data,
-           unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+           unit.out =
+             getOption("photobiology.radiation.unit", default = "energy"),
            ...) {
     if (unit.out == "quantum" || unit.out == "photon") {
       clean_spct(x = e2q(x, action = "replace"),
@@ -313,7 +319,7 @@ clean.generic_spct <-
 clean.source_mspct <-
   function(x,
            range = NULL,
-           range.s.data = c(0,NA),
+           range.s.data = c(0, NA),
            fill = range.s.data,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -376,7 +382,7 @@ clean.filter_mspct <-
               .parallel = .parallel,
               .paropts = .paropts)
     }
-   }
+  }
 
 #' @describeIn clean
 #'
@@ -408,7 +414,7 @@ clean.reflector_mspct <-
               .parallel = .parallel,
               .paropts = .paropts)
     }
-   }
+  }
 
 #' @describeIn clean
 #'
@@ -484,7 +490,7 @@ clean.solute_mspct <-
 clean.response_mspct <-
   function(x,
            range = NULL,
-           range.s.data = c(0,NA),
+           range.s.data = c(0, NA),
            fill = range.s.data,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -645,4 +651,3 @@ clean_spct <-
     }
     x
   }
-

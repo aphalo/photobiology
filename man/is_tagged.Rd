@@ -10,9 +10,9 @@ is_tagged(x)
 \item{x}{any R object}
 }
 \value{
-\code{is_tagged} returns a logical value, \code{TRUE} if its argument is a a spectrum that contains
-  tags and \code{FALSE} if it is an untagged spectrum, but returns \code{NA}
-  for any other R object.
+\code{is_tagged} returns a logical value, \code{TRUE} if its
+  argument is a a spectrum that contains tags and \code{FALSE} if it
+  is an untagged spectrum, but returns \code{NA} for any other R object.
 }
 \description{
 Functions to check if an spct object contains tags.

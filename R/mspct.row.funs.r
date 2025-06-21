@@ -1,14 +1,15 @@
 #' rowwise functions for collections of spectra
 #'
-#' Private methods for collections of spectra. Applies a function at each wavelength
-#' across all the spectra in the collection.
+#' Private methods for collections of spectra. Applies a function at each 
+#' wavelength across all the spectra in the collection.
 #'
-#' @param x An R object. Currently this package defines methods for collections of
-#'    spectral objects.
+#' @param x An R object. Currently this package defines methods for collections
+#'    of spectral objects.
 #' @param .fun An R function or a list of functions.
 #' @param col.name.tag character Vector of extensions to paste to default column
-#'    name for the output from each of the functions. If \code{col.name.tag[1] != ""},
-#'    this forces the return of an object of class \code{"generic_spct"}.
+#'    name for the output from each of the functions. If
+#'    \code{col.name.tag[1] != ""}, this forces the return of an object of class
+#'    \code{"generic_spct"}.
 #' @param .fun.name character string used to set what.measured attribute.
 #' @param w.length.out numeric vector of wavelengths (nanometres).
 #' @param ...	Arguments passed to .fun.
@@ -52,7 +53,8 @@ rowwise_filter <-
     is.A <- all(msaply(x, is_absorbance_based))
     is.mixed <- !(is.Tfr || is.Afr || is.A)
     if (is.mixed) {
-      warning("Not all spectra contain the same quantity: converting all to Tfr.")
+      warning("Not all spectra contain the same quantity: ",
+              "converting all to Tfr.")
       x <- any2T(x)
       is.Tfr <- TRUE
     }
@@ -103,8 +105,9 @@ rowwise_filter <-
                            multiple.wl = 1L)
     }
     what.measured <- what_measured(x, simplify = TRUE)
-    what_measured(zz) <- paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
-                              what.measured)
+    what_measured(zz) <- 
+      paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
+            what.measured)
     how_measured(zz) <- how_measured(x, simplify = TRUE)
     when_measured(zz) <- when_measured(x, simplify = TRUE)
     where_measured(zz) <- where_measured(x, simplify = TRUE)
@@ -139,7 +142,8 @@ rowwise_source <-
     is.energy <- unique(msaply(x, is_energy_based))
     if (length(is.energy) > 1L) {
       warning(
-        "Some spectra contain 's.q.irrad' and others 's.e.irrad': converting all to s.e.irrad."
+        "Some spectra contain 's.q.irrad' and others 's.e.irrad': ",
+        "converting all to s.e.irrad."
       )
       x <- q2e(x)
       is.energy <- TRUE
@@ -201,8 +205,9 @@ rowwise_source <-
                            multiple.wl = 1L)
     }
     what.measured <- what_measured(x, simplify = TRUE)
-    what_measured(zz) <- paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
-                               what.measured)
+    what_measured(zz) <-
+      paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
+            what.measured)
     how_measured(zz) <- how_measured(x, simplify = TRUE)
     when_measured(zz) <- when_measured(x, simplify = TRUE)
     where_measured(zz) <- where_measured(x, simplify = TRUE)
@@ -237,7 +242,8 @@ rowwise_response <-
     is.energy <- unique(msaply(x, is_energy_based))
     if (length(is.energy) > 1L) {
       warning(
-        "Some spectra contain 's.q.irrad' and others 's.e.irrad': converting all to s.e.irrad."
+        "Some spectra contain 's.q.irrad' and others 's.e.irrad': ",
+        "converting all to s.e.irrad."
       )
       x <- q2e(x)
       is.energy <- TRUE
@@ -289,8 +295,9 @@ rowwise_response <-
                            multiple.wl = 1L)
     }
     what.measured <- what_measured(x, simplify = TRUE)
-    what_measured(zz) <- paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
-                               what.measured)
+    what_measured(zz) <-
+      paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
+            what.measured)
     how_measured(zz) <- how_measured(x, simplify = TRUE)
     when_measured(zz) <- when_measured(x, simplify = TRUE)
     where_measured(zz) <- where_measured(x, simplify = TRUE)
@@ -360,8 +367,9 @@ rowwise_reflector <-
                            multiple.wl = 1L)
     }
     what.measured <- what_measured(x, simplify = TRUE)
-    what_measured(zz) <- paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
-                               what.measured)
+    what_measured(zz) <-
+      paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
+            what.measured)
     how_measured(zz) <- how_measured(x, simplify = TRUE)
     when_measured(zz) <- when_measured(x, simplify = TRUE)
     where_measured(zz) <- where_measured(x, simplify = TRUE)
@@ -419,8 +427,9 @@ rowwise_calibration <-
     zz <- setCalibrationSpct(zz, multiple.wl = 1L)
 
     what.measured <- what_measured(x, simplify = TRUE)
-    what_measured(zz) <- paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
-                               what.measured)
+    what_measured(zz) <- 
+      paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
+            what.measured)
     how_measured(zz) <- how_measured(x, simplify = TRUE)
     when_measured(zz) <- when_measured(x, simplify = TRUE)
     where_measured(zz) <- where_measured(x, simplify = TRUE)
@@ -486,8 +495,9 @@ rowwise_cps <-
     }
 
     what.measured <- what_measured(x, simplify = TRUE)
-    what_measured(zz) <- paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
-                               what.measured)
+    what_measured(zz) <-
+      paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
+            what.measured)
     how_measured(zz) <- how_measured(x, simplify = TRUE)
     when_measured(zz) <- when_measured(x, simplify = TRUE)
     where_measured(zz) <- where_measured(x, simplify = TRUE)
@@ -553,8 +563,9 @@ rowwise_raw <-
     }
 
     what.measured <- what_measured(x, simplify = TRUE)
-    what_measured(zz) <- paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
-                               what.measured)
+    what_measured(zz) <- 
+      paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
+            what.measured)
     how_measured(zz) <- how_measured(x, simplify = TRUE)
     when_measured(zz) <- when_measured(x, simplify = TRUE)
     where_measured(zz) <- where_measured(x, simplify = TRUE)
@@ -591,8 +602,8 @@ make_wl_consistent <- function(x,
   # interpolate wavelengths to make them consistent
   w.lengths.differ <-
     !(length(unique(msaply(x, .fun = nrow))) == 1L &&
-        length(unique(msaply(x, .fun = wl_max))) == 1L &&
-        length(unique(msaply(x, .fun = wl_min))) == 1L)
+      length(unique(msaply(x, .fun = wl_max))) == 1L &&
+      length(unique(msaply(x, .fun = wl_min))) == 1L)
 
   if (w.lengths.differ || !is.null(w.length.out)) {
     if (is.null(w.length.out)) {
@@ -607,7 +618,9 @@ make_wl_consistent <- function(x,
         wl.range[1] <- min(wl.ranges["min.wl"])
         wl.range[2] <- max(wl.ranges["max.wl"])
         max.length <- max(msaply(x, .fun = length))
-        stepsize <- min(msaply(x, .fun = function(x) { stats::median(diff(x[["w.length"]])) }))
+        stepsize <- 
+          min(msaply(x,
+                     .fun = function(x) {stats::median(diff(x[["w.length"]]))}))
         length.out <- max(max.length, diff(wl.range) / stepsize)
         w.length.out <-
           seq.int(from = wl.range[1], to = wl.range[2], length.out = length.out)

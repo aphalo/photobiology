@@ -75,14 +75,15 @@ rowwise_raw(
 )
 }
 \arguments{
-\item{x}{An R object. Currently this package defines methods for collections of
-spectral objects.}
+\item{x}{An R object. Currently this package defines methods for collections
+of spectral objects.}
 
 \item{.fun}{An R function or a list of functions.}
 
 \item{col.name.tag}{character Vector of extensions to paste to default column
-name for the output from each of the functions. If \code{col.name.tag[1] != ""},
-this forces the return of an object of class \code{"generic_spct"}.}
+name for the output from each of the functions. If
+\code{col.name.tag[1] != ""}, this forces the return of an object of class
+\code{"generic_spct"}.}
 
 \item{.fun.name}{character string used to set what.measured attribute.}
 
@@ -91,8 +92,8 @@ this forces the return of an object of class \code{"generic_spct"}.}
 \item{...}{Arguments passed to .fun.}
 }
 \description{
-Private methods for collections of spectra. Applies a function at each wavelength
-across all the spectra in the collection.
+Private methods for collections of spectra. Applies a function at each 
+wavelength across all the spectra in the collection.
 }
 \note{
 Omission of NAs is done separately at each wavelength. Interpolation is

@@ -76,8 +76,8 @@ compute the denominator(s) of the ratio(s).}
 \item{wb.trim}{logical if TRUE wavebands crossing spectral data boundaries
 are trimmed, if FALSE, they are discarded}
 
-\item{use.cached.mult}{logical Flag telling whether multiplier values should be
-cached between calls.}
+\item{use.cached.mult}{logical Flag telling whether multiplier values should
+be cached between calls.}
 
 \item{use.hinges}{logical Flag indicating whether to insert "hinges" into the
 spectral data before integration so as to reduce interpolation errors at

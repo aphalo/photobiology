@@ -51,8 +51,8 @@ in addition to "w.length".}
 \item{validate.names}{logical A flag to enable (default) or disable
 validation of column names with \code{\link[base]{make.names}}.}
 
-\item{unit.out}{character Allowed values \code{"energy"}, and \code{"photon"}, or its alias
-\code{"quantum"}.}
+\item{unit.out}{character Allowed values \code{"energy"}, and
+\code{"photon"}, or its alias \code{"quantum"}.}
 
 \item{qty.out}{character Allowed values \code{"transmittance"},
 \code{"absorptance"}, and \code{"absorbance"} and in the method for

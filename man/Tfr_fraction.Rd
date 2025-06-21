@@ -128,7 +128,7 @@ In the case of methods for individual spectra, a \code{numeric}
   and numerator wavebands differ.
 }
 \description{
-This function returns the transmittance fraction for a given pair of wavebands of a
+Transmittance fraction for a given pair of wavebands of a
 filter spectrum.
 }
 \details{

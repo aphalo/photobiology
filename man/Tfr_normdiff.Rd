@@ -109,9 +109,9 @@ correct environment set up for computing.}
 In the case of methods for individual spectra, a \code{numeric}
   vector with name attribute set. The name is based on the name of the
   wavebands unless a named list of wavebands is supplied in which case the
-  names of the list elements are used. "[Tfr:Tfr]" is appended if \code{quantity
-  = "total"} and "[Tfr(wl):Tfr(wl)]" if \code{quantity = "mean"} or
-  \code{quantity = "average"}.
+  names of the list elements are used. "[Tfr:Tfr]" is appended if
+  \code{quantity= "total"} and "[Tfr(wl):Tfr(wl)]" if
+  \code{quantity = "mean"} or \code{quantity = "average"}.
 
   A \code{data.frame} is returned in the case of collections of spectra,
   containing one column for each fraction definition, an index column with
@@ -126,13 +126,14 @@ In the case of methods for individual spectra, a \code{numeric}
   and numerator wavebands differ.
 }
 \description{
-This function returns the transmittance normalized difference index for a given
-pair of wavebands of a filter spectrum.
+Transmittance normalized difference index for a given
+pair of wavebands computed from a filter spectrum.
 }
 \details{
 With the default \code{quantity = "mean"} or
  \code{quantity = "average"} the ratio is based on
-  two \strong{mean spectral photon transmittances}, one computed for each waveband.
+ two \strong{mean spectral photon transmittances}, one computed for each
+ waveband.
 
   \deqn{\frac{\overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{plus}) - \overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{minus})}{\overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{plus}) + \overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{minus})}}
 

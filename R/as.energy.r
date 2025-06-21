@@ -16,6 +16,6 @@
 #'
 #' @family low-level functions operating on numeric vectors.
 #'
-as_energy <- function(w.length, s.qmol.irrad){
-  return(s.qmol.irrad / e2qmol_multipliers(w.length))
+as_energy <- function(w.length, s.qmol.irrad) {
+  s.qmol.irrad / e2qmol_multipliers(w.length)
 }

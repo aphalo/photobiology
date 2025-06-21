@@ -96,11 +96,13 @@ rbindspct <- function(l,
                       attrs.simplify = FALSE) {
   if (is.null(l) || !is.list(l) || length(l) < 1) {
     # _mspct classes are derived from "list"
-    warning("Argument 'l' should be a non-empty list or a collection of spectra.")
+    warning("Argument 'l' should be a non-empty list or ",
+            "a collection of spectra.")
     return(generic_spct())
   }
 
-  if ((is.null(idfactor) && (!is.null(names(l)))) || is.logical(idfactor) && idfactor) {
+  if ((is.null(idfactor) &&
+         (!is.null(names(l)))) || is.logical(idfactor) && idfactor) {
     idfactor <- "spct.idx"
   } else if (is.logical(idfactor) && !idfactor) {
     idfactor <- NULL
@@ -220,7 +222,7 @@ rbindspct <- function(l,
   }
   if (add.idfactor) {
     ans[[idfactor]] <- factor(rep(names.spct, times = sapply(l, FUN = nrow)),
-                                levels = names.spct)
+                              levels = names.spct)
   }
 
   comment.ans <- "rbindspct: concatenated comments"
@@ -263,12 +265,17 @@ rbindspct <- function(l,
     when.measured <- lapply(l[idxs], getWhenMeasured)
     names(when.measured) <- names.spct[idxs]
 
-    where.measured <- dplyr::bind_rows(lapply(l[idxs], getWhereMeasured), .id = idfactor)
+    where.measured <-
+      dplyr::bind_rows(lapply(l[idxs], getWhereMeasured), .id = idfactor)
     if (attrs.simplify &&
-        (all(is.na(where.measured$lon)) || length(unique(where.measured$lon)) == 1) &&
-        (all(is.na(where.measured$lat)) || length(unique(where.measured$lat)) == 1) &&
-        (all(is.na(where.measured$address)) || length(unique(where.measured$address)) == 1) ) {
-      where.measured <- where.measured[1, ] # do not remove columns by numeric index!!
+          (all(is.na(where.measured$lon)) ||
+             length(unique(where.measured$lon)) == 1) &&
+          (all(is.na(where.measured$lat)) ||
+             length(unique(where.measured$lat)) == 1) &&
+          (all(is.na(where.measured$address)) ||
+             length(unique(where.measured$address)) == 1)) {
+      where.measured <- where.measured[1, ]
+    # do not remove columns by numeric index!!
     }
 
     what.measured <- lapply(l[idxs], getWhatMeasured)
@@ -292,21 +299,27 @@ rbindspct <- function(l,
     names(time.unit) <- NULL
     time.unit <- unique(time.unit)
     if (length(time.unit) > 1L) {
-      warning("Inconsistent time units among source spectra passed to rbindspct")
+      warning("Inconsistent time units among source spectra ",
+              "passed to rbindspct")
       return(source_spct())
     }
     if (any(effective.input)) {
       bswfs.input <- sapply(l, FUN = getBSWFUsed)
       if (length(unique(bswfs.input)) > 1L) {
         bswf.used <- "multiple"
-        ans[["BSWF"]] <- factor(rep(bswfs.input, times = sapply(l, FUN = nrow)), levels = bswfs.input)
+        ans[["BSWF"]] <-
+          factor(rep(bswfs.input, times = sapply(l, FUN = nrow)),
+                 levels = bswfs.input)
       } else {
         bswf.used <- bswfs.input[1]
       }
     } else {
       bswf.used <- "none"
     }
-    setSourceSpct(ans, time.unit = time.unit[1], bswf.used = bswf.used, multiple.wl = mltpl.wl)
+    setSourceSpct(ans,
+                  time.unit = time.unit[1],
+                  bswf.used = bswf.used,
+                  multiple.wl = mltpl.wl)
     if (!qe.consistent.based) {
       e2q(ans, action = "add", byref = TRUE)
     }
@@ -315,10 +328,12 @@ rbindspct <- function(l,
     names(Tfr.type) <- NULL
     Tfr.type <- unique(Tfr.type)
     if (length(Tfr.type) > 1L) {
-      warning("Inconsistent 'Tfr.type' among filter spectra passed to rbindspct")
+      warning("Inconsistent 'Tfr.type' among filter spectra ",
+              "passed to rbindspct")
       return(filter_spct())
     }
-    filter.descriptor <- sapply(l, FUN = getFilterProperties, return.null = TRUE)
+    filter.descriptor <- 
+      sapply(l, FUN = getFilterProperties, return.null = TRUE)
     # TODO merge it if possible
     # and then set
     setFilterSpct(ans, Tfr.type = Tfr.type[1], multiple.wl = mltpl.wl)
@@ -342,11 +357,13 @@ rbindspct <- function(l,
     names(Rfr.type) <- NULL
     Rfr.type <- unique(Rfr.type)
     if (length(Tfr.type) > 1L) {
-      warning("Inconsistent 'Tfr.type' among filter spectra passed to rbindspct")
+      warning("Inconsistent 'Tfr.type' among filter spectra ",
+              "passed to rbindspct")
       return(filter_spct())
     }
     if (length(Rfr.type) > 1L) {
-      warning("Inconsistent 'Rfr.type' among reflector spectra passed to rbindspct")
+      warning("Inconsistent 'Rfr.type' among reflector spectra ",
+              "passed to rbindspct")
       return(reflector_spct())
     }
     setObjectSpct(ans, Tfr.type = Tfr.type[1], Rfr.type = Rfr.type[1],

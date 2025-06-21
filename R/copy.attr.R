@@ -196,10 +196,10 @@ copy_attributes.generic_spct <- function(x, y,
 #' @export
 #'
 copy_attributes.generic_mspct <- function(x, y,
-                                         which = NULL,
-                                         which.not = NULL,
-                                         copy.class = FALSE,
-                                         ...) {
+                                          which = NULL,
+                                          which.not = NULL,
+                                          copy.class = FALSE,
+                                          ...) {
   stopifnot(length(x) == length(y))
   for (i in seq_along(x)) {
     y[[i]] <- copy_attributes(x[[i]], y[[i]],
@@ -216,7 +216,7 @@ copy_attributes.generic_mspct <- function(x, y,
 #' @export
 #'
 copy_attributes.waveband <- function(x, y, which = NULL, ...) {
-   if (length(which) == 0L) {
+  if (length(which) == 0L) {
     which <- "comment"
   }
   attr.x <- attributes(x)
@@ -247,7 +247,8 @@ copy_attributes.waveband <- function(x, y, which = NULL, ...) {
 #'
 #' @export
 #'
-merge_attributes <- function(x, y, z, which, which.not, ...) UseMethod("merge_attributes")
+merge_attributes <-
+  function(x, y, z, which, which.not, ...) UseMethod("merge_attributes")
 
 #' @describeIn merge_attributes Default for generic function
 #'
@@ -257,7 +258,8 @@ merge_attributes.default <- function(x, y, z,
                                      which = NULL,
                                      which.not = NULL,
                                      ...) {
-  warning("'merge_attributes' is not defined for objects of class ", class(x)[1])
+  warning("'merge_attributes' is not defined for objects of class ",
+          class(x)[1])
   z
 }
 
@@ -297,10 +299,8 @@ merge_attributes.generic_spct <- function(x, y, z,
       attr(z, w) <- att.y
     } else if (length(att.y) == 0L) {
       attr(z, w) <- att.x
-    } else if (# any(is.na(att.x)) || any(is.na(att.y)) ||
-               class(att.x)[1] != class(att.y)[1] ||
-#               length(att.x) != length(att.y) ||
-               xor(is.atomic(att.x), is.atomic(att.y))) {
+    } else if (class(att.x)[1] != class(att.y)[1] ||
+                 xor(is.atomic(att.x), is.atomic(att.y))) {
       attr(z, w) <- ifelse(w %in% c("comment", "time.unit"), NA_character_, NA)
     } else {
       ## Add generic test of equality to warning
@@ -327,8 +327,8 @@ merge_attributes.generic_spct <- function(x, y, z,
 #' @param x a generic_spct object.
 #' @param to.keep character vector Indices to the spectra for
 #'   which attributes are to be extracted and retained.
-#' @param target.attributes character vector Names of attributes to be subset using
-#'   \code{which}.
+#' @param target.attributes character vector Names of attributes to be
+#'   subset using \code{which}.
 #' @param ... currently ignored
 #'
 #' @return Named \code{list} of attribute values.
@@ -350,7 +350,8 @@ subset_attributes <-
 #'
 subset_attributes.default <-
   function(x, to.keep, ...) {
-    warning("'subset_attributes' is not defined for objects of class ", class(x)[1])
+    warning("'subset_attributes' is not defined for objects of class ",
+            class(x)[1])
     x
   }
 
@@ -365,10 +366,10 @@ subset_attributes.generic_spct <-
                 is.character(to.keep))
     if (any(duplicated(to.keep))) {
       warning("Duplicate values in 'to.keep' discarded.")
-      which <- unique(to.keep)
+      to.keep <- unique(to.keep)
     }
     if (length(target.attributes) == 0L ||
-        length(to.keep) == getMultipleWl(x)) {
+          length(to.keep) == getMultipleWl(x)) {
       return(x)
     }
     all.attr <- attributes(x)
@@ -509,7 +510,7 @@ get_attributes.waveband <- function(x,
                                     which = NULL,
                                     ...) {
   if (length(which) == 0L || which == "comment")
-  list(comment = attr(x, "comment", exact = TRUE))
+    list(comment = attr(x, "comment", exact = TRUE))
 }
 
 # attributes2tb -----------------------------------------------------------
@@ -533,7 +534,8 @@ get_attributes.waveband <- function(x,
 #'
 spct_attr2tb <-
   function(x,
-           which = c("-", "names", "row.names", "spct.tags", "spct.version", "comment"),
+           which = c("-", "names", "row.names", "spct.tags",
+                     "spct.version", "comment"),
            ...) {
     spct.attr <- get_attributes(x = x, which = which, ...)
     as_tibble(spct.attr)

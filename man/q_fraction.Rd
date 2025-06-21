@@ -138,8 +138,8 @@ With the default \code{quantity = "total"} the fraction is based on
   \deqn{\frac{Q(s, wb_\mathrm{num})}{Q(s, wb_\mathrm{denom}) + Q(s, wb_\mathrm{num})}}
 
 If the argument is set to \code{quantity = "mean"} or
- \code{quantity = "average"} the ratio is based on
-  two \strong{mean spectral photon irradiances}, one computed for each waveband.
+ \code{quantity = "average"} the ratio is based on two
+ \strong{mean spectral photon irradiances}, one computed for each waveband.
 
   \deqn{\frac{\overline{Q_\lambda}(s, wb_\mathrm{num})}{\overline{Q_\lambda}(s, wb_\mathrm{denom}) + \overline{Q_\lambda}(s, wb_\mathrm{num})}}
 

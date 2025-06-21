@@ -20,8 +20,9 @@ filter_properties(x) <- value
 \arguments{
 \item{x}{a filter_spct object}
 
-\item{filter.properties, value}{a list with fields named \code{"Rfr.constant"},
-\code{"thickness"} and \code{"attenuation.mode"}.}
+\item{filter.properties, value}{a list with fields named
+\code{"Rfr.constant"}, \code{"thickness"} and
+\code{"attenuation.mode"}.}
 
 \item{pass.null}{logical If TRUE, the parameters to the next three
 parameters will be always ignored, otherwise they will be used to

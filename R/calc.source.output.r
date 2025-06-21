@@ -46,7 +46,8 @@ calc_source_output <- function(w.length.out,
   }
 
   # we interpolate using a spline or linear interpolation
-  out.fill.selector <- w.length.out < w.length.in[1] | w.length.out > w.length.in[length(w.length.in)]
+  out.fill.selector <- w.length.out < w.length.in[1] | w.length.out >
+    w.length.in[length(w.length.in)]
   if (is.null(fill)) {
     w.length.out <- w.length.out[!out.fill.selector]
     out.fill.selector <- rep(FALSE, length(w.length.out))
@@ -88,8 +89,8 @@ calc_source_output <- function(w.length.out,
 
   if (!is.null(scaled)) {
     if (scaled == "peak") {
-      e.div <- max(out.data[["s.e.irrad"]], na.rm=TRUE)
-      q.div <- max(out.data[["s.q.irrad"]], na.rm=TRUE)
+      e.div <- max(out.data[["s.e.irrad"]], na.rm = TRUE)
+      q.div <- max(out.data[["s.q.irrad"]], na.rm = TRUE)
     } else if (scaled == "area") {
       s.irrad.na.sub <- out.data[["s.e.irrad"]]
       s.irrad.na.sub[is.na(s.irrad.na.sub)] <- 0.0
@@ -101,8 +102,10 @@ calc_source_output <- function(w.length.out,
       warning("Ignoring unsupported scaled argument: ", scaled)
       e.div <- q.div <- 1.0
     }
-    out.data[!out.fill.selector, "s.e.irrad"] <- out.data[!out.fill.selector, "s.e.irrad"] / e.div
-    out.data[!out.fill.selector, "s.q.irrad"] <- out.data[!out.fill.selector, "s.q.irrad"] / q.div
+    out.data[!out.fill.selector, "s.e.irrad"] <-
+      out.data[!out.fill.selector, "s.e.irrad"] / e.div
+    out.data[!out.fill.selector, "s.q.irrad"] <-
+      out.data[!out.fill.selector, "s.q.irrad"] / q.div
   }
   out.data[out.fill.selector, "s.e.irrad"] <- fill
   out.data[out.fill.selector, "s.q.irrad"] <- fill

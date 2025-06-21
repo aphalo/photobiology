@@ -32,7 +32,8 @@
 #' @examples
 #'
 #' head(sun.data)
-#' one.data <- with(sun.data, div_spectra(w.length, w.length, s.e.irrad, s.e.irrad))
+#' one.data <-
+#'   with(sun.data, div_spectra(w.length, w.length, s.e.irrad, s.e.irrad))
 #' head(one.data)
 #' tail(one.data)
 #'

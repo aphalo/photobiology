@@ -29,6 +29,6 @@
 Trigonometric functions for object of \code{generic_spct} and derived
 classes.  \\
 The functions are applied to the spectral data, not the wavelengths. The
-quantity in the spectrum to which the function is applied depends on the class
-of \code{x} and the current value of output options.
+quantity in the spectrum to which the function is applied depends on the
+class of \code{x} and the current value of output options.
 }

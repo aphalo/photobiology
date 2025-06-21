@@ -1,6 +1,6 @@
-#' @title Green birch leaf reflectance.
+#' Green birch leaf reflectance.
 #'
-#' @description A dataset of spectral reflectance expressed as a fraction of one.
+#' A dataset of spectral reflectance expressed as a fraction of one.
 #'
 #' @details \itemize{ \item w.length (nm) \item Rfr (0..1) }
 #'

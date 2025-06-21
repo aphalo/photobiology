@@ -111,9 +111,8 @@ correct environment set up for computing.}
 In the case of methods for individual spectra, a \code{numeric}
   vector with name attribute set. The name is based on the name of the
   wavebands unless a named list of wavebands is supplied in which case the
-  names of the list elements are used. "[Tfr:Tfr]" is appended if \code{quantity
-  = "total"} and "[Tfr(wl):Tfr(wl)]" if \code{quantity = "mean"} or
-  \code{quantity = "average"}.
+  names of the list elements are used. "[Tfr:Tfr]" is appended if
+  \code{quantity = "mean"} or \code{quantity = "average"}.
 
   A \code{data.frame} is returned in the case of collections of spectra,
   containing one column for each fraction definition, an index column with
@@ -128,7 +127,7 @@ In the case of methods for individual spectra, a \code{numeric}
   and numerator wavebands differ.
 }
 \description{
-This function returns the transmittance ratio for a given pair of wavebands of a
+Transmittance ratio for a given pair of wavebands of a
 filter spectrum.
 }
 \details{

@@ -50,7 +50,8 @@ The default for the \code{w.band} parameter is a waveband covering
 }
 \examples{
 # photons:energy ratio
-with(sun.data, photons_energy_ratio(w.length, s.e.irrad, new_waveband(400,500)))
+with(sun.data,
+     photons_energy_ratio(w.length, s.e.irrad, new_waveband(400,500)))
 # photons:energy ratio for whole spectrum
 with(sun.data, photons_energy_ratio(w.length, s.e.irrad))
 

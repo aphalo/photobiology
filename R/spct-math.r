@@ -731,7 +731,7 @@ f_dispatcher_spct <- function(x, .fun, ...) {
       z[[.name.response]] <- .fun(z[[.name.response]], ...)
     }
   } else {
-      stop("Function not implemented for ", class(x)[1], " objects.")
+    stop("Function not implemented for ", class(x)[1], " objects.")
   }
   check_spct(z, force = TRUE)
 }
@@ -794,8 +794,8 @@ exp.generic_spct <- function(x) {
 #' \code{abs(x)} computes the absolute value of \code{x}, \code{sqrt(x)}
 #' computes the (principal) square root of \code{x}. The functions are applied
 #' to the spectral data, not the wavelengths. The quantity in the spectrum to
-#' which the function is applied depends on the class of \code{x} and the current
-#' value of output options.
+#' which the function is applied depends on the class of \code{x} and the
+#' current value of output options.
 #'
 #' @name MathFun
 #'
@@ -843,13 +843,13 @@ sign.generic_spct <- function(x) {
 #' of x. \\
 #' \code{trunc} takes a single numeric argument x and returns a numeric vector
 #' containing the integers formed by truncating the values in x toward 0. \\
-#' \code{round} rounds the values in its first argument to the specified number of
-#' decimal places (default 0). \\
-#' \code{signif} rounds the values in its first argument to the specified number of
-#' significant digits. \\
+#' \code{round} rounds the values in its first argument to the specified number
+#' of decimal places (default 0). \\
+#' \code{signif} rounds the values in its first argument to the specified number
+#' of significant digits. \\
 #' The functions are applied to the spectral data, not the wavelengths. The
-#' quantity in the spectrum to which the function is applied depends on the class
-#' of \code{x} and the current value of output options.
+#' quantity in the spectrum to which the function is applied depends on the
+#' class of \code{x} and the current value of output options.
 #'
 #' @param x an object of class "generic_spct" or a derived class.
 #' @param digits integer indicating the number of decimal places (round) or
@@ -903,8 +903,8 @@ trunc.generic_spct <- function(x, ...) {
 #' Trigonometric functions for object of \code{generic_spct} and derived
 #' classes.  \\
 #' The functions are applied to the spectral data, not the wavelengths. The
-#' quantity in the spectrum to which the function is applied depends on the class
-#' of \code{x} and the current value of output options.
+#' quantity in the spectrum to which the function is applied depends on the
+#' class of \code{x} and the current value of output options.
 #'
 #' @name Trig
 #'
@@ -955,4 +955,3 @@ asin.generic_spct <- function(x) {
 atan.generic_spct <- function(x) {
   f_dispatcher_spct(x, atan)
 }
-

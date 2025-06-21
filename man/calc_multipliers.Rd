@@ -18,18 +18,19 @@ calc_multipliers(
 
 \item{w.band}{waveband object.}
 
-\item{unit.out}{character A string: "photon" or "energy", default is "energy".}
+\item{unit.out}{character One of "photon" or "energy", default is "energy".}
 
-\item{unit.in}{character A string: "photon" or "energy", default is "energy".}
+\item{unit.in}{character One of "photon" or "energy", default is "energy".}
 
 \item{use.cached.mult}{logical Flag indicating whether multiplier values
 should be cached between calls.}
 
-\item{fill}{numeric If \code{fill = NA} then values returned for wavelengths outside
-the range of the waveband are set to \code{NA}.}
+\item{fill}{numeric If \code{fill = NA} then values returned for wavelengths
+outside the range of the waveband are set to \code{NA}.}
 }
 \value{
-a numeric vector of multipliers of the same length as \code{w.length}.
+a numeric vector of multipliers of the same length as
+  \code{w.length}.
 }
 \description{
 Calculate multipliers for selecting a range of wavelengths and optionally
@@ -38,8 +39,15 @@ normalization. This function returns numeric multipliers that can be used to
 select a waveband and apply a weight.
 }
 \examples{
-with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"))
-with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"), use.cached.mult = TRUE)
+with(sun.data,
+     calc_multipliers(w.length = w.length,
+                      w.band = new_waveband(400,700),
+                      unit.out = "photon"))
+with(sun.data,
+     calc_multipliers(w.length = w.length,
+                      w.band = new_waveband(400,700),
+                      unit.out = "photon"),
+                      use.cached.mult = TRUE)
 
 }
 \seealso{

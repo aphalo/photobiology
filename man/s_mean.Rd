@@ -36,9 +36,9 @@ s_mean(x, trim, na.rm, ...)
 \arguments{
 \item{x}{An R object.}
 
-\item{trim}{numeric The fraction (0 to 0.5) of observations to be trimmed from
-each end of x before the mean is computed. Values of trim outside that
-range are taken as the nearest endpoint.}
+\item{trim}{numeric The fraction (0 to 0.5) of observations to be trimmed
+from each end of x before the mean is computed. Values of trim outside 
+that range are taken as the nearest endpoint.}
 
 \item{na.rm}{logical A value indicating whether NA values should be stripped
 before the computation proceeds.}

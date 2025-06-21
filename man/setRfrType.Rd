@@ -15,7 +15,8 @@ getRfrType(x)
 \item{Rfr.type}{character String, either \code{"total"} or \code{"specular"}.}
 }
 \value{
-\code{x}, with the modified attribute in the case of \code{setRfrType()} or
+\code{x}, with the modified attribute in the case of
+  \code{setRfrType()} or
   the \code{character} value, \code{"total"} or \code{"specular"}, stored
   in the \code{"Rfr.type"} attribute of \code{x} in the case
   of \code{getRfrType()}. If \code{x} is not a \code{reflector_spct} or
@@ -36,8 +37,8 @@ called specular. Thus,
 
 \deqn{\rho = \rho_s + \rho_d}
 
-where, \eqn{\rho} is total reflectance, and its components, \eqn{\rho_s}, specular
-reflectance, and \eqn{\rho_d}, diffuse or scattered reflectance.
+where, \eqn{\rho} is total reflectance, and its components, \eqn{\rho_s},
+specular reflectance, and \eqn{\rho_d}, diffuse or scattered reflectance.
 When strong scattering takes place, total reflectance can
 be much more than the specular component. In most cases \eqn{\rho_d} is
 not measured directly.

@@ -11,8 +11,8 @@ A \code{solute_spct} object with 1993 rows and 2 variables
 phenylalanine.spct
 }
 \description{
-A dataset containing the wavelengths at a 0.25 nm interval and the
-  corresponding attenuation coefficients.
+A dataset containing the wavelengths at a 0.25 nm interval
+  and the corresponding attenuation coefficients.
 }
 \details{
 \itemize{ \item w.length (nm), range 222 to 720 nm. \item K.mole

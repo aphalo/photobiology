@@ -41,9 +41,9 @@ fast_color_of_wb(x, type = "CMF", ...)
 
 \item{...}{ignored (possibly used by derived methods).}
 
-\item{type, chroma.type}{character telling whether "CMF", "CC", or "both" should be returned
-for human vision, or an object of class \code{chroma_spct} for any other
-trichromic visual system.}
+\item{type, chroma.type}{character telling whether "CMF", "CC", or "both"
+should be returned for human vision, or an object of class
+\code{chroma_spct} for any other trichromic visual system.}
 
 \item{short.names}{logical indicating whether to use short or long names for
 wavebands}
@@ -86,9 +86,9 @@ The specialization of \code{color_of()} for \code{numeric} and function
   'ggspectra' simpler as the reverse scale transform changes the sign of the
   data. This should be considered a temporary fix.
 
-When \code{x} is a list but not a waveband, if a method  \code{color_of}
-  is not available for the class of each element of the list, then
-  \code{color_of.default} will be called.
+When \code{x} is a list but not a waveband, if a method
+  \code{color_of} is not available for the class of each element of the list,
+  then \code{color_of.default} will be called.
 
 Function \code{fast_color_of_wl()} should be used only when high
   performance is needed. It speeds up performance by rounding the wavelength

@@ -36,8 +36,8 @@ If the attribute \code{idfactor} is already set, and a variable with
 }
 \note{
 This function alters x itself by reference and in addition
-  returns x invisibly. If x is not a generic_spct or an object of a class derived from
-  generic_spct, x is not modified.
+  returns x invisibly. If x is not a generic_spct or an object of a class
+  derived from generic_spct, x is not modified.
 }
 \examples{
 my.spct <- sun_evening.spct

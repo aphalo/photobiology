@@ -42,6 +42,7 @@ Internal function that computes the two reflectances needed to compute
 various waveband ratios and fractions.
 }
 \details{
-See \code{\link{reflectance}} for details on the reflectance calculations.
+See \code{\link{reflectance}} for details on the reflectance
+   calculations.
 }
 \keyword{internal}

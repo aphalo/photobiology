@@ -34,8 +34,8 @@ s_prod(x, na.rm, ...)
 \method{s_prod}{raw_mspct}(x, na.rm = FALSE, ...)
 }
 \arguments{
-\item{x}{An R object. Currently this package defines methods for collections of
-spectral objects.}
+\item{x}{An R object. Currently this package defines methods for collections
+of spectral objects.}
 
 \item{na.rm}{logical. A value indicating whether NA values should be stripped
 before the computation proceeds.}

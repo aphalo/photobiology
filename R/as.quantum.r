@@ -14,6 +14,6 @@
 #'
 #' @family quantity conversion functions
 #'
-as_quantum <- function(w.length, s.e.irrad){
-  return(s.e.irrad * e2quantum_multipliers(w.length))
+as_quantum <- function(w.length, s.e.irrad) {
+  s.e.irrad * e2quantum_multipliers(w.length)
 }

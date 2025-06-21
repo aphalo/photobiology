@@ -42,8 +42,8 @@ or by copy of \code{x}.}
 \item{strict.A}{logical Attempt to compute a true internal absorbance even
 if \code{"total"} transmittance is stored in \code{x}.}
 
-\item{.parallel}{if \code{TRUE}, apply function in parallel, using parallel backend
-provided by foreach}
+\item{.parallel}{if \code{TRUE}, apply function in parallel, using parallel
+backend provided by foreach.}
 
 \item{.paropts}{a list of additional options passed into the foreach function
 when parallel computation is enabled. This is important if (for example)

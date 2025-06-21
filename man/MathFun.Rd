@@ -17,8 +17,8 @@
 \code{abs(x)} computes the absolute value of \code{x}, \code{sqrt(x)}
 computes the (principal) square root of \code{x}. The functions are applied
 to the spectral data, not the wavelengths. The quantity in the spectrum to
-which the function is applied depends on the class of \code{x} and the current
-value of output options.
+which the function is applied depends on the class of \code{x} and the
+current value of output options.
 }
 \seealso{
 Other math operators and functions: 

@@ -50,9 +50,9 @@ If \code{x} is a collection spectral of objects, such as a
   than mean or median.
 }
 \description{
-Method to compute the "parallel" standard error of the mean across members of a
-collection of spectra or of a spectral object containing multiple spectra in
-long form.
+Method to compute the "parallel" standard error of the mean across members of
+a collection of spectra or of a spectral object containing multiple spectra
+in long form.
 }
 \details{
 Method specializations compute the standard error of the mean at

@@ -144,7 +144,8 @@ for the authority.}
 
 \item{Rfr.type}{character A string, either "total" or "specular".}
 
-\item{response.type}{a character string, either \code{"response"} or \code{"action"}.}
+\item{response.type}{a character string, either \code{"response"} or
+\code{"action"}.}
 
 \item{bswf.used}{character A string, either \code{"none"} or the name of a
 BSWF. (Users seldom need to change the default, as this metadata value
@@ -199,8 +200,8 @@ This method alters \code{x} itself by reference and in addition
   validity of computations related to thickness of the material or length of
   the light path depends on the availability and accuracy of the metadata.
 
-Particles in suspension unlike dissolved \strong{solutes} scatter light.
-  Thus two different processes can attenuate light in liquid media:
+Particles in suspension unlike dissolved \strong{solutes} scatter
+  light. Thus two different processes can attenuate light in liquid media:
   absorption and scattering. Coefficients of attenuation are always based on
   measurements of internal absorbance or internal transmittance. In practice
   this is achieved by using as reference pure solvent in a vessel, such as a

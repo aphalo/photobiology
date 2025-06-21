@@ -71,6 +71,3 @@ diffraction_double_slit <- function(w.length,
 sinc <- function(x) {
   ifelse(abs(x) < 1e-10, 1, sin(x) / x)
 }
-
-
-

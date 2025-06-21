@@ -12,7 +12,8 @@
 #' @note Function \code{f_mspct()} has been renamed \code{msdply()}.
 #'
 f_mspct <- function(...) {
-  stop("Function 'photobiology::f_mspct()' is defunct, please use 'msdply()' instead.")
+  stop("Function 'photobiology::f_mspct()' is defunct, ",
+       "please use 'msdply()' instead.")
 }
 
 #' @rdname defunct

@@ -38,7 +38,8 @@ and \eqn{f_{BE}(\lambda)} is one of many possible BSWF.
 When the values stored in a \code{source_spct} object have been multiplied
 by those from a curve describing a certain response or effect, the
 attribute \code{"time.unit"} is set accordingly to track the transformation
-applied to the data. When a spectral response data have been directly measured,
+applied to the data. When a spectral response data have been directly
+measured,
 they should be stored in an object of class \code{response_spct} as they
 are expressed in actual response units, not
 of class \code{source_spct} expressed in irradiance units, even if weighted.
@@ -47,12 +48,14 @@ illuminance, the aim is technical measure of a light source,
 class \code{source_spct} should be used and the BSWF set in the metadata.
 
 This attribute is normally set by the function or operator used to apply
-the BSWF to spectral irradiance data, or set when the \code{source_spct} object
-is created.
+the BSWF to spectral irradiance data, or set when the \code{source_spct}
+object is created.
 }
 \note{
-Function \code{setBSWFUsed()} alters \code{x} itself by reference and in addition
-  returns \code{x} invisibly. If \code{x} is not a \code{source_spct}, \code{x} is not modified.
+Function \code{setBSWFUsed()} alters \code{x} itself by reference
+  and in addition
+  returns \code{x} invisibly. If \code{x} is not a \code{source_spct},
+  \code{x} is not modified.
   The behaviour of this function is 'unusual' in that the default for
   parameter \code{bswf.used} is used only if \code{x} does not already have
   this attribute set. Function \code{getBSWFUsed()} returns the value to

@@ -1,18 +1,18 @@
-#' @details Package \sQuote{photobiology} is at the core of a suite of R packages
-#'   supporting computations and plotting relevant to photobiology (described at
-#'   \url{https://www.r4photobiology.info/}). Package 'photobiology' has its
-#'   main focus in the characterization of the light environment, the
-#'   description of optical properties of objects and substances and description
-#'   of light responses of organisms and devices used to measure light. The
-#'   facilities for spectral data storage and manipulations are widely useful in
-#'   photobiology, chemistry, geophysics, radiation climatology and remote
-#'   sensing. Astronomical computations for the sun are also implemented. The
-#'   design of object classes for spectral data supports reproducibility by
-#'   facilitating the consistent use of units and physical quantities and
-#'   consistent embedding of metadata. Data are expressed throughout using SI
-#'   base units, except for wavelengths which are consistently expressed in
-#'   nanometres [\eqn{nm}]. Please see the vignette \emph{0: The R for
-#'   Photobiology Suite} for a description of the suite.
+#' @details Package \sQuote{photobiology} is at the core of a suite of R
+#'   packages supporting computations and plotting relevant to photobiology
+#'   (described at \url{https://www.r4photobiology.info/}). Package
+#'   'photobiology' has its main focus in the characterization of the light
+#'   environment, the description of optical properties of objects and
+#'   substances and description of light responses of organisms and devices used
+#'   to measure light. The facilities for spectral data storage and
+#'   manipulations are widely useful in photobiology, chemistry, geophysics,
+#'   radiation climatology and remote sensing. Astronomical computations for the
+#'   sun are also implemented. The design of object classes for spectral data
+#'   supports reproducibility by facilitating the consistent use of units and
+#'   physical quantities and consistent embedding of metadata. Data are
+#'   expressed throughout using SI base units, except for wavelengths which are
+#'   consistently expressed in nanometres [\eqn{nm}]. Please see the vignette
+#'   \emph{0: The R for photobiology Suite} for a description of the suite.
 #'
 #' @references
 #' Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A. R., Robson, T. M.,
@@ -31,12 +31,12 @@
 #' \doi{10.1111/2041-210X.12069}.
 #'
 #' @section Acknowledgements: This work was funded by the Academy of Finland
-#'   (decision 252548). COST Action FA9604 \sQuote{UV4Growth} facilitated discussions
-#'   and exchanges of ideas that lead to the development of this package. The
-#'   contributions of Andy McLeod, Lars Olof Björn, Nigel Paul, Lasse Ylianttila,
-#'   T. Matthew Robson and Titta Kotilainen were specially significant.
-#'   Tutorials by Hadley Wickham and comments on my presentation at UseR!2015
-#'   allowed me to significantly improve the coding and functionality.
+#'   (decision 252548). COST Action FA9604 \sQuote{UV4Growth} facilitated
+#'   discussions and exchanges of ideas that lead to the development of this
+#'   package. The contributions of Andy McLeod, Lars Olof Björn, Nigel Paul,
+#'   Lasse Ylianttila, T. Matthew Robson and Titta Kotilainen were specially
+#'   significant. Tutorials by Hadley Wickham and comments on my presentation at
+#'   UseR!2015 allowed me to significantly improve the coding and functionality.
 #'
 #' @importFrom rlang .data
 #' @import tibble
@@ -53,10 +53,12 @@
 #' e_irrad(sun.spct * yellow_gel.spct, waveband(c(400,500)))
 #' e_irrad(sun.spct * yellow_gel.spct, waveband(c(500,700)))
 #' # daylength
-#' sunrise_time(lubridate::today(tzone = "Europe/Helsinki"), tz = "Europe/Helsinki",
+#' sunrise_time(lubridate::today(tzone = "Europe/Helsinki"),
+#'              tz = "Europe/Helsinki",
 #'              geocode = data.frame(lat = 60, lon = 25),
 #'              unit.out = "hour")
-#' day_length(lubridate::today(tzone = "Europe/Helsinki"), tz = "Europe/Helsinki",
+#' day_length(lubridate::today(tzone = "Europe/Helsinki"),
+#'            tz = "Europe/Helsinki",
 #'            geocode = data.frame(lat = 60, lon = 25),
 #'            unit.out = "hour")
 #' # colour as seen by humans

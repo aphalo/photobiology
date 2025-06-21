@@ -94,7 +94,8 @@ check_and_rename_vars <- function(x,
     wl.col <- which(colnames(x) %in% alternative.vars)
     if (length(wl.col) > 1L) {
       wl.col <- wl.col[1]
-      warning("Multiple matches, using '", names(x)[wl.col], "' for '", target.var)
+      warning("Multiple matches, using '", names(x)[wl.col],
+              "' for '", target.var)
     }
     if (length(wl.col) == 1L) {
       x[[wl.col]] <- x[[wl.col]] * multiplier[wl.col]
@@ -165,7 +166,7 @@ range_check_Tfr <- function(x, strict.range) {
       } else if (!strict.range) {
         warning(message.text, call. = FALSE)
       } else {
-        stop ("Bad argument for 'strict.range': ", strict.range)
+        stop("Bad argument for 'strict.range': ", strict.range)
       }
     }
   }
@@ -199,7 +200,7 @@ range_check_Afr <- function(x, strict.range) {
       } else if (!strict.range) {
         warning(message.text, call. = FALSE)
       } else {
-        stop ("Bad argument for 'strict.range': ", strict.range)
+        stop("Bad argument for 'strict.range': ", strict.range)
       }
     }
   }
@@ -233,7 +234,7 @@ range_check_Rfr <- function(x, strict.range) {
       } else if (!strict.range) {
         warning(message.text, call. = FALSE)
       } else {
-        stop ("Bad argument for 'strict.range': ", strict.range)
+        stop("Bad argument for 'strict.range': ", strict.range)
       }
     }
   }
@@ -263,7 +264,7 @@ range_check_A <- function(x, strict.range) {
       } else if (!strict.range) {
         warning(message.text, call. = FALSE)
       } else {
-        stop ("Bad argument for 'strict.range': ", strict.range)
+        stop("Bad argument for 'strict.range': ", strict.range)
       }
     }
   }
@@ -284,10 +285,11 @@ range_check_cps <- function(x, cps.cols, strict.range) {
     } else {
       xcol <- na.omit(x[[col]])
     }
-    # we need to include zero and a reasonably high number as otherwise dark scans may not pass the test
+    # we need to include zero and a reasonably high number as otherwise dark
+    # scans may not pass the test.
     cps.max <- max(xcol, 1e4)
-    # we need to be very lax here as during processing of scans we can get negative
-    # values due to subtraction of dark scans
+    # we need to be very lax here as during processing of scans we can get
+    # negative values due to subtraction of dark scans
     n.off.range <- sum(xcol < -cps.max / 10)
     if (n.off.range > length(xcol) / 100 || any(xcol < -cps.max)) {
       message.text <- paste("Found ", n.off.range, "/", length(xcol),
@@ -301,7 +303,7 @@ range_check_cps <- function(x, cps.cols, strict.range) {
       } else if (!strict.range) {
         warning(message.text, call. = FALSE)
       } else {
-        stop ("Bad argument for 'strict.range': ", strict.range)
+        stop("Bad argument for 'strict.range': ", strict.range)
       }
     }
   }
@@ -320,7 +322,7 @@ range_check_s.irrad <- function(x, strict.range) {
                       -0.10,
                       -Inf) # we accept negative values
   if (exists("s.e.irrad", x, inherits = FALSE) &&
-      !all(is.na(x[["s.e.irrad"]]))) {
+          !all(is.na(x[["s.e.irrad"]]))) {
     xse <- na.omit(x[["s.e.irrad"]])
     s.e.range <- range(xse)
     s.e.spread <- s.e.range[2] - min(0, s.e.range[1])
@@ -343,12 +345,12 @@ range_check_s.irrad <- function(x, strict.range) {
       } else if (!strict.range) {
         warning(message.text, call. = FALSE)
       } else {
-        stop ("Bad argument for 'strict.range': ", strict.range)
+        stop("Bad argument for 'strict.range': ", strict.range)
       }
     }
   }
   if (exists("s.q.irrad", x, inherits = FALSE) &&
-      !all(is.na(x[["s.q.irrad"]]))) {
+        !all(is.na(x[["s.q.irrad"]]))) {
     xsq <- na.omit(x[["s.q.irrad"]])
     s.q.range <- range(xsq)
     s.q.spread <- s.q.range[2] - min(0, s.q.range[1])
@@ -371,7 +373,7 @@ range_check_s.irrad <- function(x, strict.range) {
       } else if (!strict.range) {
         warning(message.text, call. = FALSE)
       } else {
-        stop ("Bad argument for 'strict.range': ", strict.range)
+        stop("Bad argument for 'strict.range': ", strict.range)
       }
     }
   }
@@ -400,7 +402,7 @@ range_check_irrad.mult <- function(x, strict.range) {
       x[["irrad.mult"]][x[["irrad.mult"]] < 0] <- NA_real_
       warning(message.text, call. = FALSE)
     } else {
-      stop ("Bad argument for 'strict.range': ", strict.range)
+      stop("Bad argument for 'strict.range': ", strict.range)
     }
   }
 }
@@ -447,8 +449,8 @@ check_spct <- function(x, byref, strict.range, force = FALSE, ...) {
 #' @export
 check_spct.default <-
   function(x, byref = FALSE, strict.range = NA, force = FALSE, ...) {
-  x
-}
+    x
+  }
 
 #' @describeIn check_spct Specialization for generic_spct.
 #'
@@ -462,8 +464,7 @@ check_spct.generic_spct <-
            strict.range = NA,
            force = FALSE,
            multiple.wl = getMultipleWl(x),
-           ...)
-  {
+           ...) {
     force(multiple.wl)
     # assert that option is set so that we can keep remaining code simpler.
     # defensive code in case the option has been unset by the user
@@ -510,7 +511,7 @@ check_spct.generic_spct <-
             } else {
               # if unsorted is TRUE, then nrow >= 1 is TRUE
               # w.length in decreasing order, which we reverse
-              x <- x[nrow(x):1, ]
+              x <- x[rev(seq_len(nrow(x))), ]
             }
           }
         } else if (multiple.wl > 1) {
@@ -538,23 +539,22 @@ check_spct.calibration_spct <-
            multiple.wl = getMultipleWl(x),
            ...) {
 
-  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
+    x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
-  mult.cols <- grep("^irrad.mult$", names(x))
+    mult.cols <- grep("^irrad.mult$", names(x))
 
-  if (length(mult.cols) == 1 &&
-      is.numeric(x[["irrad.mult"]])) {
-    if (getOption("photobiology.verbose") && anyNA(x[["irrad.mult"]])) {
-      warning("At least one NA in 'irrad.mult'")
+    if (length(mult.cols) == 1 &&
+        is.numeric(x[["irrad.mult"]])) {
+      if (getOption("photobiology.verbose") && anyNA(x[["irrad.mult"]])) {
+        warning("At least one NA in 'irrad.mult'")
+      }
+      range_check_irrad.mult(x, strict.range = strict.range)
+    } else {
+      warning("No valid 'irrad.mult' data found in calibration_spct")
+      x[["irrad.mult"]] <- NA_real_
     }
-    range_check_irrad.mult(x, strict.range = strict.range)
-    return(x)
-  } else {
-    warning("No valid 'irrad.mult' data found in calibration_spct")
-    x[["irrad.mult"]] = NA_real_
-    return(x)
+    x
   }
-}
 
 #' @describeIn check_spct Specialization for raw_spct.
 #' @export
@@ -567,26 +567,24 @@ check_spct.raw_spct <-
            multiple.wl = getMultipleWl(x),
            ...) {
 
-  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
+    x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
-  counts.cols <- grep("^counts", names(x))
-  counts.names <- colnames(x)[counts.cols]
+    counts.cols <- grep("^counts", names(x))
+    counts.names <- colnames(x)[counts.cols]
 
-  if (length(counts.cols) == 1L && counts.names != "counts") {
-    # remove numbering from single columns
-    if (getOption("photobiology.verbose", TRUE)) {
-      message("Renaming '", counts.names, "' into 'counts'")
+    if (length(counts.cols) == 1L && counts.names != "counts") {
+      # remove numbering from single columns
+      if (getOption("photobiology.verbose", TRUE)) {
+        message("Renaming '", counts.names, "' into 'counts'")
+      }
+      names(x)[counts.cols] <- "counts"
     }
-    names(x)[counts.cols] <- "counts"
+    if (length(counts.cols) < 1) {
+      warning("No raw 'counts' data found in raw_spct")
+      x[["counts"]] <- NA_real_
+    }
+    x
   }
-  if (length(counts.cols) >= 1) {
-    return(x)
-  } else {
-    warning("No raw 'counts' data found in raw_spct")
-    x[["counts"]] <- NA_real_
-    return(x)
-  }
-}
 
 #' @describeIn check_spct Specialization for cps_spct.
 #' @export
@@ -599,27 +597,27 @@ check_spct.cps_spct <-
            multiple.wl = getMultipleWl(x),
            ...) {
 
-  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
+    x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
-  cps.cols <- grep("^cps", names(x))
-  cps.names <- colnames(x)[cps.cols]
+    cps.cols <- grep("^cps", names(x))
+    cps.names <- colnames(x)[cps.cols]
 
-  if (length(cps.cols) == 1L && cps.names != "cps") {
-    # remove numbering from single columns
-    if (getOption("photobiology.verbose", TRUE)) {
-        message("Renaming '", cps.names, "' into 'cps'")
+    if (length(cps.cols) == 1L && cps.names != "cps") {
+      # remove numbering from single columns
+      if (getOption("photobiology.verbose", TRUE)) {
+          message("Renaming '", cps.names, "' into 'cps'")
+      }
+      names(x)[cps.cols] <- "cps"
     }
-    names(x)[cps.cols] <- "cps"
+    if (length(cps.cols) >= 1) {
+      range_check_cps(x = x, cps.cols = cps.cols, strict.range = strict.range)
+      return(x)
+    } else {
+      warning("No counts per second data found in cps_spct")
+      x[["cps"]] <- NA_real_
+      return(x)
+    }
   }
-  if (length(cps.cols) >= 1) {
-    range_check_cps(x = x, cps.cols = cps.cols, strict.range = strict.range)
-    return(x)
-  } else {
-    warning("No counts per second data found in cps_spct")
-    x[["cps"]] <- NA_real_
-    return(x)
-  }
-}
 
 #' @describeIn check_spct Specialization for filter_spct.
 #' @export
@@ -630,8 +628,7 @@ check_spct.filter_spct <-
              getOption("photobiology.strict.range", default = FALSE),
            force = FALSE,
            multiple.wl = getMultipleWl(x),
-           ...)
-  {
+           ...) {
 
     x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
@@ -645,23 +642,23 @@ check_spct.filter_spct <-
         check_and_rename_vars(x,
                               target.var = "Afr",
                               alternative.vars = c("absorptance",
-                                                   "Absorptance",
-                                                   "Apc"),
+                                                  "Absorptance",
+                                                  "Apc"),
                               multiplier = c(1, 1, 1e-2))
       if (!"Afr" %in% colnames(x)) {
         x <-
           check_and_rename_vars(x,
                                 target.var = "A",
                                 alternative.vars = c("absorbance",
-                                                     "Absorbance"),
+                                                    "Absorbance"),
                                 multiplier = c(1, 1))
         if (!"Tfr" %in% colnames(x)) {
           x <-
             check_and_rename_vars(x,
                                   target.var = "Tfr",
                                   alternative.vars = c("transmittance",
-                                                       "Transmittance",
-                                                       "Tpc"),
+                                                      "Transmittance",
+                                                      "Tpc"),
                                   multiplier = c(1e-2, 1e-2, 1e-2),
                                   required = TRUE,
                                   fill = NA_real_)
@@ -680,11 +677,11 @@ check_spct.filter_spct <-
 
     if (getOption("photobiology.verbose")) {
       if (exists("Tfr", x, mode = "numeric", inherits = FALSE) &&
-          anyNA(x[["Tfr"]])) {
+            anyNA(x[["Tfr"]])) {
         warning("At least one NA in 'Tfr'")
       }
       if (exists("A", x, mode = "numeric", inherits = FALSE) &&
-          anyNA(x[["A"]])) {
+            anyNA(x[["A"]])) {
         warning("At least one NA in 'A'")
       }
     }
@@ -834,15 +831,15 @@ check_spct.object_spct <-
                                                    "Apc"),
                               multiplier = c(1, 1, 1e-2))
       if (!"Afr" %in% colnames(x)) {
-          x <-
-            check_and_rename_vars(x,
-                                  target.var = "Tfr",
-                                  alternative.vars = c("transmittance",
-                                                       "Transmittance",
-                                                       "Tpc"),
-                                  multiplier = c(1e-2, 1e-2, 1e-2),
-                                  required = TRUE,
-                                  fill = NA_real_)
+        x <-
+          check_and_rename_vars(x,
+                                target.var = "Tfr",
+                                alternative.vars = c("transmittance",
+                                                      "Transmittance",
+                                                      "Tpc"),
+                                multiplier = c(1e-2, 1e-2, 1e-2),
+                                required = TRUE,
+                                fill = NA_real_)
       }
     }
 
@@ -884,7 +881,7 @@ check_spct.response_spct <-
     x <- checkTimeUnit(x)
 
     if (!(exists("s.e.response", x, mode = "numeric", inherits=FALSE) ||
-          exists("s.q.response", x, mode = "numeric", inherits=FALSE))) {
+           exists("s.q.response", x, mode = "numeric", inherits=FALSE))) {
       x <-
         check_and_rename_vars(x,
                               target.var = "s.e.response",
@@ -926,7 +923,7 @@ check_spct.source_spct <-
       warning("Missing attribute 'bswf.used' set to 'none'")
     }
     if (!(exists("s.e.irrad", x, mode = "numeric", inherits=FALSE) ||
-        exists("s.q.irrad", x, mode = "numeric", inherits=FALSE))) {
+           exists("s.q.irrad", x, mode = "numeric", inherits=FALSE))) {
       x <- check_and_rename_vars(x,
                                  target.var = "s.e.irrad",
                                  alternative.vars = c("irradiance"),
@@ -940,7 +937,7 @@ check_spct.source_spct <-
     }
     if (getOption("photobiology.verbose")) {
       if (exists("s.e.irrad", x, mode = "numeric", inherits = FALSE) &&
-          anyNA(x[["s.e.irrad"]])) {
+           anyNA(x[["s.e.irrad"]])) {
         warning("At least one NA in 's.e.irrad'")
       }
       if (exists("s.q.irrad", x, mode = "numeric", inherits = FALSE) &&
@@ -985,7 +982,7 @@ check_spct.chroma_spct <-
         (anyNA(x[["x"]]) || anyNA(x[["y"]]) || anyNA(x[["z"]]))) {
       warning("One or more NAs in chromaticity coordinates")
     }
-    return(x)
+    x
   }
 
 # Checks called by other methods ---------------------------------------------
@@ -1010,10 +1007,10 @@ check_spct.chroma_spct <-
 #'
 #'   The typical case when the step can vary strongly are spectra returned by
 #'   \code{thin_wl()}. As when using default arguments, including
-#'   \code{span = 21}, \code{thin_wl()} retains the original local maxima and global maximum,
-#'   and a reasonably narrow wavelength maximum step a call to \code{peaks} with
-#'   \code{span = NULL} or \code{span = 5} \emph{tends} to discover the original
-#'   peaks missing at most a few.
+#'   \code{span = 21}, \code{thin_wl()} retains the original local maxima and
+#'   global maximum, and a reasonably narrow wavelength maximum step a call
+#'   to \code{peaks} with \code{span = NULL} or \code{span = 5} \emph{tends}
+#'   to discover the original peaks missing at most a few.
 #'
 #' @return A logical \code{TRUE} is returned invisibly if check is passed and
 #'   otherwise \code{FALSE} with a warning. A warning is issued on failure as
@@ -1036,7 +1033,7 @@ check_wl_stepsize <-
       x <- na.omit(x)
     }
     if (length(x) > 2L &&
-        (!is.null(span) && span > 5)) {
+          (!is.null(span) && span > 5)) {
       step.size.range <- stepsize(x)
       step.size.range[1] <- max(1, step.size.range[1]) # ignore wl steps < 1 nm
       if ((step.size.range[2] / step.size.range[1]) > 2.5) {
@@ -1171,7 +1168,8 @@ setGenericSpct <-
 #'
 setCalibrationSpct <-
   function(x,
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            multiple.wl = 1L,
            idfactor = NULL) {
     name <- substitute(x)
@@ -1192,7 +1190,8 @@ setCalibrationSpct <-
 #'
 setRawSpct <-
   function(x,
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            multiple.wl = 1L,
            idfactor = NULL) {
     name <- substitute(x)
@@ -1214,7 +1213,8 @@ setRawSpct <-
 setCpsSpct <-
   function(x,
            time.unit="second",
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            multiple.wl = 1L,
            idfactor = NULL) {
     name <- substitute(x)
@@ -1259,7 +1259,8 @@ setFilterSpct <-
            Rfr.constant = NA_real_,
            thickness = NA_real_,
            attenuation.mode = NA_character_,
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            multiple.wl = 1L,
            idfactor = NULL) {
     name <- substitute(x)
@@ -1303,8 +1304,8 @@ setFilterSpct <-
 #'
 #' @export
 #'
-#' @note Particles in suspension unlike dissolved \strong{solutes} scatter light.
-#'   Thus two different processes can attenuate light in liquid media:
+#' @note Particles in suspension unlike dissolved \strong{solutes} scatter
+#'   light. Thus two different processes can attenuate light in liquid media:
 #'   absorption and scattering. Coefficients of attenuation are always based on
 #'   measurements of internal absorbance or internal transmittance. In practice
 #'   this is achieved by using as reference pure solvent in a vessel, such as a
@@ -1326,12 +1327,13 @@ setSoluteSpct <-
            ID = NA_character_,
            solvent.name = NA_character_,
            solvent.ID = NA_character_,
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            multiple.wl = 1L,
            idfactor = NULL) {
     name <- substitute(x)
     if (is.solute_spct(x) &&
-        getKType(x) != "unknown") {
+          getKType(x) != "unknown") {
       if (length(K.type) > 1) {
         K.type <- getKType(x)
       } else if (K.type != getKType(x)) {
@@ -1380,11 +1382,13 @@ setSoluteSpct <-
 setReflectorSpct <-
   function(x,
            Rfr.type = c("total", "specular"),
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            multiple.wl = 1L,
            idfactor = NULL) {
     name <- substitute(x)
-    if ((is.object_spct(x) || is.reflector_spct(c)) && getRfrType(x) != "unknown") {
+    if ((is.object_spct(x) ||
+           is.reflector_spct(c)) && getRfrType(x) != "unknown") {
       if (length(Rfr.type) > 1) {
         Rfr.type <- getRfrType(x)
       } else if (Rfr.type != getRfrType(x)) {
@@ -1396,7 +1400,6 @@ setReflectorSpct <-
     class(x) <- c("reflector_spct", class(x))
     setRfrType(x, Rfr.type[1])
     x <- check_spct(x, strict.range = strict.range)
-    #  setkey_spct(x, w.length)
     if (is.name(name)) {
       name <- as.character(name)
       assign(name, x, parent.frame(), inherits = TRUE)
@@ -1412,11 +1415,13 @@ setObjectSpct <-
   function(x,
            Tfr.type = c("total", "internal"),
            Rfr.type = c("total", "specular"),
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            multiple.wl = 1L,
            idfactor = NULL) {
     name <- substitute(x)
-    if ((is.filter_spct(x) || is.object_spct(x)) && getTfrType(x) != "unknown") {
+    if ((is.filter_spct(x) ||
+           is.object_spct(x)) && getTfrType(x) != "unknown") {
       if (length(Tfr.type) > 1) {
         Tfr.type <- getTfrType(x)
       } else if (Tfr.type != getTfrType(x)) {
@@ -1426,7 +1431,8 @@ setObjectSpct <-
     } else {
       Tfr.type <- Tfr.type[1]
     }
-    if ((is.reflector_spct(x) || is.object_spct(x)) && getRfrType(x) != "unknown") {
+    if ((is.reflector_spct(x) ||
+           is.object_spct(x)) && getRfrType(x) != "unknown") {
       if (length(Rfr.type) > 1) {
         Rfr.type <- getRfrType(x)
       } else if (Rfr.type != getRfrType(x)) {
@@ -1437,7 +1443,8 @@ setObjectSpct <-
       Rfr.type <- Rfr.type[1]
     }
     if (Tfr.type == "total" && Rfr.type != "total") {
-      message("Rfr is not \"total\", making conversions between Afr and Tfr impossible.")
+      message("Rfr is not \"total\", making conversions ",
+              "between Afr and Tfr impossible.")
     }
     setGenericSpct(x, multiple.wl = multiple.wl, idfactor = idfactor)
     class(x) <- c("object_spct", class(x))
@@ -1456,7 +1463,8 @@ setObjectSpct <-
 #' @param time.unit character string indicating the time unit used for spectral
 #'   irradiance or exposure (\code{"second"}, \code{"day"} or \code{"exposure"})
 #'   or an object of class duration as defined in package lubridate.
-#' @param response.type a character string, either \code{"response"} or \code{"action"}.
+#' @param response.type a character string, either \code{"response"} or
+#'   \code{"action"}.
 #' @export
 #'
 setResponseSpct <-
@@ -1471,7 +1479,6 @@ setResponseSpct <-
     setResponseType(x, response.type)
     setTimeUnit(x, time.unit)
     x <- check_spct(x)
-    #  setkey_spct(x, w.length)
     if (is.name(name)) {
       name <- as.character(name)
       assign(name, x, parent.frame(), inherits = TRUE)
@@ -1492,7 +1499,8 @@ setSourceSpct <-
   function(x,
            time.unit = "second",
            bswf.used = c("none", "unknown"),
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            multiple.wl = 1L,
            idfactor = NULL) {
     name <- substitute(x)
@@ -1501,7 +1509,6 @@ setSourceSpct <-
     setTimeUnit(x, time.unit)
     setBSWFUsed(x, bswf.used = bswf.used)
     x <- check_spct(x, strict.range = strict.range)
-    #  setkey_spct(x, w.length)
     if (is.name(name)) {
       name <- as.character(name)
       assign(name, x, parent.frame(), inherits = TRUE)
@@ -1522,7 +1529,6 @@ setChromaSpct <-
     setGenericSpct(x, multiple.wl = multiple.wl, idfactor = idfactor)
     class(x) <- c("chroma_spct", class(x))
     x <- check_spct(x)
-    #  setkey_spct(x, w.length)
     if (is.name(name)) {
       name <- as.character(name)
       assign(name, x, parent.frame(), inherits = TRUE)
@@ -1648,9 +1654,9 @@ class_spct <- function(x) {
 #'
 #' @param x any R object
 #'
-#' @return \code{is_tagged} returns a logical value, \code{TRUE} if its argument is a a spectrum that contains
-#'   tags and \code{FALSE} if it is an untagged spectrum, but returns \code{NA}
-#'   for any other R object.
+#' @return \code{is_tagged} returns a logical value, \code{TRUE} if its
+#'   argument is a a spectrum that contains tags and \code{FALSE} if it
+#'   is an untagged spectrum, but returns \code{NA} for any other R object.
 #'
 #' @export
 #'
@@ -1676,7 +1682,8 @@ is_tagged <- function(x) {
 #'
 #' @param x any R object
 #'
-#' @return \code{is_photon_based} returns a logical value, \code{TRUE} if its argument is a \code{source_spct}
+#' @return \code{is_photon_based} returns a logical value, \code{TRUE}
+#'   if its argument is a \code{source_spct}
 #'   or a \code{response_spct} object that contains photon base data and
 #'   \code{FALSE} otherwise, but returns \code{NA} for any other R object,
 #'   including those belonging other \code{generic_spct}-derived classes.
@@ -1706,7 +1713,8 @@ is_photon_based <- function(x) {
 
 #' @rdname is_photon_based
 #'
-#' @return \code{is_energy_based} returns a logical value, \code{TRUE} if its argument is a \code{source_spct}
+#' @return \code{is_energy_based} returns a logical value, \code{TRUE}
+#'   if its argument is a \code{source_spct}
 #'   or a \code{response_spct} object that contains energy base data and
 #'   \code{FALSE} otherwise, but returns \code{NA} for any other R object,
 #'   including those belonging other \code{generic_spct}-derived classes
@@ -1738,7 +1746,8 @@ is_energy_based <- function(x) {
 #'
 #' @param x an R object
 #'
-#' @return \code{is_absorbance_based} returns a logical value, \code{TRUE} if its argument is a \code{filter_spct}
+#' @return \code{is_absorbance_based} returns a logical value, \code{TRUE}
+#'   if its argument is a \code{filter_spct}
 #'   object that contains spectral absorbance data and \code{FALSE} otherwise,
 #'   but returns \code{NA} for any other R object, including those belonging
 #'   other \code{generic_spct}-derived classes.
@@ -1783,7 +1792,7 @@ is_absorptance_based <- function(x) {
   }
 }
 
-# is_transmittance_based ---------------------------------------------------------
+# is_transmittance_based -------------------------------------------------------
 
 #' @rdname is_absorbance_based
 #'
@@ -1856,7 +1865,8 @@ is_mass_based <- function(x) {
 #'
 #' @return x
 #' @note This function alters x itself by reference and in addition
-#'   returns x invisibly. If x is not a source_spct or response_spct object, x is not modified.
+#'   returns x invisibly. If x is not a source_spct or response_spct
+#'   object, x is not modified.
 #'   The behaviour of this function is 'unusual' in that the default for
 #'   parameter \code{time.unit} is used only if \code{x} does not already have
 #'   this attribute set. \code{time.unit = "hour"} is currently not fully
@@ -1869,43 +1879,48 @@ is_mass_based <- function(x) {
 #' setTimeUnit(my.spct, time.unit = "second")
 #' setTimeUnit(my.spct, time.unit = lubridate::duration(1, "seconds"))
 #'
-setTimeUnit <- function(x,
-                        time.unit = c("second", "hour", "day", "exposure", "none"),
-                        override.ok = FALSE) {
-  if (!(class(x)[1] %in%
-        c("source_spct", "summary_source_spct",
-          "response_spct", "response_spct",
-          "raw_spct", "cps_spct"))) {
-     return(invisible(x))
-  }
+setTimeUnit <-
+  function(x,
+           time.unit = c("second", "hour", "day", "exposure", "none"),
+           override.ok = FALSE) {
+    if (!(class(x)[1] %in%
+          c("source_spct", "summary_source_spct",
+            "response_spct", "response_spct",
+            "raw_spct", "cps_spct"))) {
+      return(invisible(x))
+    }
 
-  if (is.character(time.unit)) {
-    time.unit <- time.unit[1]
-  }
-  name <- substitute(x)
-  old.time.unit <- getTimeUnit(x)
-  override.ok <- ifelse(is.na(old.time.unit) ||
-                          (is.character(old.time.unit) && old.time.unit == "unknown"),
-                        TRUE, override.ok)
-  if (override.ok) {
     if (is.character(time.unit)) {
-      if (!(time.unit %in% c("second", "hour", "day", "none", "exposure", "unknown"))) {
-        warning("Unrecognized 'time.unit' argument ", time.unit, " set to 'unknown'.")
-        time.unit <- "unknown"
+      time.unit <- time.unit[1]
+    }
+    name <- substitute(x)
+    old.time.unit <- getTimeUnit(x)
+    override.ok <-
+      ifelse(is.na(old.time.unit) ||
+               (is.character(old.time.unit) && old.time.unit == "unknown"),
+             TRUE,
+             override.ok)
+    if (override.ok) {
+      if (is.character(time.unit)) {
+        if (!(time.unit %in%
+                c("second", "hour", "day", "none", "exposure", "unknown"))) {
+          warning("Unrecognized 'time.unit' argument ", time.unit,
+                  " set to 'unknown'.")
+          time.unit <- "unknown"
+        }
+      } else if (lubridate::is.duration(time.unit)) {
+        if (time.unit <= lubridate::duration(0, "seconds")) {
+          stop("When 'time.unit' is a duration, it must be > 0")
+        }
       }
-    } else if (lubridate::is.duration(time.unit)) {
-      if (time.unit <= lubridate::duration(0, "seconds")) {
-        stop("When 'time.unit' is a duration, it must be > 0")
+      attr(x, "time.unit") <- time.unit
+      if (is.name(name)) {
+        name <- as.character(name)
+        assign(name, x, parent.frame(), inherits = TRUE)
       }
     }
-    attr(x, "time.unit") <- time.unit
-    if (is.name(name)) {
-      name <- as.character(name)
-      assign(name, x, parent.frame(), inherits = TRUE)
-    }
+    invisible(x)
   }
-  invisible(x)
-}
 
 #' Get the "time.unit" attribute of an existing source_spct object
 #'
@@ -1929,9 +1944,9 @@ setTimeUnit <- function(x,
 getTimeUnit <- function(x,
                         force.duration = FALSE) {
   if (class(x)[1] %in%
-      c("source_spct", "summary_source_spct",
-        "response_spct", "response_spct",
-        "raw_spct", "cps_spct")) {
+       c("source_spct", "summary_source_spct",
+         "response_spct", "response_spct",
+         "raw_spct", "cps_spct")) {
     time.unit <- attr(x, "time.unit", exact = TRUE)
     # need to handle objects created with old versions
     if (!length(time.unit)) {
@@ -1940,7 +1955,8 @@ getTimeUnit <- function(x,
     if (is.character(time.unit)) {
       time.unit <- time.unit[[1]]
     }
-    # this is safe in case class attribute is lost, as duration is stored as seconds
+    # this is safe in case class attribute is lost, as duration is stored
+    # as seconds
     if (!lubridate::is.duration(time.unit) && is.numeric(time.unit)) {
       time.unit <- lubridate::duration(seconds = time.unit)
     }
@@ -1987,14 +2003,17 @@ getTimeUnit <- function(x,
 #'
 convertTimeUnit <- function(x, time.unit = NULL, ...) {
   if (!is.generic_spct(x)) {
-    warning("'convertTimeUnit()' mot applicable to class '", class(x)[1], "'. Skipping!")
+    warning("'convertTimeUnit()' mot applicable to class '", class(x)[1],
+            "'. Skipping!")
     return(invisible(x))
   }
   if (is.null(time.unit)) {
     # nothing to do
     return(invisible(x))
   }
-  columns <- intersect(names(x), c("s.e.irrad", "s.q.irrad", "s.e.response", "s.q.response") )
+  columns <-
+    intersect(names(x),
+              c("s.e.irrad", "s.q.irrad", "s.e.response", "s.q.response"))
   if (length(columns) == 0) {
     warning("No column to convert to new time unit.")
     return(invisible(x))
@@ -2032,23 +2051,20 @@ convertTimeUnit <- function(x, time.unit = NULL, ...) {
 checkTimeUnit <- function(x) {
   if (is.source_spct(x) || is.response_spct(x) || is.cps_spct(x)) {
     time.unit <- getTimeUnit(x)
-    ## Handled already in getTimeUnit()
-    # if (!length(time.unit)) {
-    #   setTimeUnit(x, "second")
-    #   warning("Missing attribute 'time.unit' set to 'second'")
-    # }
 
     if (is.character(time.unit)) {
-      if (!(time.unit %in% c("second", "minute", "hour", "day", "exposure", "none", "unknown"))) {
-        stop("'time.unit' ",  time.unit, " is unknown")
+      if (!(time.unit %in%
+            c("second", "minute", "hour", "day", "exposure",
+              "none", "unknown"))) {
+        stop("'time.unit' ",  time.unit, " not recognised")
       }
     } else if (lubridate::is.duration(time.unit)) {
       if (time.unit <= lubridate::duration(0, "seconds")) {
         stop("When 'time.unit' is a duration, it must be > 0")
       }
     } else {
-      stop("'time.unit' must be of class character or lubridate::duration, but found class '",
-           class(time.unit), "' instead.")
+      stop("'time.unit' must be of class character or lubridate::duration, ",
+           "but found class '", class(time.unit), "' instead.")
     }
   }
   invisible(x)
@@ -2121,7 +2137,8 @@ setResponseType <- function(x,
   }
   if (is.response_spct(x) || is.summary_response_spct(x)) {
     if  (!(response.type %in% c("response", "action", "unknown"))) {
-      warning("Invalid 'response.type' argument, only 'response' and 'action' supported.")
+      warning("Invalid 'response.type' argument, only 'response' and ",
+              "'action' supported.")
       return(x)
     }
     attr(x, "response.type") <- response.type
@@ -2173,7 +2190,8 @@ getResponseType <- function(x) {
 #' When the values stored in a \code{source_spct} object have been multiplied
 #' by those from a curve describing a certain response or effect, the
 #' attribute \code{"time.unit"} is set accordingly to track the transformation
-#' applied to the data. When a spectral response data have been directly measured,
+#' applied to the data. When a spectral response data have been directly
+#' measured,
 #' they should be stored in an object of class \code{response_spct} as they
 #' are expressed in actual response units, not
 #' of class \code{source_spct} expressed in irradiance units, even if weighted.
@@ -2182,8 +2200,8 @@ getResponseType <- function(x) {
 #' class \code{source_spct} should be used and the BSWF set in the metadata.
 #'
 #' This attribute is normally set by the function or operator used to apply
-#' the BSWF to spectral irradiance data, or set when the \code{source_spct} object
-#' is created.
+#' the BSWF to spectral irradiance data, or set when the \code{source_spct}
+#' object is created.
 #'
 #' @param x a source_spct object.
 #' @param bswf.used a character string, either \code{"none"} or the name of a
@@ -2191,8 +2209,10 @@ getResponseType <- function(x) {
 #'
 #' @return \code{x} or the \code{character} value stored in \code{x}.
 #'
-#' @note Function \code{setBSWFUsed()} alters \code{x} itself by reference and in addition
-#'   returns \code{x} invisibly. If \code{x} is not a \code{source_spct}, \code{x} is not modified.
+#' @note Function \code{setBSWFUsed()} alters \code{x} itself by reference
+#'   and in addition
+#'   returns \code{x} invisibly. If \code{x} is not a \code{source_spct},
+#'   \code{x} is not modified.
 #'   The behaviour of this function is 'unusual' in that the default for
 #'   parameter \code{bswf.used} is used only if \code{x} does not already have
 #'   this attribute set. Function \code{getBSWFUsed()} returns the value to
@@ -2218,7 +2238,8 @@ setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
   if (is.source_spct(x) || is.summary_source_spct(x)) {
     name <- substitute(x)
     if  (!(is.character(bswf.used))) {
-      warning("Only character strings are valid values for 'bswf.used' argument")
+      warning("Only character strings are valid values for ",
+              "'bswf.used' argument")
       bswf.used <- "unknown"
     }
     attr(x, "bswf.used") <- bswf.used
@@ -2268,9 +2289,11 @@ getBSWFUsed <- function(x) {
 #'
 #' \deqn{\tau = \frac{I_z}{I_0 - \rho}}
 #'
-#' where \eqn{T} is total transmittance and \eqn{\tau} is internal transmittance;
+#' where \eqn{T} is total transmittance and \eqn{\tau} is internal
+#' transmittance;
 #' \eqn{I_0} is the radiant power incident on an object and \eqn{I_z} is the
-#' radiant power at depth \eqn{z}, in most cases measured below the non-illuminated
+#' radiant power at depth \eqn{z}, in most cases measured below the
+#' non-illuminated
 #' side of the object, and \eqn{\rho} is the total reflectance at the
 #' illuminated surface.
 #'
@@ -2327,7 +2350,8 @@ getBSWFUsed <- function(x) {
 #' @param x a \code{filter_spct} or an \code{object_spct} object.
 #' @param Tfr.type character string, either \code{"total"} or \code{"internal"}.
 #'
-#' @return \code{x}, with the modified attribute in the case of \code{setTfrType()} or
+#' @return \code{x}, with the modified attribute in the case of
+#'   \code{setTfrType()} or
 #'   the \code{character} value, \code{"total"} or \code{internal}, stored in
 #'   the \code{"Tfr.type"} attribute of \code{x} in the case
 #'   of \code{getTfrType()}. If \code{x} is not a \code{filter_spct} or
@@ -2363,7 +2387,8 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
   if (is.filter_spct(x) || is.object_spct(x) ||
       is.summary_filter_spct(x) || is.summary_object_spct(x)) {
     if  (!(Tfr.type %in% c("total", "internal", "unknown"))) {
-      warning("Invalid 'Tfr.type' argument, only 'total' and 'internal' supported.")
+      warning("Invalid 'Tfr.type' argument, only 'total' and ",
+              "'internal' supported.")
       return(x)
     }
     attr(x, "Tfr.type") <- Tfr.type
@@ -2381,7 +2406,7 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
 #'
 getTfrType <- function(x) {
   if (is.filter_spct(x) || is.object_spct(x) ||
-      is.summary_filter_spct(x) || is.summary_object_spct(x)) {
+        is.summary_filter_spct(x) || is.summary_object_spct(x)) {
     Tfr.type <- attr(x, "Tfr.type", exact = TRUE)
     if (is.null(Tfr.type) || is.na(Tfr.type)) {
       # need to handle objects created with old versions
@@ -2414,8 +2439,8 @@ getTfrType <- function(x) {
 #'
 #' \deqn{\rho = \rho_s + \rho_d}
 #'
-#' where, \eqn{\rho} is total reflectance, and its components, \eqn{\rho_s}, specular
-#' reflectance, and \eqn{\rho_d}, diffuse or scattered reflectance.
+#' where, \eqn{\rho} is total reflectance, and its components, \eqn{\rho_s},
+#' specular reflectance, and \eqn{\rho_d}, diffuse or scattered reflectance.
 #' When strong scattering takes place, total reflectance can
 #' be much more than the specular component. In most cases \eqn{\rho_d} is
 #' not measured directly.
@@ -2434,7 +2459,8 @@ getTfrType <- function(x) {
 #' This attribute is normally set when the \code{source_spct} object
 #' is created.
 #'
-#' @return \code{x}, with the modified attribute in the case of \code{setRfrType()} or
+#' @return \code{x}, with the modified attribute in the case of
+#'   \code{setRfrType()} or
 #'   the \code{character} value, \code{"total"} or \code{"specular"}, stored
 #'   in the \code{"Rfr.type"} attribute of \code{x} in the case
 #'   of \code{getRfrType()}. If \code{x} is not a \code{reflector_spct} or
@@ -2457,7 +2483,7 @@ getTfrType <- function(x) {
 #' setRfrType(my.spct, "specular")
 #' getRfrType(my.spct)
 #'
-setRfrType <- function(x, Rfr.type=c("total", "specular")) {
+setRfrType <- function(x, Rfr.type = c("total", "specular")) {
   name <- substitute(x)
   if (length(Rfr.type) > 1) {
     if (getRfrType(x) != "unknown") {
@@ -2469,7 +2495,8 @@ setRfrType <- function(x, Rfr.type=c("total", "specular")) {
   if (is.reflector_spct(x) || is.object_spct(x) ||
       is.summary_reflector_spct(x) || is.summary_object_spct(x)) {
     if  (!(Rfr.type %in% c("total", "specular", "unknown"))) {
-      warning("Invalid 'Rfr.type' argument, only 'total' and 'internal' supported.")
+      warning("Invalid 'Rfr.type' argument, only 'total' and ",
+              "'internal' supported.")
       return(x)
     }
     attr(x, "Rfr.type") <- Rfr.type
@@ -2534,7 +2561,8 @@ setKType <- function(x,
   }
   if (is.solute_spct(x) || is.summary_solute_spct(x)) {
     if  (!(K.type %in% c("attenuation", "absorption", "scattering"))) {
-      warning("Invalid 'K.type' argument, only 'attenuation', 'absorption' and 'scattering' supported.")
+      warning("Invalid 'K.type' argument, only 'attenuation', ",
+              "'absorption' and 'scattering' supported.")
       return(x)
     }
     attr(x, "K.type") <- K.type
@@ -2554,8 +2582,8 @@ setKType <- function(x,
 #'
 #' @return character string
 #'
-#' @note If x is not a \code{solute_spct} or a \code{summary_solute_spct} object,
-#'   \code{NA} is returned.
+#' @note If x is not a \code{solute_spct} or a \code{summary_solute_spct}
+#'   object, \code{NA} is returned.
 #'
 #' @export
 #' @family K attribute functions
@@ -2741,7 +2769,8 @@ setMultipleWl <- function(x, multiple.wl = NULL) {
 getMultipleWl <- function(x) {
   if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     multiple.wl <- attr(x, "multiple.wl", exact = TRUE)
-    if (is.null(multiple.wl) || is.na(multiple.wl) || !is.numeric(multiple.wl)) {
+    if (is.null(multiple.wl) ||
+          is.na(multiple.wl) || !is.numeric(multiple.wl)) {
       # need to handle objects created with old versions
       multiple.wl <- 1
     }
@@ -2782,8 +2811,8 @@ multiple_wl <- getMultipleWl
 #' @return x
 #'
 #' @note This function alters x itself by reference and in addition
-#'   returns x invisibly. If x is not a generic_spct or an object of a class derived from
-#'   generic_spct, x is not modified.
+#'   returns x invisibly. If x is not a generic_spct or an object of a class
+#'   derived from generic_spct, x is not modified.
 #'
 #' @examples
 #' my.spct <- sun_evening.spct
@@ -2814,8 +2843,8 @@ setIdFactor <- function(x, idfactor) {
   old.idfactor <- getIdFactor(x)
   if (is.null(idfactor)) {
     attr(x, "idfactor") <- idfactor
-  } else if (!exists(idfactor, x, inherits = FALSE) &
-        !is.na(old.idfactor)) {
+  } else if (!exists(idfactor, x, inherits = FALSE) &&
+               !is.na(old.idfactor)) {
     colnames(x)[colnames(x) == old.idfactor] <- idfactor
     attr(x, "idfactor") <- idfactor
   } else if (exists(idfactor, x, inherits = FALSE)) {
@@ -2888,8 +2917,9 @@ id_factor <- getIdFactor
 #' existing filter_spct object.
 #'
 #' @param x a filter_spct object
-#' @param filter.properties,value a list with fields named \code{"Rfr.constant"},
-#'   \code{"thickness"} and \code{"attenuation.mode"}.
+#' @param filter.properties,value a list with fields named
+#'   \code{"Rfr.constant"}, \code{"thickness"} and
+#'   \code{"attenuation.mode"}.
 #' @param pass.null logical If TRUE, the parameters to the next three
 #'    parameters will be always ignored, otherwise they will be used to
 #'    build an object of class \code{"filter.properties"} when the argument
@@ -2991,8 +3021,10 @@ setFilterProperties <- function(x,
         filter.properties[["thickness"]][!is.na(filter.properties[["thickness"]]) &
                                            filter.properties[["thickness"]] <= 0] <- NA_real_
       }
-      # one could have a list with the properties of the stacked filters as an additional field
-      # but would require surgery of the code in several other places and careful thought
+      # one could have a list with the properties of the stacked filters as
+      # an additional field
+      # but would require surgery of the code in several other places and
+      # careful thought
       if (length(filter.properties[["thickness"]]) > 1L &&
           filter.properties[["attenuation.mode"]] != "stack") {
         filter.properties[["attenuation.mode"]] <- "stack"
@@ -3004,7 +3036,7 @@ setFilterProperties <- function(x,
        }
       if (!is.na(filter.properties[["attenuation.mode"]]) &&
                   !filter.properties[["attenuation.mode"]] %in%
-             valid.attenuation.modes) {
+            valid.attenuation.modes) {
         warning("Bad value(s) '",
                 filter.properties[["attenuation.mode"]],
                 "' for \"attenuation.mode\" set to NA")
@@ -3063,7 +3095,8 @@ setFilterProperties <- function(x,
 #' @examples
 #' filter_properties(polyester.spct)
 #'
-getFilterProperties <- function(x, return.null, ...) UseMethod("getFilterProperties")
+getFilterProperties <-
+  function(x, return.null, ...) UseMethod("getFilterProperties")
 
 #' @rdname getFilterProperties
 #'
@@ -3179,7 +3212,8 @@ convertThickness <- function(x, thickness = NULL) {
                    thickness = thickness))
   }
   if (!(is.filter_spct(x) || is.object_spct(x))) {
-    warning("'convertThickness()' not applicable to class '", class(x)[1], "'. Skipping!")
+    warning("'convertThickness()' not applicable to class '", class(x)[1],
+            "'. Skipping!")
     return(invisible(x))
   }
   if (is.null(thickness)) {
@@ -3248,8 +3282,8 @@ convertThickness <- function(x, thickness = NULL) {
 #'
 #' @details Internal transmittance, \eqn{\tau}, uses as reference the light
 #'   entering the object while total transmittance, \eqn{T}, takes the incident
-#'   light as reference. The
-#'   conversion is possible only if total reflectance, \eqn{\rho}, is known. Either as spectral
+#'   light as reference. The conversion is possible only if total reflectance,
+#'   \eqn{\rho}, is known. Either as spectral
 #'   data in an \code{object_spct} object, a \code{filter_spct} object that is
 #'   "under-the-hood" an \code{object_spct}, or if a fixed reflectance factor
 #'   applicable to all wavelengths is stored in the \code{filter.properties}
@@ -3268,10 +3302,12 @@ convertThickness <- function(x, thickness = NULL) {
 #'   necessary conversion from absorbance \code{A} or from \code{Afr} into
 #'   transmittance, must be done before calling \code{convertTfrType()}.
 #'
-#' @param x a \code{filter_spct}, \code{object_spct}, \code{filter_mspct} or \code{object_mspct} object.
+#' @param x a \code{filter_spct}, \code{object_spct}, \code{filter_mspct}
+#'   or \code{object_mspct} object.
 #' @param Tfr.type character One of \code{"internal"} or \code{"total"}.
 #'
-#' @return \code{x} if possible, with the value of the \code{"Tfr.type"} attribute
+#' @return \code{x} if possible, with the value of the \code{"Tfr.type"}
+#'   attribute
 #'   modified and the values stored in the \code{Tfr} variable converted to the
 #'   new quantity.
 #'
@@ -3288,14 +3324,16 @@ convertThickness <- function(x, thickness = NULL) {
 #' filter_properties(polyester.spct)
 #' convertTfrType(polyester.spct, Tfr.type = "internal")
 #'
-convertTfrType <- function(x, Tfr.type = NULL) {
+convertTfrType <- function(x,
+                           Tfr.type = NULL) {
   if (is.filter_mspct(x) || is.object_mspct(x)) {
     return(msmsply(mspct = x,
                    .fun =  convertTfrType,
                    Tfr.type = Tfr.type))
   }
   if (!(is.filter_spct(x) || is.object_spct(x))) {
-    warning("'convertTfrType()' mot applicable to class '", class(x)[1L], "'. Skipping!")
+    warning("'convertTfrType()' mot applicable to class '", class(x)[1L],
+            "'. Skipping!")
     return(invisible(x))
   }
 
@@ -3370,8 +3408,8 @@ convertTfrType <- function(x, Tfr.type = NULL) {
 #' existing \code{solute_spct} object.
 #'
 #' @param x solute_spct A spectrum of coefficients of attenuation.
-#' @param solute.properties,value a list with fields named \code{"mass"}, \code{"formula"},
-#'   \code{"structure"}, \code{"name"} and \code{"ID"}.
+#' @param solute.properties,value a list with fields named \code{"mass"},
+#'   \code{"formula"}, \code{"structure"}, \code{"name"} and \code{"ID"}.
 #' @param pass.null logical If \code{TRUE}, the parameters to the next three
 #'    parameters will be always ignored, otherwise they will be used to
 #'    build an object of class \code{"solute.properties"} when the argument to
@@ -3379,9 +3417,11 @@ convertTfrType <- function(x, Tfr.type = NULL) {
 #' @param mass numeric The mass in Dalton [\eqn{Da = g\,mol^{-1}}{Da = g/mol}].
 #' @param formula character The molecular formula.
 #' @param structure raster A bitmap of the structure.
-#' @param name,solvent.name character The name of the substance and the name of the solvent. A named character
+#' @param name,solvent.name character The name of the substance and the name of
+#'     the solvent. A named character
 #'     vector, with member names such as "IUPAC" for the authority.
-#' @param ID,solvent.ID character The names of the substance and of the solvent. A named character
+#' @param ID,solvent.ID character The names of the substance and of the solvent.
+#'     A named character
 #'     vector, with member names such as "ChemSpider" or "PubChen" for the
 #'     authority.
 #' @param verbose logical Flag to enable warning when applied to object of
@@ -3449,7 +3489,8 @@ setSoluteProperties <- function(x,
           c("solute_properties", class(solute.properties))
       } else {
         stopifnot(setequal(names(solute.properties),
-                           c("mass", "formula", "structure", "name", "ID", "solvent.name", "solvent.ID")))
+                           c("mass", "formula", "structure", "name", "ID",
+                             "solvent.name", "solvent.ID")))
         if (class(solute.properties)[1] != "solute_properties") {
           class(solute.properties) <-
             c("solute_properties", class(solute.properties))
@@ -3460,7 +3501,7 @@ setSoluteProperties <- function(x,
           as.numeric(solute.properties[["mass"]])
       }
       if (!is.na(solute.properties[["mass"]]) &&
-          solute.properties[["mass"]] <= 1) {
+            solute.properties[["mass"]] <= 1) {
         warning("Found 'mass' (Da = g/mol) <= 1 and set it to NA")
         solute.properties[["mass"]] <- NA_real_
       }
@@ -3526,7 +3567,9 @@ setSoluteProperties <- function(x,
 #' @examples
 #' solute_properties(water.spct)
 #'
-getSoluteProperties <- function(x, return.null, ...) UseMethod("getSoluteProperties")
+getSoluteProperties <- function(x,
+                                return.null,
+                                ...) UseMethod("getSoluteProperties")
 
 #' @rdname getSoluteProperties
 #'
@@ -3581,7 +3624,8 @@ getSoluteProperties.solute_spct <- function(x,
     }
   } else {
     stopifnot(setequal(names(solute.properties),
-                       c("mass", "formula", "structure", "name", "ID", "solvent.name", "solvent.ID")))
+                       c("mass", "formula", "structure", "name", "ID",
+                         "solvent.name", "solvent.ID")))
   }
   solute.properties
 }

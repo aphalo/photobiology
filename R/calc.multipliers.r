@@ -1,16 +1,5 @@
 .photobio.cache <- new.env()
 
-#globalVariables(".photobio.cache")
-
-# .onLoad <- function(libname, pkgname) {
-#   .photobio.cache <<- new.env(parent = emptyenv())
-# }
-
-#.onUnload <- function(libpath) {
-#  suppressWarnings(rm(.photobio.cache, envir = emptyenv()))
-#  rm(.photobio.cache)
-#}
-
 #' Spectral weights
 #'
 #' Calculate multipliers for selecting a range of wavelengths and optionally
@@ -20,19 +9,27 @@
 #'
 #' @param w.length numeric vector of wavelengths (nm).
 #' @param w.band waveband object.
-#' @param unit.out character A string: "photon" or "energy", default is "energy".
-#' @param unit.in character A string: "photon" or "energy", default is "energy".
+#' @param unit.out character One of "photon" or "energy", default is "energy".
+#' @param unit.in character One of "photon" or "energy", default is "energy".
 #' @param use.cached.mult logical Flag indicating whether multiplier values
 #'   should be cached between calls.
-#' @param fill numeric If \code{fill = NA} then values returned for wavelengths outside
-#'   the range of the waveband are set to \code{NA}.
+#' @param fill numeric If \code{fill = NA} then values returned for wavelengths
+#'   outside the range of the waveband are set to \code{NA}.
 #'
-#' @return a numeric vector of multipliers of the same length as \code{w.length}.
+#' @return a numeric vector of multipliers of the same length as
+#'   \code{w.length}.
 #'
 #' @export
 #' @examples
-#' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"))
-#' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"), use.cached.mult = TRUE)
+#' with(sun.data,
+#'      calc_multipliers(w.length = w.length,
+#'                       w.band = new_waveband(400,700),
+#'                       unit.out = "photon"))
+#' with(sun.data,
+#'      calc_multipliers(w.length = w.length,
+#'                       w.band = new_waveband(400,700),
+#'                       unit.out = "photon"),
+#'                       use.cached.mult = TRUE)
 #'
 #' @family low-level functions operating on numeric vectors.
 #'
@@ -49,7 +46,8 @@ calc_multipliers <-
       ourEnv <- .photobio.cache
       # search for cached multipliers
       cache.name <-
-        paste(w.band[["name"]], as.character(fill), unit.in, unit.out, sep = ".")
+        paste(w.band[["name"]], as.character(fill), unit.in, unit.out,
+              sep = ".")
       if (exists(cache.name, where = ourEnv)) {
         mult <- get(cache.name, envir = ourEnv)
         if (length(w.length) == length(mult)) {
@@ -72,19 +70,18 @@ calc_multipliers <-
         mult[inside.band] <- 1.0 / e2qmol_multipliers(w.length[inside.band])
       }
       if (!is.null(w.band[["weight"]]) &&
-          (w.band[["weight"]] == "BSWF" || w.band[["weight"]] == "SWF")) {
+            (w.band[["weight"]] == "BSWF" || w.band[["weight"]] == "SWF")) {
         mult[inside.band] <-
           mult[inside.band] * w.band[["SWF.e.fun"]](w.length[inside.band])
       }
-    }
-    else if (unit.out == "photon") {
+    } else if (unit.out == "photon") {
       if (unit.in == "photon") {
         mult[inside.band] <- 1.0
       } else if (unit.in == "energy") {
         mult[inside.band] <- e2qmol_multipliers(w.length[inside.band])
       }
       if (!is.null(w.band[["weight"]]) &&
-          (w.band[["weight"]] == "BSWF" || w.band[["weight"]] == "SWF")) {
+            (w.band[["weight"]] == "BSWF" || w.band[["weight"]] == "SWF")) {
         mult[inside.band] <-
           mult[inside.band] * w.band[["SWF.q.fun"]](w.length[inside.band])
       }

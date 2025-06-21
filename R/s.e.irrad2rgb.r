@@ -42,7 +42,9 @@
 #'
 #' @family low-level functions operating on numeric vectors.
 #'
-s_e_irrad2rgb <- function(w.length, s.e.irrad,
+s_e_irrad2rgb <-
+  function(w.length,
+           s.e.irrad,
            sens = photobiology::ciexyzCMF2.spct,
            color.name = NULL,
            check = TRUE) {
@@ -66,14 +68,20 @@ s_e_irrad2rgb <- function(w.length, s.e.irrad,
       }
     }
 
-    # if we have a spectrum we will expand and fill head and tail with zeros when needed
+    # if we have a spectrum we will expand and fill head and tail with
+    # zeros when needed
 
     if (!single_wl) {
       if ((max(w.length) <= low.limit) || (min(w.length) >= high.limit)) {
         return("black")
       }
-      sens[["s.e.irrad"]] <- interpolate_spectrum(w.length, s.e.irrad, sens[["w.length"]], fill = 0.0)
-      sens[["s.e.irrad.norm"]] <- with(sens, s.e.irrad / integrate_xy(w.length, s.e.irrad))
+      sens[["s.e.irrad"]] <-
+        interpolate_spectrum(w.length,
+                             s.e.irrad, sens[["w.length"]], 
+                             fill = 0.0)
+      sens[["s.e.irrad.norm"]] <-
+        with(sens,
+             s.e.irrad / integrate_xy(w.length, s.e.irrad))
 
       X <- with(sens, integrate_xy(w.length, s.e.irrad.norm * x))
       Y <- with(sens, integrate_xy(w.length, s.e.irrad.norm * y))
@@ -92,8 +100,6 @@ s_e_irrad2rgb <- function(w.length, s.e.irrad,
                      byrow = TRUE, nrow = 3)
 
     rgb1 <- xyzmat %*% as.matrix(XYZ)
-
-    # print(rgb1)
 
     # not all colours can be represented in the RGB space, so unrepresentable
     # colours are converted by brute force into representable colours

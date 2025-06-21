@@ -39,7 +39,7 @@ insert_hinges <- function(x, y, h) {
   # compute the new idx values after shift caused by insertions
   idxs.in <- findInterval(h, x)
   idxs.out <- idxs.in + 1:j
-  idxs.diff <- diff(c(0,idxs.in,k))
+  idxs.diff <- diff(c(0, idxs.in, k))
   idxs.map <- 1:k + rep(0:j, idxs.diff)
   # we use recycling to interpolate all values and insert them into the gaps
   if (is.numeric(y)) {
@@ -96,7 +96,7 @@ l_insert_hinges <- function(x, y, h) {
   # compute the new idx values after shift caused by insertions
   idxs.in <- findInterval(h, x)
   idxs.out <- idxs.in + 1:j
-  idxs.diff <- diff(c(0,idxs.in,k))
+  idxs.diff <- diff(c(0, idxs.in, k))
   idxs.map <- 1:k + rep(0:j, idxs.diff)
   # we use recycling to interpolate all values and insert them into the gaps
   if (is.numeric(y)) {
@@ -209,8 +209,8 @@ v_replace_hinges <- function(x, y, h) {
   if (is.numeric(y)) {
     y.out[h.idxs] <- y[h.idxs + 1] -
       (x[h.idxs + 1] - x[h.idxs - 1]) /
-      (x[h.idxs + 1] - x[h.idxs]) *
-      (y[h.idxs + 1] - y[h.idxs - 1])
+        (x[h.idxs + 1] - x[h.idxs]) *
+        (y[h.idxs + 1] - y[h.idxs - 1])
   } else if (length(unique(y)) == 1) {
     y.out[h.idxs] <- y[1]
   } else {
@@ -218,5 +218,3 @@ v_replace_hinges <- function(x, y, h) {
   }
   y.out
 }
-
-

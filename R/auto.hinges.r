@@ -13,8 +13,7 @@
 #'
 auto_hinges <- function(w.length,
                         step.limit = 0.25) {
-  # this uses average step.size because it is much "cheaper" to compute
-  ((w.length[length(w.length)] - w.length[1]) / length(w.length)) > (step.limit * 0.75)
-  # code earlier used searched the whole vector for the largest step
-  #  stepsize(w.length)[2] > step.limit
-}
+  # this uses average step.size because it is "cheap" to compute
+  ((w.length[length(w.length)] - w.length[1]) / length(w.length)) >
+    (step.limit * 0.75)
+ }

@@ -24,8 +24,8 @@ solute_properties(x) <- value
 \arguments{
 \item{x}{solute_spct A spectrum of coefficients of attenuation.}
 
-\item{solute.properties, value}{a list with fields named \code{"mass"}, \code{"formula"},
-\code{"structure"}, \code{"name"} and \code{"ID"}.}
+\item{solute.properties, value}{a list with fields named \code{"mass"},
+\code{"formula"}, \code{"structure"}, \code{"name"} and \code{"ID"}.}
 
 \item{pass.null}{logical If \code{TRUE}, the parameters to the next three
 parameters will be always ignored, otherwise they will be used to
@@ -38,10 +38,12 @@ build an object of class \code{"solute.properties"} when the argument to
 
 \item{structure}{raster A bitmap of the structure.}
 
-\item{name, solvent.name}{character The name of the substance and the name of the solvent. A named character
+\item{name, solvent.name}{character The name of the substance and the name of
+the solvent. A named character
 vector, with member names such as "IUPAC" for the authority.}
 
-\item{ID, solvent.ID}{character The names of the substance and of the solvent. A named character
+\item{ID, solvent.ID}{character The names of the substance and of the solvent.
+A named character
 vector, with member names such as "ChemSpider" or "PubChen" for the
 authority.}
 

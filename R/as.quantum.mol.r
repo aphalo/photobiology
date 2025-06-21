@@ -15,6 +15,6 @@
 #'
 #' @family low-level functions operating on numeric vectors.
 #'
-as_quantum_mol <- function(w.length, s.e.irrad){
-  return(s.e.irrad * e2qmol_multipliers(w.length))
+as_quantum_mol <- function(w.length, s.e.irrad) {
+  s.e.irrad * e2qmol_multipliers(w.length)
 }

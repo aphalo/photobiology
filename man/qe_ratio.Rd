@@ -50,8 +50,8 @@ qe_ratio(spct, w.band, scale.factor, wb.trim, use.cached.mult, use.hinges, ...)
 \item{wb.trim}{logical if TRUE wavebands crossing spectral data boundaries
 are trimmed, if FALSE, they are discarded.}
 
-\item{use.cached.mult}{logical Flag telling whether multiplier values should be
-cached between calls.}
+\item{use.cached.mult}{logical Flag telling whether multiplier values should
+be cached between calls.}
 
 \item{use.hinges}{logical Flag indicating whether to insert "hinges" into the
 spectral data before integration so as to reduce interpolation errors at
@@ -93,8 +93,8 @@ Computed values are ratios between photon irradiance and energy
   to parameter \code{quantity} they can be re-expressed as relative fractions
   or percentages. In the case of vector output, \code{names} attribute is set
   to the name of the corresponding waveband unless a named list is supplied
-  in which case the names of the list members are used, with "[q:e]" prepended.
-  Units [mol J-1].
+  in which case the names of the list members are used, with "[q:e]"
+  prepended. Units are [mol J-1].
 }
 \description{
 This function returns the photon to energy ratio for each waveband of a light

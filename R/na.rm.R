@@ -79,14 +79,15 @@ na.omit.generic_spct <- function(object,
     } else {
       for (col in data_cols) {
         # replace existing NA values with interpolated values
-        z[[col]] <- v_replace_hinges(z[["w.length"]], z[[col]], z[["w.length"]][rows_to_omit])
+        z[[col]] <- 
+          v_replace_hinges(x = z[["w.length"]],
+                           y = z[[col]], 
+                           h = z[["w.length"]][rows_to_omit])
       }
     }
   } else {
     # removes rows with NAs in data
- #   z <- dplyr::slice(.data = object, rows_to_keep)
     z <- object[rows_to_keep, ]
-#    z <- copy_attributes(object, z, copy.class = TRUE)
   }
   z <- copy_attributes(object, z)
   class(rows_to_omit) <- na.action
@@ -100,7 +101,10 @@ na.omit.generic_spct <- function(object,
 #'
 #' @export
 #'
-na.omit.source_spct <- function(object, na.action = "omit", fill = NULL, ...) {
+na.omit.source_spct <- function(object, 
+                                na.action = "omit",
+                                fill = NULL,
+                                ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -111,7 +115,10 @@ na.omit.source_spct <- function(object, na.action = "omit", fill = NULL, ...) {
 #'
 #' @export
 #'
-na.omit.response_spct <- function(object, na.action = "omit", fill = NULL, ...) {
+na.omit.response_spct <- function(object,
+                                  na.action = "omit",
+                                  fill = NULL,
+                                  ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -122,7 +129,10 @@ na.omit.response_spct <- function(object, na.action = "omit", fill = NULL, ...) 
 #'
 #' @export
 #'
-na.omit.filter_spct <- function(object, na.action = "omit", fill = NULL, ...) {
+na.omit.filter_spct <- function(object, 
+                                na.action = "omit",
+                                fill = NULL,
+                                ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -133,7 +143,10 @@ na.omit.filter_spct <- function(object, na.action = "omit", fill = NULL, ...) {
 #'
 #' @export
 #'
-na.omit.reflector_spct <- function(object, na.action = "omit", fill = NULL, ...) {
+na.omit.reflector_spct <- function(object,
+                                   na.action = "omit",
+                                   fill = NULL,
+                                   ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -144,7 +157,10 @@ na.omit.reflector_spct <- function(object, na.action = "omit", fill = NULL, ...)
 #'
 #' @export
 #'
-na.omit.object_spct <- function(object, na.action = "omit", fill = NULL, ...) {
+na.omit.object_spct <- function(object, 
+                                na.action = "omit",
+                                fill = NULL,
+                                ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -155,7 +171,10 @@ na.omit.object_spct <- function(object, na.action = "omit", fill = NULL, ...) {
 #'
 #' @export
 #'
-na.omit.solute_spct <- function(object, na.action = "omit", fill = NULL, ...) {
+na.omit.solute_spct <- function(object,
+                                na.action = "omit",
+                                fill = NULL,
+                                ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -166,7 +185,10 @@ na.omit.solute_spct <- function(object, na.action = "omit", fill = NULL, ...) {
 #'
 #' @export
 #'
-na.omit.cps_spct <- function(object, na.action = "omit", fill = NULL, ...) {
+na.omit.cps_spct <- function(object,
+                             na.action = "omit",
+                             fill = NULL,
+                             ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -177,7 +199,10 @@ na.omit.cps_spct <- function(object, na.action = "omit", fill = NULL, ...) {
 #'
 #' @export
 #'
-na.omit.raw_spct <- function(object, na.action = "omit", fill = NULL, ...) {
+na.omit.raw_spct <- function(object,
+                             na.action = "omit",
+                             fill = NULL,
+                             ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -188,7 +213,10 @@ na.omit.raw_spct <- function(object, na.action = "omit", fill = NULL, ...) {
 #'
 #' @export
 #'
-na.omit.chroma_spct <- function(object, na.action = "omit", fill = NULL, ...) {
+na.omit.chroma_spct <- function(object,
+                                na.action = "omit",
+                                fill = NULL,
+                                ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -199,7 +227,10 @@ na.omit.chroma_spct <- function(object, na.action = "omit", fill = NULL, ...) {
 #'
 #' @export
 #'
-na.omit.generic_mspct <- function(object, na.action = "omit", fill = NULL, ...) {
+na.omit.generic_mspct <- function(object,
+                                  na.action = "omit",
+                                  fill = NULL,
+                                  ...) {
   msmsply(object, na.omit, na.action = na.action, fill = fill, ...)
 }
 
@@ -209,7 +240,11 @@ na.omit.generic_mspct <- function(object, na.action = "omit", fill = NULL, ...) 
 #'
 #' @export
 #'
-na.exclude.generic_spct <- function(object, na.action = "exclude", fill = NULL, target.colnames, ...) {
+na.exclude.generic_spct <- function(object,
+                                    na.action = "exclude",
+                                    fill = NULL,
+                                    target.colnames,
+                                    ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -220,7 +255,10 @@ na.exclude.generic_spct <- function(object, na.action = "exclude", fill = NULL, 
 #'
 #' @export
 #'
-na.exclude.source_spct <- function(object, na.action = "exclude", fill = NULL, ...) {
+na.exclude.source_spct <- function(object,
+                                   na.action = "exclude",
+                                   fill = NULL,
+                                   ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -231,7 +269,10 @@ na.exclude.source_spct <- function(object, na.action = "exclude", fill = NULL, .
 #'
 #' @export
 #'
-na.exclude.response_spct <- function(object, na.action = "exclude", fill = NULL, ...) {
+na.exclude.response_spct <- function(object,
+                                     na.action = "exclude",
+                                     fill = NULL,
+                                     ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -242,7 +283,10 @@ na.exclude.response_spct <- function(object, na.action = "exclude", fill = NULL,
 #'
 #' @export
 #'
-na.exclude.filter_spct <- function(object, na.action = "exclude", fill = NULL, ...) {
+na.exclude.filter_spct <- function(object,
+                                   na.action = "exclude",
+                                   fill = NULL,
+                                   ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -253,7 +297,10 @@ na.exclude.filter_spct <- function(object, na.action = "exclude", fill = NULL, .
 #'
 #' @export
 #'
-na.exclude.reflector_spct <- function(object, na.action = "exclude", fill = NULL, ...) {
+na.exclude.reflector_spct <- function(object,
+                                      na.action = "exclude",
+                                      fill = NULL,
+                                      ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -264,7 +311,10 @@ na.exclude.reflector_spct <- function(object, na.action = "exclude", fill = NULL
 #'
 #' @export
 #'
-na.exclude.object_spct <- function(object, na.action = "exclude", fill = NULL, ...) {
+na.exclude.object_spct <- function(object,
+                                   na.action = "exclude",
+                                   fill = NULL,
+                                   ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -275,7 +325,10 @@ na.exclude.object_spct <- function(object, na.action = "exclude", fill = NULL, .
 #'
 #' @export
 #'
-na.exclude.solute_spct <- function(object, na.action = "exclude", fill = NULL, ...) {
+na.exclude.solute_spct <- function(object,
+                                   na.action = "exclude",
+                                   fill = NULL,
+                                   ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -286,7 +339,10 @@ na.exclude.solute_spct <- function(object, na.action = "exclude", fill = NULL, .
 #'
 #' @export
 #'
-na.exclude.cps_spct <- function(object, na.action = "exclude", fill = NULL, ...) {
+na.exclude.cps_spct <- function(object,
+                                na.action = "exclude",
+                                fill = NULL,
+                                ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -297,7 +353,10 @@ na.exclude.cps_spct <- function(object, na.action = "exclude", fill = NULL, ...)
 #'
 #' @export
 #'
-na.exclude.raw_spct <- function(object, na.action = "exclude", fill = NULL, ...) {
+na.exclude.raw_spct <- function(object,
+                                na.action = "exclude",
+                                fill = NULL,
+                                ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -308,7 +367,10 @@ na.exclude.raw_spct <- function(object, na.action = "exclude", fill = NULL, ...)
 #'
 #' @export
 #'
-na.exclude.chroma_spct <- function(object, na.action = "exclude", fill = NULL, ...) {
+na.exclude.chroma_spct <- function(object,
+                                   na.action = "exclude",
+                                   fill = NULL,
+                                   ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
@@ -319,7 +381,9 @@ na.exclude.chroma_spct <- function(object, na.action = "exclude", fill = NULL, .
 #'
 #' @export
 #'
-na.exclude.generic_mspct <- function(object, na.action = "exclude", fill = NULL, ...) {
+na.exclude.generic_mspct <- function(object,
+                                     na.action = "exclude",
+                                     fill = NULL,
+                                     ...) {
   msmsply(object, na.exclude, na.action = na.action, fill = fill, ...)
 }
-

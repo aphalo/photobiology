@@ -84,7 +84,8 @@ the boundaries of the wavebands.}
 \code{"short"} or \code{"none"}. Used to select the type of names to assign
 to returned value.}
 
-\item{attr2tb}{character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.}
+\item{attr2tb}{character vector, see \code{\link{add_attr2tb}} for the syntax
+for \code{attr2tb} passed as is to formal parameter \code{col.names}.}
 
 \item{idx}{character Name of the column with the names of the members of the
 collection of spectra.}

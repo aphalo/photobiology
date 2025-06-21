@@ -25,8 +25,8 @@ which attributes are to be extracted and retained.}
 
 \item{...}{currently ignored}
 
-\item{target.attributes}{character vector Names of attributes to be subset using
-\code{which}.}
+\item{target.attributes}{character vector Names of attributes to be
+subset using \code{which}.}
 }
 \value{
 Named \code{list} of attribute values.

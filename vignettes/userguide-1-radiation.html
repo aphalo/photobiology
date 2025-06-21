@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2025-06-09" />
+<meta name="date" content="2025-06-21" />
 
 <title>User Guide: 1 Radiation</title>
 
@@ -341,7 +341,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1 class="title toc-ignore">User Guide: 1 Radiation</h1>
 <h3 class="subtitle">Package ‘photobiology’ 0.13.0.9000</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2025-06-09</h4>
+<h4 class="date">2025-06-21</h4>
 
 
 <div id="TOC">
@@ -467,9 +467,11 @@ as seen by humans</a>
 
 <div id="radiation-astronomy-and-atmosphere" class="section level2">
 <h2>Radiation, astronomy and atmosphere</h2>
-<p>The User Guide is divided into two volumes: <em>1. Radiation</em> and
-<em>2. Astronomy</em>. The second volume also describes functions
-related to water vapour in the atmosphere.</p>
+<p>The User Guide was earlier divided into two parts: <em>1.
+Radiation</em> and <em>2. Astronomy</em>. The astronomy related
+functions and the <a href="https://docs.r4photobiology.info/SunCalcMeeus/articles/userguide-1-astronomy.html">former
+part 2 of this User Guide</a> are now in package ‘SunCalcMeeus’. This
+User Guide is the updated version of former part 1.</p>
 </div>
 <div id="naming-conventions" class="section level2">
 <h2>Naming conventions</h2>
@@ -8230,25 +8232,18 @@ vectors as first argument.</p>
 <h4>Collections of spectra</h4>
 <p>The methods are also implemented for collections of spectra.</p>
 <div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb478-1"><a href="#cb478-1" tabindex="-1"></a><span class="fu">msmsply</span>(filters.mspct, peaks, <span class="at">span =</span> <span class="dv">21</span>)</span></code></pre></div>
-<pre><code>## Warning in check_wl_stepsize(x = x, span = span): &#39;peaks()&#39; assumes consistent
-## w.length steps! max step / min step = 4898</code></pre>
+<pre><code>## &#39;peaks()&#39; assumes consistent w.length steps! max step / min step = 4898</code></pre>
 <pre><code>## Object: filter_mspct [3 x 1]
 ## --- Member: none ---
-## Object: filter_spct [4 x 2]
-## Wavelength range 100-5000 nm, step 1-4898 nm 
+## Object: filter_spct [0 x 2]
 ## Label: theoretical fully transparent object 
 ## Rfr (/1): 0.000, thickness (mm): 1.000e+03, attenuation mode: absorption.
 ## Variables:
 ##  w.length: Wavelength [nm]
 ##  Tfr: Internal spectral transmittance [/1] 
 ## --
-## # A tibble: 4 × 2
-##   w.length   Tfr
-##      &lt;dbl&gt; &lt;dbl&gt;
-## 1      100     1
-## 2      101     1
-## 3     4999     1
-## 4     5000     1
+## # A tibble: 0 × 2
+## # ℹ 2 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;
 ## --- Member: pet ---
 ## Object: filter_spct [38 x 2]
 ## Wavelength range 267-740 nm, step 1-162 nm 

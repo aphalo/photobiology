@@ -35,12 +35,13 @@ FEL_spectrum <- function(w.length,
   }
   s.e.irrad <- numeric(length(w.length))
   for (i in indexes) {
-    s.e.irrad[i] <- sum((k[["kb"]] * w.length[i]^pws) * k[["kc"]] /
-                          ((w.length[i] * 1e-9)^5 * (exp(0.014388 / (w.length[i] * 1e-9) / k[["TK"]]) - 1)))
+    s.e.irrad[i] <-
+      sum((k[["kb"]] * w.length[i]^pws) * k[["kc"]] /
+            ((w.length[i] * 1e-9)^5 *
+               (exp(0.014388 / (w.length[i] * 1e-9) / k[["TK"]]) - 1)))
   }
   s.e.irrad[fill.selector] <- fill
   out.data <- source_spct(w.length, s.e.irrad)
   comment(out.data) <- paste("Fitted spectrum for:", comment(k))
   return(out.data * 1e4)
 }
-

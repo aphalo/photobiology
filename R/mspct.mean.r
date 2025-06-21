@@ -13,9 +13,9 @@
 #'   is nor fulfilled.
 #'
 #' @param x An R object.
-#' @param trim	numeric The fraction (0 to 0.5) of observations to be trimmed from
-#'   each end of x before the mean is computed. Values of trim outside that
-#'   range are taken as the nearest endpoint.
+#' @param trim	numeric The fraction (0 to 0.5) of observations to be trimmed
+#'   from each end of x before the mean is computed. Values of trim outside 
+#'   that range are taken as the nearest endpoint.
 #' @param na.rm	logical A value indicating whether NA values should be stripped
 #'   before the computation proceeds.
 #' @param ...	Further arguments passed to or from other methods.
@@ -48,7 +48,8 @@ s_mean <- function(x, trim, na.rm, ...) UseMethod("s_mean")
 #' @export
 #'
 s_mean.default <- function(x, trim = 0, na.rm = FALSE, ...) {
-  warning("Metod 's_mean()' not implementd for objects of class ", class(x)[1], ".")
+  warning("Metod 's_mean()' not implementd for objects of class ",
+          class(x)[1], ".")
   ifelse(is.any_mspct(x), do.call(class(x[[1]])[1], args = list()), NA)
 }
 
@@ -69,7 +70,11 @@ s_mean.generic_spct <- function(x, trim = 0, na.rm = FALSE, ...) {
 #' @export
 #'
 s_mean.source_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
-  rowwise_source(x, .fun = base::mean, trim = trim, na.rm = na.rm, .fun.name = "Mean of")
+  rowwise_source(x, 
+                 .fun = base::mean,
+                 trim = trim,
+                 na.rm = na.rm,
+                 .fun.name = "Mean of")
 }
 
 #' @describeIn s_mean
@@ -77,7 +82,11 @@ s_mean.source_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
 #' @export
 #'
 s_mean.response_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
-  rowwise_response(x, .fun = base::mean, trim = trim, na.rm = na.rm, .fun.name = "Mean of")
+  rowwise_response(x, 
+                   .fun = base::mean,
+                   trim = trim,
+                   na.rm = na.rm, 
+                   .fun.name = "Mean of")
 }
 
 #' @describeIn s_mean
@@ -85,7 +94,11 @@ s_mean.response_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
 #' @export
 #'
 s_mean.filter_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
-  rowwise_filter(x, .fun = base::mean, trim = trim, na.rm = na.rm, .fun.name = "Mean of")
+  rowwise_filter(x, 
+                 .fun = base::mean,
+                 trim = trim,
+                 na.rm = na.rm,
+                 .fun.name = "Mean of")
 }
 
 #' @describeIn s_mean
@@ -93,7 +106,11 @@ s_mean.filter_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
 #' @export
 #'
 s_mean.reflector_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
-  rowwise_reflector(x, .fun = base::mean, trim = trim, na.rm = na.rm, .fun.name = "Mean of")
+  rowwise_reflector(x, 
+                    .fun = base::mean,
+                    trim = trim,
+                    na.rm = na.rm,
+                    .fun.name = "Mean of")
 }
 
 #' @describeIn s_mean
@@ -101,7 +118,11 @@ s_mean.reflector_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
 #' @export
 #'
 s_mean.calibration_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
-  rowwise_calibration(x, .fun = base::mean, trim = trim, na.rm = na.rm, .fun.name = "Mean of")
+  rowwise_calibration(x,
+                      .fun = base::mean,
+                      trim = trim,
+                      na.rm = na.rm,
+                      .fun.name = "Mean of")
 }
 
 #' @describeIn s_mean
@@ -109,7 +130,11 @@ s_mean.calibration_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
 #' @export
 #'
 s_mean.cps_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
-  rowwise_cps(x, .fun = base::mean, trim = trim, na.rm = na.rm, .fun.name = "Mean of")
+  rowwise_cps(x,
+              .fun = base::mean,
+              trim = trim,
+              na.rm = na.rm,
+              .fun.name = "Mean of")
 }
 
 #' @describeIn s_mean
@@ -117,5 +142,9 @@ s_mean.cps_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
 #' @export
 #'
 s_mean.raw_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
-  rowwise_raw(x, .fun = base::mean, trim = trim, na.rm = na.rm, .fun.name = "Mean of")
+  rowwise_raw(x,
+              .fun = base::mean,
+              trim = trim,
+              na.rm = na.rm,
+              .fun.name = "Mean of")
 }

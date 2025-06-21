@@ -7,12 +7,14 @@
 convertTfrType(x, Tfr.type = NULL)
 }
 \arguments{
-\item{x}{a \code{filter_spct}, \code{object_spct}, \code{filter_mspct} or \code{object_mspct} object.}
+\item{x}{a \code{filter_spct}, \code{object_spct}, \code{filter_mspct}
+or \code{object_mspct} object.}
 
 \item{Tfr.type}{character One of \code{"internal"} or \code{"total"}.}
 }
 \value{
-\code{x} if possible, with the value of the \code{"Tfr.type"} attribute
+\code{x} if possible, with the value of the \code{"Tfr.type"}
+  attribute
   modified and the values stored in the \code{Tfr} variable converted to the
   new quantity.
 }
@@ -23,8 +25,8 @@ the spectral data to correspond to the new type.
 \details{
 Internal transmittance, \eqn{\tau}, uses as reference the light
   entering the object while total transmittance, \eqn{T}, takes the incident
-  light as reference. The
-  conversion is possible only if total reflectance, \eqn{\rho}, is known. Either as spectral
+  light as reference. The conversion is possible only if total reflectance,
+  \eqn{\rho}, is known. Either as spectral
   data in an \code{object_spct} object, a \code{filter_spct} object that is
   "under-the-hood" an \code{object_spct}, or if a fixed reflectance factor
   applicable to all wavelengths is stored in the \code{filter.properties}

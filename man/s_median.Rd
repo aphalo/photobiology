@@ -55,8 +55,8 @@ collection of spectra or of a spectral object containing multiple spectra in
 long form.
 }
 \details{
-Method specializations compute the median at each wavelength across a
-  group of spectra stored in an object of one of the classes defined in
+Method specializations compute the median at each wavelength across
+  a group of spectra stored in an object of one of the classes defined in
   package 'photobiology'. Omission of NAs is done
   separately at each wavelength. Interpolation is not applied, so all spectra
   in \code{x} must share the same set of wavelengths. An error is triggered

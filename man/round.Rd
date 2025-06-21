@@ -37,13 +37,13 @@ containing the largest integers not greater than the corresponding elements
 of x. \\
 \code{trunc} takes a single numeric argument x and returns a numeric vector
 containing the integers formed by truncating the values in x toward 0. \\
-\code{round} rounds the values in its first argument to the specified number of
-decimal places (default 0). \\
-\code{signif} rounds the values in its first argument to the specified number of
-significant digits. \\
+\code{round} rounds the values in its first argument to the specified number
+of decimal places (default 0). \\
+\code{signif} rounds the values in its first argument to the specified number
+of significant digits. \\
 The functions are applied to the spectral data, not the wavelengths. The
-quantity in the spectrum to which the function is applied depends on the class
-of \code{x} and the current value of output options.
+quantity in the spectrum to which the function is applied depends on the
+class of \code{x} and the current value of output options.
 }
 \seealso{
 Other math operators and functions: 

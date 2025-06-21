@@ -25,16 +25,17 @@ argument pased to \code{unit.in}.}
 
 \item{w.band.num}{waveband object used to compute the numerator of the ratio.}
 
-\item{w.band.denom}{waveband object used to compute the denominator of the ratio.}
+\item{w.band.denom}{waveband object used to compute the denominator of the
+ratio.}
 
 \item{unit.in}{character Allowed values \code{"energy"}, and \code{"photon"},
 or its alias \code{"quantum"}.}
 
-\item{check.spectrum}{logical Flag telling whether to sanity check input data,
-default is TRUE.}
+\item{check.spectrum}{logical Flag telling whether to sanity check input
+data, default is TRUE.}
 
-\item{use.cached.mult}{logical Flag telling whether multiplier values should be
-cached between calls.}
+\item{use.cached.mult}{logical Flag telling whether multiplier values should
+be cached between calls.}
 
 \item{use.hinges}{logical Flag indicating whether to insert "hinges" into the
 spectral data before integration so as to reduce interpolation errors at
@@ -53,7 +54,8 @@ The default for both \code{w.band} parameters is a waveband covering
 }
 \examples{
 with(sun.data,
-     photon_ratio(w.length, s.e.irrad, new_waveband(400,500), new_waveband(400,700)))
+     photon_ratio(w.length,
+                  s.e.irrad, new_waveband(400,500), new_waveband(400,700)))
 
 }
 \seealso{

@@ -27,23 +27,29 @@
 #' @export
 #' @examples
 #' # photons:energy ratio
-#' with(sun.data, photons_energy_ratio(w.length, s.e.irrad, new_waveband(400,500)))
+#' with(sun.data,
+#'      photons_energy_ratio(w.length, s.e.irrad, new_waveband(400,500)))
 #' # photons:energy ratio for whole spectrum
 #' with(sun.data, photons_energy_ratio(w.length, s.e.irrad))
 #'
 #' @family low-level functions operating on numeric vectors.
 #'
 photons_energy_ratio <-
-  function(w.length, s.irrad,
+  function(w.length,
+           s.irrad,
            w.band = NULL,
            unit.in = "energy",
            check.spectrum = TRUE,
            use.cached.mult = FALSE,
-           use.hinges = getOption("photobiology.use.hinges", default = NULL) ){
-    return(waveband_ratio(w.length, s.irrad, w.band, w.band,
-                          unit.out.num = "photon", unit.out.denom = "energy",
-                          unit.in = unit.in,
-                          check.spectrum = check.spectrum,
-                          use.cached.mult = use.cached.mult,
-                          use.hinges = use.hinges))
+           use.hinges = getOption("photobiology.use.hinges", default = NULL)) {
+    waveband_ratio(w.length = w.length,
+                   s.irrad = s.irrad,
+                   w.band.num = w.band,
+                   w.band.denom = w.band,
+                   unit.out.num = "photon",
+                   unit.out.denom = "energy",
+                   unit.in = unit.in,
+                   check.spectrum = check.spectrum,
+                   use.cached.mult = use.cached.mult,
+                   use.hinges = use.hinges)
   }

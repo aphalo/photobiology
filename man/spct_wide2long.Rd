@@ -34,10 +34,10 @@ An object of the same class as \code{spct} or a \code{data.frame}
 Convert spectrum from wide to long form
 }
 \details{
-Only objects of classes raw_spct, cps_spct, and object_spct normally contain
-multiple columns of spectral data. These are supported as well as
-generic_spct. Is the wide spectra contain multiple spectra in long form,
-the original \code{idfactor} is preserved.
+Only objects of classes raw_spct, cps_spct, and object_spct
+normally contain multiple columns of spectral data. These are supported
+as well as generic_spct. Is the wide spectra contain multiple spectra
+in long form, the original \code{idfactor} is preserved.
 
 Spectra that are already in long form, if passed as argument, are returned
 unchanged.

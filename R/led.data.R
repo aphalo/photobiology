@@ -1,4 +1,4 @@
-#' @title White led bulb spectrum
+#' White led bulb spectrum
 #'
 #' @description Datasets containing wavelengths and the
 #'   corresponding spectral irradiance data for an Osram warm white led lamp,
@@ -15,7 +15,8 @@
 #'
 #' or
 #'
-#' \itemize{ \item w.length (nm), range 188 to 1117 nm. \item counts_1 \item counts_2 \item counts_3 }
+#' \itemize{ \item w.length (nm), range 188 to 1117 nm.
+#'           \item counts_1 \item counts_2 \item counts_3 }
 #'
 #' @docType data
 #' @keywords datasets

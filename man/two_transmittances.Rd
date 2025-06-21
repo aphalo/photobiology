@@ -42,6 +42,11 @@ Internal function that computes the two transmittances needed to compute
 various waveband ratios and fractions.
 }
 \details{
-See \code{\link{transmittance}} for details on the transmittance calculations.
+# This function is extremely simple but ensures consistency and
+  avoids repetition. It is used to define ratios, fractions and NDIs.
+}
+\seealso{
+See \code{\link{transmittance}} for details on the transmittance
+  calculations.
 }
 \keyword{internal}

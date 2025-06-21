@@ -41,10 +41,10 @@ As the search for peaks uses a window based on a fixed number of
 
   The typical case when the step can vary strongly are spectra returned by
   \code{thin_wl()}. As when using default arguments, including
-  \code{span = 21}, \code{thin_wl()} retains the original local maxima and global maximum,
-  and a reasonably narrow wavelength maximum step a call to \code{peaks} with
-  \code{span = NULL} or \code{span = 5} \emph{tends} to discover the original
-  peaks missing at most a few.
+  \code{span = 21}, \code{thin_wl()} retains the original local maxima and
+  global maximum, and a reasonably narrow wavelength maximum step a call
+  to \code{peaks} with \code{span = NULL} or \code{span = 5} \emph{tends}
+  to discover the original peaks missing at most a few.
 }
 \examples{
 

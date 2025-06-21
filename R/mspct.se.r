@@ -1,8 +1,8 @@
 #' Standard Error of a collection of spectra
 #'
-#' Method to compute the "parallel" standard error of the mean across members of a
-#' collection of spectra or of a spectral object containing multiple spectra in
-#' long form.
+#' Method to compute the "parallel" standard error of the mean across members of
+#' a collection of spectra or of a spectral object containing multiple spectra
+#' in long form.
 #'
 #' @details Method specializations compute the standard error of the mean at
 #'   each wavelength across a group of spectra stored in an object of one of the

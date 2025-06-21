@@ -49,7 +49,7 @@ pull_sample <- function(x, size, ...) {
 #'
 pull_sample.default <- function(x, size, ...) {
   warning("'pull_sample' is not defined for objects of class ", class(x)[1])
-  return(generic_mspct())
+  generic_mspct()
 }
 
 #' @describeIn pull_sample Specialization for generic_spct
@@ -108,12 +108,12 @@ pull_sample.generic_spct <- function(x,
 #' @export
 #'
 pull_sample.generic_mspct <- function(x,
-                                     size = 1,
-                                     replace = FALSE,
-                                     recursive = FALSE,
-                                     keep.order = TRUE,
-                                     simplify = FALSE,
-                                     ...) {
+                                      size = 1,
+                                      replace = FALSE,
+                                      recursive = FALSE,
+                                      keep.order = TRUE,
+                                      simplify = FALSE,
+                                      ...) {
   if (length(x) <= size) {
     # nothing to do
     return(x)

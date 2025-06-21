@@ -1,6 +1,7 @@
 #' @rdname julian_day
 #'
-calendar_change <- lubridate::ymd_hms("1582-10-14 22:20:11 UTC") # Julian -> Gregorian
+calendar_change <-
+  lubridate::ymd_hms("1582-10-14 22:20:11 UTC") # Julian -> Gregorian
 
 # All functions defined in this file are "internal" and not exported
 # They are organized as very small functions to allow reuse of the results of
@@ -76,7 +77,7 @@ eccent_earth_orbit <- function(x) {
 #'
 sun_eq_of_ctr <- function(x, anom) {
   anom.rad <- anom / 180 * pi
-  sin(anom.rad) * (1.914602 - x * (0.004817 + 0.000014 * x )) +
+  sin(anom.rad) * (1.914602 - x * (0.004817 + 0.000014 * x)) +
     sin(2 * anom.rad) * (0.019993 - 0.000101 * x) +
     sin(3 * anom.rad) * 0.000289
 }

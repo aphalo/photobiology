@@ -104,7 +104,7 @@ q_ratio.default <- function(spct,
                             use.hinges,
                             ...) {
   warning("'q_ratio' is not defined for objects of class ", class(spct)[1])
-  return(NA)
+  NA_real_
 }
 
 #' @describeIn q_ratio Method for \code{source_spct} objects
@@ -122,7 +122,7 @@ q_ratio.source_spct <-
            quantity = "total",
            naming = "short",
            name.tag = NULL,
-           ... ) {
+           ...) {
 
     # we look for multiple spectra in long form
     if (getMultipleWl(spct) > 1) {
@@ -166,7 +166,8 @@ q_ratio.source_spct <-
     q.irrad.num <- irrads[["irrad.num"]]
     q.irrad.denom <- irrads[["irrad.denom"]]
     ratio <- q.irrad.num / q.irrad.denom * scale.factor
-    names(ratio) <- paste(names(q.irrad.num), ":", names(q.irrad.denom), name.tag, sep = "")
+    names(ratio) <-
+      paste(names(q.irrad.num), ":", names(q.irrad.denom), name.tag, sep = "")
     attr(ratio, "time.unit") <- NULL
     if (quantity == "total") {
       attr(ratio, "radiation.unit") <- "q:q ratio"
@@ -255,8 +256,8 @@ q_ratio.source_mspct <-
 #'   \code{w.band}. Numeric multiplier applied to returned values.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
-#' @param use.cached.mult logical Flag telling whether multiplier values should be
-#'   cached between calls.
+#' @param use.cached.mult logical Flag telling whether multiplier values should
+#'   be cached between calls.
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
@@ -362,7 +363,7 @@ e_ratio.source_spct <-
            quantity = "total",
            naming = "short",
            name.tag = NULL,
-            ...) {
+           ...) {
 
     # we look for multiple spectra in long form
     if (getMultipleWl(spct) > 1) {
@@ -406,7 +407,8 @@ e_ratio.source_spct <-
     e.irrad.num <- irrads[["irrad.num"]]
     e.irrad.denom <- irrads[["irrad.denom"]]
     ratio <- e.irrad.num / e.irrad.denom * scale.factor
-    names(ratio) <- paste(names(e.irrad.num), ":", names(e.irrad.denom), name.tag, sep="")
+    names(ratio) <-
+      paste(names(e.irrad.num), ":", names(e.irrad.denom), name.tag, sep = "")
     attr(ratio, "time.unit") <- NULL
     if (quantity == "total") {
       attr(ratio, "radiation.unit") <- "e:e ratio"
@@ -489,8 +491,8 @@ e_ratio.source_mspct <-
 #'   \code{w.band}. Numeric multiplier applied to returned values.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded.
-#' @param use.cached.mult logical Flag telling whether multiplier values should be
-#'   cached between calls.
+#' @param use.cached.mult logical Flag telling whether multiplier values should
+#'   be cached between calls.
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
@@ -525,8 +527,8 @@ e_ratio.source_mspct <-
 #'   to parameter \code{quantity} they can be re-expressed as relative fractions
 #'   or percentages. In the case of vector output, \code{names} attribute is set
 #'   to the name of the corresponding waveband unless a named list is supplied
-#'   in which case the names of the list members are used, with "[q:e]" prepended.
-#'   Units [mol J-1].
+#'   in which case the names of the list members are used, with "[q:e]"
+#'   prepended. Units are [mol J-1].
 #'
 #' @export
 #' @examples
@@ -592,14 +594,14 @@ qe_ratio.source_spct <-
                             drop.idx = FALSE)
       # call method on the collection
       return(qe_ratio(spct = mspct,
-                     w.band = w.band,
-                     scale.factor = scale.factor,
-                     wb.trim = wb.trim,
-                     use.cached.mult = use.cached.mult,
-                     use.hinges = use.hinges,
-                     naming = naming,
-                     name.tag = name.tag,
-                     ...))
+                      w.band = w.band,
+                      scale.factor = scale.factor,
+                      wb.trim = wb.trim,
+                      use.cached.mult = use.cached.mult,
+                      use.hinges = use.hinges,
+                      naming = naming,
+                      name.tag = name.tag,
+                      ...))
     }
 
     irrads <- two_irrads(spct = spct,
@@ -795,7 +797,7 @@ eq_ratio.default <- function(spct,
 #'
 eq_ratio.source_spct <-
   function(spct,
-           w.band=NULL,
+           w.band = NULL,
            scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
@@ -917,8 +919,8 @@ eq_ratio.source_mspct <-
 #'
 #' @keywords internal
 #'
-# This function is extremely simple but ensures consistency and avoids repetition
-# It is used to define ratios and fractions
+# This function is extremely simple but ensures consistency and avoids
+# repetition. It is used to define ratios and fractions
 #
 two_irrads <- function(spct,
                        w.band.num,

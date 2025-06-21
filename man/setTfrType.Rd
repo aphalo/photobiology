@@ -15,7 +15,8 @@ getTfrType(x)
 \item{Tfr.type}{character string, either \code{"total"} or \code{"internal"}.}
 }
 \value{
-\code{x}, with the modified attribute in the case of \code{setTfrType()} or
+\code{x}, with the modified attribute in the case of
+  \code{setTfrType()} or
   the \code{character} value, \code{"total"} or \code{internal}, stored in
   the \code{"Tfr.type"} attribute of \code{x} in the case
   of \code{getTfrType()}. If \code{x} is not a \code{filter_spct} or
@@ -36,9 +37,11 @@ frequently the interconversion is approximate or even not possible.
 
 \deqn{\tau = \frac{I_z}{I_0 - \rho}}
 
-where \eqn{T} is total transmittance and \eqn{\tau} is internal transmittance;
+where \eqn{T} is total transmittance and \eqn{\tau} is internal
+transmittance;
 \eqn{I_0} is the radiant power incident on an object and \eqn{I_z} is the
-radiant power at depth \eqn{z}, in most cases measured below the non-illuminated
+radiant power at depth \eqn{z}, in most cases measured below the
+non-illuminated
 side of the object, and \eqn{\rho} is the total reflectance at the
 illuminated surface.
 

@@ -67,7 +67,8 @@ s_sum.generic_spct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_sum.filter_mspct <- function(x, na.rm = FALSE, ...) {
-  warning("A sum of Tfr values does not yield Tfr values, while a summ of A values yields A values!!")
+  warning("A sum of Tfr values does not yield Tfr values, ",
+          "while a summ of A values yields A values!!")
   rowwise_filter(
     x,
     .fun = base::sum,

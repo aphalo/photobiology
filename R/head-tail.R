@@ -107,7 +107,7 @@ head_tail.matrix <- head_tail.data.frame
 #' @note \code{head_tail()} methods for function, table and ftable classes, are
 #'   wrappers for head() method.
 #'
-head_tail.function <- function (x, n = 6L, ...) {
+head_tail.function <- function(x, n = 6L, ...) {
   lines <- as.matrix(deparse(x))
   dimnames(lines) <- list(seq_along(lines), "")
   noquote(head_tail(lines, n = n))
@@ -117,9 +117,8 @@ head_tail.function <- function (x, n = 6L, ...) {
 #'
 #' @export
 #'
-head_tail.table <- function (x, n = 6L, ...) {
-  (if (length(dim(x)) == 2L)
-    head_tail.matrix
+head_tail.table <- function(x, n = 6L, ...) {
+  (if (length(dim(x)) == 2L) head_tail.matrix
    else head_tail.default)(x, n = n)
 }
 

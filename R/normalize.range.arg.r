@@ -33,7 +33,8 @@
 #' normalize_range_arg(c(NA, NA), sun.spct)
 #'
 normalize_range_arg <- function(arg.range, wl.range, trim = TRUE) {
-  if (!is.numeric(wl.range) || (is.numeric(wl.range) && length(wl.range) != 2)) {
+  if (!is.numeric(wl.range) ||
+        (is.numeric(wl.range) && length(wl.range) != 2)) {
     wl.range <- range(wl.range)
   }
   stopifnot(is.numeric(wl.range) && length(unique(wl.range)) == 2)
@@ -41,7 +42,8 @@ normalize_range_arg <- function(arg.range, wl.range, trim = TRUE) {
   if (is.null(arg.range) || all(is.na(arg.range))) {
     return(wl.range)
   }
-  if (!is.numeric(arg.range) || (is.numeric(arg.range) && length(arg.range) != 2)) {
+  if (!is.numeric(arg.range) ||
+        (is.numeric(arg.range) && length(arg.range) != 2)) {
     arg.range <- range(arg.range, na.rm = TRUE)
   }
   stopifnot(is.numeric(arg.range) && length(arg.range) == 2)
@@ -54,8 +56,7 @@ normalize_range_arg <- function(arg.range, wl.range, trim = TRUE) {
 
   # NAs have been replaced above
   if (diff(arg.range) < 1e-3) {
-#    warning("'range' too small or outside data boundaries")
-    c(1,2) # nm
+    c(1, 2) # nm
   } else {
     arg.range
   }

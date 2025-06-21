@@ -53,7 +53,8 @@ The default for both \code{w.band} parameters is a waveband covering
 }
 \examples{
 with(sun.data,
-     energy_ratio(w.length, s.e.irrad, new_waveband(400,500), new_waveband(400,700)))
+     energy_ratio(w.length, s.e.irrad,
+                  new_waveband(400,500), new_waveband(400,700)))
 
 }
 \seealso{

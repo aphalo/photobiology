@@ -55,9 +55,9 @@ color_of.default <- function(x, ...) {
 #' @describeIn color_of Method that returns Color definitions corresponding to
 #'   numeric values representing a wavelengths in nm.
 #'
-#' @param type,chroma.type character telling whether "CMF", "CC", or "both" should be returned
-#'   for human vision, or an object of class \code{chroma_spct} for any other
-#'   trichromic visual system.
+#' @param type,chroma.type character telling whether "CMF", "CC", or "both"
+#'   should be returned for human vision, or an object of class
+#'   \code{chroma_spct} for any other trichromic visual system.
 #'
 #' @export
 #'
@@ -91,7 +91,6 @@ color_of.numeric <- function(x,
       names(color.out) <- paste(names(color.out), chroma.type, sep = ".")
     }
   } else if (is.chroma_spct(chroma.type)) {
-    #    warning("Using a CC or CMF definition, RGB may not denote red, green, blue!")
     color.out <-
       w_length2rgb(x, sens = chroma.type,
                    color.name = NULL)
@@ -101,7 +100,8 @@ color_of.numeric <- function(x,
       names(color.out) <- paste(names(color.out), "chroma", sep = ".")
     }
   } else {
-    warning("Chroma type of class \"", class(chroma.type)[1], "\" not supported.")
+    warning("Chroma type of class \"", class(chroma.type)[1],
+            "\" not supported.")
     color.out <- rep(NA_character_, length(x))
   }
   color.out
@@ -112,9 +112,9 @@ color_of.numeric <- function(x,
 #' @param short.names logical indicating whether to use short or long names for
 #'   wavebands
 #'
-#' @note When \code{x} is a list but not a waveband, if a method  \code{color_of}
-#'   is not available for the class of each element of the list, then
-#'   \code{color_of.default} will be called.
+#' @note When \code{x} is a list but not a waveband, if a method
+#'   \code{color_of} is not available for the class of each element of the list,
+#'   then \code{color_of.default} will be called.
 #' @export
 #'
 color_of.list <- function(x,
@@ -167,12 +167,12 @@ color_of.waveband <-  function(x,
       color <- NA_character_
     }
   }  else if (is.chroma_spct(chroma.type)) {
-    #    warning("Using a CC or CMF definition, RGB may not denote red, green, blue!")
     color <- w_length_range2rgb(range(x),
                                 sens = chroma.type,
                                 color.name = paste(name, "chroma", sep = "."))
   } else {
-    warning("Chroma type of class \"", class(chroma.type)[1], "\" not supported.")
+    warning("Chroma type of class \"", class(chroma.type)[1],
+            "\" not supported.")
     color <- NA_character_
   }
   return(color)
@@ -208,19 +208,20 @@ color_of.source_spct <- function(x,
                       sens = photobiology::ciexyzCC2.spct,
                       color.name = paste(x.name, "CC", sep = ".")))
     } else {
-      warning("Chroma type = ", chroma.type, " not implemented for 'source_spct'.")
+      warning("Chroma type = ", chroma.type,
+              " not implemented for 'source_spct'.")
       color.out <- NA_character_
       names(color.out) <- paste(x.name, chroma.type, sep = ".")
       color.out
     }
   } else if (is.chroma_spct(chroma.type)) {
-#    warning("Using a CC or CMF definition, RGB may not denote red, green, blue!")
     s_e_irrad2rgb(x[["w.length"]],
                   x[["s.e.irrad"]],
                   sens = chroma.type,
                   color.name = paste(x.name, "chroma", sep = "."))
   } else {
-    warning("Chroma type of class \"", class(chroma.type)[1], "\" not supported.")
+    warning("Chroma type of class \"", class(chroma.type)[1],
+            "\" not supported.")
     NA_character_
   }
 }
@@ -294,9 +295,9 @@ fast_color_of_wl <- function(x, type = "CMF", ...) {
   x <- unname(x)
   # fall-back to slower color_of() when pre-computed colors are not available
   if (length(x) == 0 || anyNA(x) ||
-      min(x) < 100 || max(x > 4000) ||
-      !is.character(type) ||
-      !type %in% c("CMF", "CC")) {
+        min(x) < 100 || max(x > 4000) ||
+        !is.character(type) ||
+        !type %in% c("CMF", "CC")) {
     color_of.numeric(x, type)
   } else {
     wls.tb <- tibble::tibble(w.length = round(x, digits = 0))

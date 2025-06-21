@@ -31,8 +31,8 @@
 #'   \deqn{\frac{Q(s, wb_\mathrm{num})}{Q(s, wb_\mathrm{denom}) + Q(s, wb_\mathrm{num})}}
 #'
 #' If the argument is set to \code{quantity = "mean"} or
-#'  \code{quantity = "average"} the ratio is based on
-#'   two \strong{mean spectral photon irradiances}, one computed for each waveband.
+#'  \code{quantity = "average"} the ratio is based on two
+#'  \strong{mean spectral photon irradiances}, one computed for each waveband.
 #'
 #'   \deqn{\frac{\overline{Q_\lambda}(s, wb_\mathrm{num})}{\overline{Q_\lambda}(s, wb_\mathrm{denom}) + \overline{Q_\lambda}(s, wb_\mathrm{num})}}
 #'
@@ -94,7 +94,7 @@ q_fraction.default <- function(spct,
                                use.hinges,
                                ...) {
   warning("'q_fraction' is not defined for objects of class ", class(spct)[1])
-  return(NA)
+  NA_real_
 }
 
 #' @describeIn q_fraction Method for \code{source_spct} objects
@@ -112,7 +112,7 @@ q_fraction.source_spct <-
            quantity = "total",
            naming = "short",
            name.tag = NULL,
-           ... ) {
+           ...) {
 
     # we look for multiple spectra in long form
     num.spectra <- getMultipleWl(spct)
@@ -248,8 +248,8 @@ q_fraction.source_mspct <-
 #'   \code{w.band}. Numeric multiplier applied to returned values.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
-#' @param use.cached.mult logical Flag telling whether multiplier values should be
-#'   cached between calls.
+#' @param use.cached.mult logical Flag telling whether multiplier values should
+#'   be cached between calls.
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
@@ -265,8 +265,8 @@ q_fraction.source_mspct <-
 #'   \deqn{\frac{E(s, wb_\mathrm{num})}{E(s, wb_\mathrm{denom}) + E(s, wb_\mathrm{num})}}
 #'
 #' If the argument is set to \code{quantity = "mean"} or
-#'  \code{quantity = "average"} the ratio is based on
-#'   two \strong{mean spectral energy irradiances}, one computed for each waveband.
+#'  \code{quantity = "average"} the ratio is based on two
+#'  \strong{mean spectral energy irradiances}, one computed for each waveband.
 #'
 #'   \deqn{\frac{\overline{Q_\lambda}(s, wb_\mathrm{num})}{\overline{Q_\lambda}(s, wb_\mathrm{denom}) + \overline{Q_\lambda}(s, wb_\mathrm{num})}}
 #'
@@ -329,7 +329,7 @@ e_fraction.default <- function(spct,
                                use.hinges,
                                ...) {
   warning("'e_fraction' is not defined for objects of class ", class(spct)[1])
-  return(NA)
+  NA_real_
 }
 
 #' @describeIn e_fraction Method for \code{source_spct} objects
@@ -404,8 +404,8 @@ e_fraction.source_spct <-
     return(fraction)
   }
 
-#' @describeIn e_fraction Calculates energy:energy fraction from a \code{source_mspct}
-#'   object.
+#' @describeIn e_fraction Calculates energy:energy fraction from a
+#'   \code{source_mspct} object.
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
 #'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
@@ -466,4 +466,3 @@ e_fraction.source_mspct <-
                 col.names = attr2tb,
                 idx = idx)
   }
-

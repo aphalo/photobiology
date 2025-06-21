@@ -30,11 +30,11 @@
 #' @family low-level functions operating on numeric vectors.
 #'
 photon_irradiance <-
-  function(w.length, s.irrad, w.band=NULL,
+  function(w.length, s.irrad, w.band = NULL,
            unit.in = "energy",
            check.spectrum = TRUE,
            use.cached.mult = FALSE,
-           use.hinges = getOption("photobiology.use.hinges", default = NULL) ) {
+           use.hinges = getOption("photobiology.use.hinges", default = NULL)) {
     return(irradiance(w.length = w.length, s.irrad = s.irrad, w.band = w.band,
                       unit.out = "photon",
                       unit.in = unit.in,

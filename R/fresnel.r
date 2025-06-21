@@ -45,10 +45,10 @@ Rfr_from_n <- function(angle_deg,
   stopifnot(all(angle >= 0 & angle <= pi / 2))
   if (is.generic_spct(n)) {
     z <- reflector_spct(w.length = n[["w.length"]],
-                   Rfr = Rfr_from_n(angle = angle,
-                                    n = n[["n"]], p_fraction = p_fraction),
-                   comment = paste("Computed from:", what_measured(n)),
-                   Rfr.type = "total")
+                        Rfr = Rfr_from_n(angle = angle,
+                                         n = n[["n"]], p_fraction = p_fraction),
+                        comment = paste("Computed from:", what_measured(n)),
+                        Rfr.type = "total")
   } else {
     z <-  Rfr_p_from_n(angle = angle, n = n) * p_fraction +
       Rfr_s_from_n(angle = angle, n = n) * (1 - p_fraction)
@@ -77,4 +77,3 @@ Rfr_s_from_n <- function(angle_deg, angle = angle_deg / 180 * pi, n = 1.5) {
       (cos(angle) + sqrt(n^2  - sin(angle)^2))
   )^2
 }
-

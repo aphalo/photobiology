@@ -28,7 +28,8 @@ Function to set by reference the "time.unit" attribute
 }
 \note{
 This function alters x itself by reference and in addition
-  returns x invisibly. If x is not a source_spct or response_spct object, x is not modified.
+  returns x invisibly. If x is not a source_spct or response_spct
+  object, x is not modified.
   The behaviour of this function is 'unusual' in that the default for
   parameter \code{time.unit} is used only if \code{x} does not already have
   this attribute set. \code{time.unit = "hour"} is currently not fully

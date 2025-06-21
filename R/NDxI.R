@@ -33,8 +33,8 @@
 #'
 #' @note Some NDxI indexes are directly based on satellite instrument data, such
 #'   as those in the Landsat satellites. To simulate such indexes using spectral
-#'   reflectande as input, constructors of \code{waveband} definitions from package
-#'   'photobiologyWavebands' can be useful.
+#'   reflectande as input, constructors of \code{waveband} definitions from
+#'   package 'photobiologyWavebands' can be useful.
 #'
 #' @seealso \code{\link{Rfr_normdiff}}
 #'
@@ -47,7 +47,8 @@ normalized_diff_ind <-
 
 #' @rdname normalized_diff_ind
 #'
-#' @note \code{normalised_diff_ind()} is a synonym for \code{normalized_diff_ind()}.
+#' @note \code{normalised_diff_ind()} is a synonym for
+#'   \code{normalized_diff_ind()}.
 #'
 #' @export
 #'
@@ -69,7 +70,7 @@ normalized_diff_ind.default <-
   function(spct, w.band.plus, w.band.minus, f, ...) {
     warning("'normalized_diff_ind' is not defined for objects of class ",
             class(spct)[1])
-    return(spct)
+    NA_real_
   }
 
 #' @describeIn normalized_diff_ind
@@ -117,7 +118,11 @@ normalized_diff_ind.generic_spct <- function(spct,
 #'
 #' @export
 #'
-normalized_diff_ind.generic_mspct <- function(spct, w.band.plus, w.band.minus, f, ...) {
+normalized_diff_ind.generic_mspct <- function(spct,
+                                              w.band.plus,
+                                              w.band.minus,
+                                              f,
+                                              ...) {
 
   spct <- subset2mspct(spct) # expand long form spectra within collection
 

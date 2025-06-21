@@ -16,7 +16,7 @@
 #'
 #' @family quantity conversion functions
 #'
-e2quantum_multipliers <- function(w.length, molar = FALSE){
+e2quantum_multipliers <- function(w.length, molar = FALSE) {
   # E = hc / w.length energy of one photon
   # converting (energy) irradiance (I) to photon irradiance (Q): I / E = Q
   h <- 6.62607015e-34 # Plank's constant (Js)

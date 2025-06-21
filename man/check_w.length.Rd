@@ -13,7 +13,8 @@ check_w.length(w.length)
 a single logical value indicating whether test was passed or not
 }
 \description{
-This function checks a w.length vector for compliance with assumptions used in calculations.
+This function checks a w.length vector for compliance with assumptions
+expected for valid calculations.
 }
 \examples{
 

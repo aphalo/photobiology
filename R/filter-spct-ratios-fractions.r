@@ -2,7 +2,7 @@
 
 #' transmittance:transmittance ratio
 #'
-#' This function returns the transmittance ratio for a given pair of wavebands of a
+#' Transmittance ratio for a given pair of wavebands of a
 #' filter spectrum.
 #'
 #' @param spct an object of class "filter_spct".
@@ -42,9 +42,8 @@
 #' @return In the case of methods for individual spectra, a \code{numeric}
 #'   vector with name attribute set. The name is based on the name of the
 #'   wavebands unless a named list of wavebands is supplied in which case the
-#'   names of the list elements are used. "[Tfr:Tfr]" is appended if \code{quantity
-#'   = "total"} and "[Tfr(wl):Tfr(wl)]" if \code{quantity = "mean"} or
-#'   \code{quantity = "average"}.
+#'   names of the list elements are used. "[Tfr:Tfr]" is appended if
+#'   \code{quantity = "mean"} or \code{quantity = "average"}.
 #'
 #'   A \code{data.frame} is returned in the case of collections of spectra,
 #'   containing one column for each fraction definition, an index column with
@@ -104,7 +103,7 @@ Tfr_ratio.default <- function(spct,
                               use.hinges,
                               ...) {
   warning("'Tfr_ratio' is not defined for objects of class ", class(spct)[1])
-  return(NA)
+  NA_real_
 }
 
 #' @describeIn Tfr_ratio Method for \code{filter_spct} objects
@@ -141,7 +140,7 @@ Tfr_ratio.filter_spct <-
                        quantity = quantity,
                        naming = naming,
                        name.tag = name.tag,
-                       ... ))
+                       ...))
     }
 
     if (is.null(name.tag) && naming != "none") {
@@ -243,7 +242,7 @@ Tfr_ratio.filter_mspct <-
 
 #' transmittance:transmittance fraction
 #'
-#' This function returns the transmittance fraction for a given pair of wavebands of a
+#' Transmittance fraction for a given pair of wavebands of a
 #' filter spectrum.
 #'
 #' @param spct an object of class "filter_spct".
@@ -345,7 +344,7 @@ Tfr_fraction.default <- function(spct,
                                  use.hinges,
                                  ...) {
   warning("'Tfr_fraction' is not defined for objects of class ", class(spct)[1])
-  return(NA)
+  NA_real_
 }
 
 #' @describeIn Tfr_fraction Method for \code{filter_spct} objects
@@ -363,7 +362,7 @@ Tfr_fraction.filter_spct <-
            quantity = "mean",
            naming = "short",
            name.tag = NULL,
-           ... ) {
+           ...) {
 
     # we look for multiple spectra in long form
     if (getMultipleWl(spct) > 1) {
@@ -382,7 +381,7 @@ Tfr_fraction.filter_spct <-
                           quantity = quantity,
                           naming = naming,
                           name.tag = name.tag,
-                          ... ))
+                          ...))
     }
 
     if (is.null(name.tag) && naming != "none") {
@@ -485,8 +484,8 @@ Tfr_fraction.filter_mspct <-
 
 #' transmittance:transmittance normalised difference
 #'
-#' This function returns the transmittance normalized difference index for a given
-#' pair of wavebands of a filter spectrum.
+#' Transmittance normalized difference index for a given
+#' pair of wavebands computed from a filter spectrum.
 #'
 #' @param spct an object of class "filter_spct".
 #' @param w.band.plus,w.band.minus waveband object(s) or a list(s) of waveband
@@ -509,7 +508,8 @@ Tfr_fraction.filter_mspct <-
 #'
 #' @details With the default \code{quantity = "mean"} or
 #'  \code{quantity = "average"} the ratio is based on
-#'   two \strong{mean spectral photon transmittances}, one computed for each waveband.
+#'  two \strong{mean spectral photon transmittances}, one computed for each
+#'  waveband.
 #'
 #'   \deqn{\frac{\overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{plus}) - \overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{minus})}{\overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{plus}) + \overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{minus})}}
 #'
@@ -524,9 +524,9 @@ Tfr_fraction.filter_mspct <-
 #' @return In the case of methods for individual spectra, a \code{numeric}
 #'   vector with name attribute set. The name is based on the name of the
 #'   wavebands unless a named list of wavebands is supplied in which case the
-#'   names of the list elements are used. "[Tfr:Tfr]" is appended if \code{quantity
-#'   = "total"} and "[Tfr(wl):Tfr(wl)]" if \code{quantity = "mean"} or
-#'   \code{quantity = "average"}.
+#'   names of the list elements are used. "[Tfr:Tfr]" is appended if
+#'   \code{quantity= "total"} and "[Tfr(wl):Tfr(wl)]" if
+#'   \code{quantity = "mean"} or \code{quantity = "average"}.
 #'
 #'   A \code{data.frame} is returned in the case of collections of spectra,
 #'   containing one column for each fraction definition, an index column with
@@ -588,7 +588,7 @@ Tfr_normdiff.default <- function(spct,
                                  use.hinges,
                                  ...) {
   warning("'Tfr_fraction' is not defined for objects of class ", class(spct)[1])
-  return(NA)
+  NA_real_
 }
 
 #' @describeIn Tfr_normdiff Method for \code{filter_spct} objects
@@ -648,7 +648,8 @@ Tfr_normdiff.filter_spct <-
 
     Tfr.plus <- transmittances[["Tfr.1"]]
     Tfr.minus <- transmittances[["Tfr.2"]]
-    Tfr.normdiff <- (Tfr.plus - Tfr.minus) / (Tfr.plus + Tfr.minus) * scale.factor
+    Tfr.normdiff <-
+      (Tfr.plus - Tfr.minus) / (Tfr.plus + Tfr.minus) * scale.factor
     names(Tfr.normdiff) <- paste("(",
                                  names(Tfr.plus), "-", names(Tfr.minus),
                                  "):(",
@@ -733,7 +734,10 @@ Tfr_normdiff.filter_mspct <-
 #' Internal function that computes the two transmittances needed to compute
 #' various waveband ratios and fractions.
 #'
-#' @details See \code{\link{transmittance}} for details on the transmittance calculations.
+#' @details # This function is extremely simple but ensures consistency and
+#'   avoids repetition. It is used to define ratios, fractions and NDIs.
+#' @seealso See \code{\link{transmittance}} for details on the transmittance
+#'   calculations.
 #'
 #' @param spct an object of class "filter_spct" or "object_spct".
 #' @param w.band.1,w.band.2 waveband objects or lists of waveband objects
@@ -752,9 +756,6 @@ Tfr_normdiff.filter_mspct <-
 #'
 #' @keywords internal
 #'
-# This function is extremely simple but ensures consistency and avoids repetition
-# It is used to define ratios, fractions and NDIs.
-#
 two_transmittances <- function(spct,
                                w.band.1,
                                w.band.2,
@@ -789,4 +790,3 @@ two_transmittances <- function(spct,
 
   list(Tfr.1 = Tfr.1, Tfr.2 = Tfr.2)
 }
-

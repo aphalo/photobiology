@@ -10,8 +10,8 @@
 #'
 #' @param x generic_mspct object, or an object of a class derived from
 #'   \code{generic_mspct}.
-#' @param unit.out character Allowed values \code{"energy"}, and \code{"photon"}, or its alias
-#'   \code{"quantum"}.
+#' @param unit.out character Allowed values \code{"energy"}, and
+#'   \code{"photon"}, or its alias \code{"quantum"}.
 #' @param qty.out character Allowed values \code{"transmittance"},
 #'   \code{"absorptance"}, and \code{"absorbance"} and in the method for
 #'   \code{object_spct}, also \code{"reflectance"} (.
@@ -92,8 +92,9 @@ join_mspct.generic_mspct <- function(x,
     wl.ranges.consistent <-
       length(unique(wl.range[["min.wl"]])) == 1 &&
       length(unique(wl.range[["max.wl"]])) == 1
-    wl.stepsizes.consistent <- length(unique(wl.stepsize[["min.step.wl"]])) == 1 &&
-      length(unique(wl.stepsize[["max.step.wl"]])) == 1
+    wl.stepsizes.consistent <-
+      length(unique(wl.stepsize[["min.step.wl"]])) == 1 &&
+        length(unique(wl.stepsize[["max.step.wl"]])) == 1
 
     if (!wl.ranges.consistent || !wl.stepsizes.consistent) {
       # overlapping range

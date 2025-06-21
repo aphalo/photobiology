@@ -16,8 +16,8 @@ character string
 Function to read the "K.type" attribute of an existing solute_spct object.
 }
 \note{
-If x is not a \code{solute_spct} or a \code{summary_solute_spct} object,
-  \code{NA} is returned.
+If x is not a \code{solute_spct} or a \code{summary_solute_spct}
+  object, \code{NA} is returned.
 }
 \examples{
 print("missing example")

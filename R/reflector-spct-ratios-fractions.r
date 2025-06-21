@@ -2,8 +2,8 @@
 
 #' reflectance:reflectance ratio
 #'
-#' This function returns the reflectance ratio for a given pair of wavebands of a
-#' reflector spectrum.
+#' This function returns the reflectance ratio for a given pair of wavebands
+#' of a reflector spectrum.
 #'
 #' @param spct an object of class "reflector_spct".
 #' @param w.band.num waveband object or a list of waveband objects used to
@@ -42,9 +42,9 @@
 #' @return In the case of methods for individual spectra, a \code{numeric}
 #'   vector with name attribute set. The name is based on the name of the
 #'   wavebands unless a named list of wavebands is supplied in which case the
-#'   names of the list elements are used. "[Rfr:Rfr]" is appended if \code{quantity
-#'   = "total"} and "[Rfr(wl):Rfr(wl)]" if \code{quantity = "mean"} or
-#'   \code{quantity = "average"}.
+#'   names of the list elements are used. "[Rfr:Rfr]" is appended if
+#'   \code{quantity = "total"} and "[Rfr(wl):Rfr(wl)]" if
+#'   \code{quantity = "mean"} or \code{quantity = "average"}.
 #'
 #'   A \code{data.frame} is returned in the case of collections of spectra,
 #'   containing one column for each fraction definition, an index column with
@@ -104,7 +104,7 @@ Rfr_ratio.default <- function(spct,
                               use.hinges,
                               ...) {
   warning("'Rfr_ratio' is not defined for objects of class ", class(spct)[1])
-  return(NA)
+  NA_real_
 }
 
 #' @describeIn Rfr_ratio Method for \code{reflector_spct} objects
@@ -122,7 +122,7 @@ Rfr_ratio.reflector_spct <-
            quantity = "mean",
            naming = "short",
            name.tag = NULL,
-           ... ) {
+           ...) {
 
     # we look for multiple spectra in long form
     if (getMultipleWl(spct) > 1) {
@@ -243,8 +243,8 @@ Rfr_ratio.reflector_mspct <-
 
 #' reflectance:reflectance fraction
 #'
-#' This function returns the reflectance fraction for a given pair of wavebands of a
-#' reflector spectrum.
+#' This function returns the reflectance fraction for a given pair of wavebands
+#' of a reflector spectrum.
 #'
 #' @param spct an object of class "reflector_spct".
 #' @param w.band.num waveband object or a list of waveband objects used to
@@ -283,9 +283,9 @@ Rfr_ratio.reflector_mspct <-
 #' @return In the case of methods for individual spectra, a \code{numeric}
 #'   vector with name attribute set. The name is based on the name of the
 #'   wavebands unless a named list of wavebands is supplied in which case the
-#'   names of the list elements are used. "[Rfr:Rfr]" is appended if \code{quantity
-#'   = "total"} and "[Rfr(wl):Rfr(wl)]" if \code{quantity = "mean"} or
-#'   \code{quantity = "average"}.
+#'   names of the list elements are used. "[Rfr:Rfr]" is appended if
+#'   \code{quantity = "total"} and "[Rfr(wl):Rfr(wl)]" if 
+#'   \code{quantity = "mean"} or \code{quantity = "average"}.
 #'
 #'   A \code{data.frame} is returned in the case of collections of spectra,
 #'   containing one column for each fraction definition, an index column with
@@ -345,7 +345,7 @@ Rfr_fraction.default <- function(spct,
                                  use.hinges,
                                  ...) {
   warning("'Rfr_fraction' is not defined for objects of class ", class(spct)[1])
-  return(NA)
+  NA_real_
 }
 
 #' @describeIn Rfr_fraction Method for \code{reflector_spct} objects
@@ -363,7 +363,7 @@ Rfr_fraction.reflector_spct <-
            quantity = "mean",
            naming = "short",
            name.tag = NULL,
-           ... ) {
+           ...) {
 
     # we look for multiple spectra in long form
     if (getMultipleWl(spct) > 1) {
@@ -509,8 +509,8 @@ Rfr_fraction.reflector_mspct <-
 #' @param ... other arguments (possibly ignored)
 #'
 #' @details With the default \code{quantity = "mean"} or
-#'  \code{quantity = "average"} the ratio is based on
-#'   two \strong{mean spectral photon reflectances}, one computed for each waveband.
+#'   \code{quantity = "average"} the ratio is based on two values of
+#'   \strong{mean spectral photon reflectance}, one computed for each waveband.
 #'
 #'   \deqn{\frac{\overline{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{plus}) - \overline{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{minus})}{\overline{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{plus}) + \overline{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{minus})}}
 #'
@@ -525,9 +525,9 @@ Rfr_fraction.reflector_mspct <-
 #' @return In the case of methods for individual spectra, a \code{numeric}
 #'   vector with name attribute set. The name is based on the name of the
 #'   wavebands unless a named list of wavebands is supplied in which case the
-#'   names of the list elements are used. "[Rfr:Rfr]" is appended if \code{quantity
-#'   = "total"} and "[Rfr(wl):Rfr(wl)]" if \code{quantity = "mean"} or
-#'   \code{quantity = "average"}.
+#'   names of the list elements are used. "[Rfr:Rfr]" is appended if 
+#'   \code{quantity = "total"} and "[Rfr(wl):Rfr(wl)]" if 
+#'   \code{quantity = "mean"} or \code{quantity = "average"}.
 #'
 #'   A \code{data.frame} is returned in the case of collections of spectra,
 #'   containing one column for each fraction definition, an index column with
@@ -589,7 +589,7 @@ Rfr_normdiff.default <- function(spct,
                                  use.hinges,
                                  ...) {
   warning("'Rfr_fraction' is not defined for objects of class ", class(spct)[1])
-  return(NA)
+  NA_real_
 }
 
 #' @describeIn Rfr_normdiff Method for \code{reflector_spct} objects
@@ -649,12 +649,13 @@ Rfr_normdiff.reflector_spct <-
 
     Rfr.plus <- reflectances[["Rfr.1"]]
     Rfr.minus <- reflectances[["Rfr.2"]]
-    Rfr.normdiff <- (Rfr.plus - Rfr.minus) / (Rfr.plus + Rfr.minus) * scale.factor
-    names(Rfr.normdiff) <- paste("(",
-                            names(Rfr.plus), "-", names(Rfr.minus),
-                            "):(",
-                            names(Rfr.plus), "+", names(Rfr.minus), ")",
-                            name.tag, sep = "")
+    Rfr.normdiff <- 
+      (Rfr.plus - Rfr.minus) / (Rfr.plus + Rfr.minus) * scale.factor
+    names(Rfr.normdiff) <-
+      paste("(",
+            names(Rfr.plus), "-", names(Rfr.minus), "):(",
+            names(Rfr.plus), "+", names(Rfr.minus), ")",
+            name.tag, sep = "")
     attr(Rfr.normdiff, "Rfr.type") <- getRfrType(spct)
     if (quantity == "total") {
       attr(Rfr.normdiff, "radiation.unit") <- "Rfr:Rfr normdiff"
@@ -734,7 +735,8 @@ Rfr_normdiff.reflector_mspct <-
 #' Internal function that computes the two reflectances needed to compute
 #' various waveband ratios and fractions.
 #'
-#' @details See \code{\link{reflectance}} for details on the reflectance calculations.
+#' @details See \code{\link{reflectance}} for details on the reflectance
+#'    calculations.
 #'
 #' @param spct an object of class "reflector_spct" or "object_spct".
 #' @param w.band.1,w.band.2 waveband objects or lists of waveband objects
@@ -753,8 +755,8 @@ Rfr_normdiff.reflector_mspct <-
 #'
 #' @keywords internal
 #'
-# This function is extremely simple but ensures consistency and avoids repetition
-# It is used to define ratios, fractions and NDIs.
+# This function is extremely simple but ensures consistency and avoids 
+# repetition. It is used to define ratios, fractions and NDIs.
 #
 two_reflectances <- function(spct,
                              w.band.1,
@@ -790,4 +792,3 @@ two_reflectances <- function(spct,
 
   list(Rfr.1 = Rfr.1, Rfr.2 = Rfr.2)
 }
-

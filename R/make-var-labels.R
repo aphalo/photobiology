@@ -47,7 +47,7 @@
 #' str(make_var_labels(white_led.raw_spct))
 #'
 make_var_labels <- function(x, ...) {
-    UseMethod("make_var_labels")
+  UseMethod("make_var_labels")
 }
 
 #' @describeIn make_var_labels
@@ -77,7 +77,7 @@ make_var_labels.source_spct <- function(x, ...) {
         list(w.length = "Wavelength [nm]",
              s.e.irrad = "Spectral energy exposure [J m-2 nm-1]",
              s.q.irrad = "Spectral photon exposure [mol m-2 nm-1]")[colnames(x)]
-     }
+    }
   }
   if (is.character(time.unit)) {
     if (time.unit == "second") {
@@ -93,8 +93,8 @@ make_var_labels.source_spct <- function(x, ...) {
     } else if (time.unit == "day") {
       labels <-
         list(w.length = "Wavelength [nm]",
-                  s.e.irrad = "Spectral energy exposure [J d-1 m-2 nm-1]",
-                  s.q.irrad = "Spectral photon exposure [mol d-1 m-2 nm-1]")
+             s.e.irrad = "Spectral energy exposure [J d-1 m-2 nm-1]",
+             s.q.irrad = "Spectral photon exposure [mol d-1 m-2 nm-1]")
     } else if (time.unit == "exposure") {
       labels <-
         list(w.length = "Wavelength [nm]",
@@ -111,9 +111,11 @@ make_var_labels.source_spct <- function(x, ...) {
   sub.pattern <-
     "J m-2 nm-1|mol m-2 nm-1|W m-2 nm-1|J [shd]-1 m-2 nm-1|mol [shd]-1 m-2 nm-1"
   if (is_normalized(x)) {
-    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
+    labels <-
+      lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
   } else if (is_scaled(x)) {
-    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
+    labels <-
+      lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
   }
 
   labels[intersect(colnames(x), names(labels))]
@@ -154,8 +156,8 @@ make_var_labels.response_spct <- function(x, ...) {
     } else if (time.unit == "day") {
       labels <-
         list(w.length = "Wavelength [nm]",
-                  s.e.response = "Spectral energy response [J-1 d m2 nm]",
-                  s.q.response = "Spectral photon response [mol-1 d m2 nm]")
+             s.e.response = "Spectral energy response [J-1 d m2 nm]",
+             s.q.response = "Spectral photon response [mol-1 d m2 nm]")
     } else if (time.unit == "exposure") {
       labels <-
         list(w.length = "Wavelength [nm]",
@@ -166,13 +168,15 @@ make_var_labels.response_spct <- function(x, ...) {
         list(w.length = "Wavelength [nm]",
              s.e.response = "Spectral energy response",
              s.q.response = "Spectral photon response")
-     }
+    }
   }
   sub.pattern <- "J-1 m2 nm|mol-1 m nm|J-1 [shd] m2 nm|mol-1 [shd] m2 nm"
   if (is_normalized(x)) {
-    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
+    labels <-
+      lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
   } else if (is_scaled(x)) {
-    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
+    labels <-
+      lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
   }
 
   labels[intersect(colnames(x), names(labels))]
@@ -196,9 +200,11 @@ make_var_labels.filter_spct <- function(x, ...) {
          A = "Spectral absorbance log10 based [a.u.]")
   sub.pattern <- "/1|a\\.u\\."
   if (is_normalized(x)) {
-    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
+    labels <-
+      lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
   } else if (is_scaled(x)) {
-    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
+    labels <-
+      lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
   }
 
   labels[intersect(colnames(x), names(labels))]
@@ -220,9 +226,11 @@ make_var_labels.reflector_spct <- function(x, ...) {
          Rfr = Rfr.label[Rfr.type])
   sub.pattern <- "/1"
   if (is_normalized(x)) {
-    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
+    labels <-
+      lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
   } else if (is_scaled(x)) {
-    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
+    labels <-
+      lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
   }
 
   labels[intersect(colnames(x), names(labels))]
@@ -266,9 +274,11 @@ make_var_labels.solute_spct <- function(x, ...) {
          K.mass = paste("Mass", K.type, "coefficient [m2 g-1]"))
   sub.pattern <- "m2 mol-1|m2 g-1"
   if (is_normalized(x)) {
-    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
+    labels <-
+      lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
   } else if (is_scaled(x)) {
-    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
+    labels <-
+      lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
   }
 
   labels[intersect(colnames(x), names(labels))]
@@ -312,13 +322,16 @@ make_var_labels.calibration_spct <- function(x, ...) {
 make_var_labels.raw_spct <- function(x, ...) {
   column.names <- colnames(x)
   count.cols <- grepl("^counts", column.names)
-  labels <- c("Wavelength [nm]", rep("Raw detector counts [number]", sum(count.cols)))
+  labels <- c("Wavelength [nm]",
+              rep("Raw detector counts [number]", sum(count.cols)))
   names(labels) <- c("w.length", column.names[count.cols])
   sub.pattern <- "number"
   if (is_normalized(x)) {
-    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
+    labels <-
+      lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
   } else if (is_scaled(x)) {
-    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
+    labels <-
+      lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
   }
 
   as.list(labels)
@@ -332,13 +345,16 @@ make_var_labels.raw_spct <- function(x, ...) {
 make_var_labels.cps_spct <- function(x, ...) {
   column.names <- colnames(x)
   count.cols <- grepl("^cps", column.names)
-  labels <- c("Wavelength [nm]", rep("Detector counts [number s-1]", sum(count.cols)))
+  labels <- c("Wavelength [nm]",
+              rep("Detector counts [number s-1]", sum(count.cols)))
   names(labels) <- c("w.length", column.names[count.cols])
   sub.pattern <- "number  s-1"
   if (is_normalized(x)) {
-    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
+    labels <-
+      lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
   } else if (is_scaled(x)) {
-    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
+    labels <-
+      lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
   }
 
   as.list(labels)

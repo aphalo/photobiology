@@ -30,7 +30,6 @@ msmsply <- function(mspct, .fun, ...,
   dim <- dim(mspct)
   ncol <- ncol(mspct)
   # llply returns a matrix for classes derived from list
-  #
   rmDerivedMspct(mspct)
   y <- plyr::llply(.data = mspct,
                    .fun = .fun,
@@ -64,8 +63,8 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL,
                    .parallel = FALSE, .paropts = NULL) {
   stopifnot(is.any_mspct(mspct))
 
-  if ( (is.logical(idx) && idx) ||
-       (is.null(idx) && !any(is.null(names(mspct)))) ) {
+  if ((is.logical(idx) && idx) ||
+        (is.null(idx) && !any(is.null(names(mspct))))) {
     .idx <- "spct.idx"
   } else if (is.logical(idx) && !idx) {
     .idx <- NULL
@@ -105,19 +104,17 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL,
              stepsize_wl = c("min.step.wl", "max.step.wl"),
              getWhenMeasured = "when.measured",
              NULL # default: use name of returned numeric values
-    )
+      )
   } else if (!is.null(col.names) &&
-             !any(col.names == "") &&
-             !any(is.na(col.names)) &&
-             length(col.names) == length(names(z)) - 1) {
+               !any(col.names == "") &&
+               !any(is.na(col.names)) &&
+               length(col.names) == length(names(z)) - 1) {
     qty.names <- col.names
-#  } else if (any(c("total", "mean", "contrib", "particip") %in% tolower(names(z)))) {
   } else {# make new names using function name
     if (is.null(.idx)) qty.names <- names(z) else qty.names <- names(z)[-1]
     qty.names <- paste(f.name,
                        gsub(" ", "", qty.names),
                        sep = "_")
-#    qty.names <- NULL
   }
 
   if (!is.null(qty.names)) {
@@ -128,7 +125,8 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL,
     }
   }
 
-  comment(z) <- paste("Applied function: '", f.name, "'.\n", sep = "", comment(mspct))
+  comment(z) <-
+    paste("Applied function: '", f.name, "'.\n", sep = "", comment(mspct))
 
   mspct.ncol <- ncol(mspct)
   if (is.na(mspct.ncol)) {
@@ -171,13 +169,14 @@ mslply <- function(mspct, .fun, ...,
                    .fun = .fun,
                    ...,
                    .parallel = .parallel,
-                   .paropts = .paropts )
+                   .paropts = .paropts)
 
   names(z) <- names(mspct)
 
-  f.name <- as.character( substitute(.fun))
+  f.name <- as.character(substitute(.fun))
 
-  comment(z) <- paste("Applied function: '", f.name, "'.\n", sep = "", comment(mspct))
+  comment(z) <- 
+    paste("Applied function: '", f.name, "'.\n", sep = "", comment(mspct))
 
   z
 }
@@ -214,11 +213,11 @@ msaply <- function(mspct, .fun, ..., .drop = TRUE,
 
   f.name <- as.character(substitute(.fun))
 
-  comment(z) <- paste("Applied function: '", f.name, "'.\n", sep = "", comment(mspct))
+  comment(z) <-
+    paste("Applied function: '", f.name, "'.\n", sep = "", comment(mspct))
 
   z
 }
-
 
 
 #' Get the "mspct.version" attribute
@@ -272,7 +271,6 @@ checkMspctVersion <- function(x) {
 }
 
 
-
 # convolution ---------------------------------------------------------------
 
 #' Convolve function for collections of spectra
@@ -300,21 +298,21 @@ checkMspctVersion <- function(x) {
 #'
 convolve_each <- function(e1, e2, oper = `*`, sep = "_", ...) {
   e3 <- list()
-  if (is.any_mspct(e1) & !is.any_mspct(e2)) {
+  if (is.any_mspct(e1) && !is.any_mspct(e2)) {
     for (spct.name in names(e1)) {
       e3[[spct.name]] <- oper(e1[[spct.name]], e2, ...)
     }
     z <- generic_mspct(e3, class = shared_member_class(e3),
                        ncol = ncol(e1),
                        byrow = attr(e1, "mspct.byrow", exact = TRUE))
-  } else if (!is.any_mspct(e1) & is.any_mspct(e2)) {
+  } else if (!is.any_mspct(e1) && is.any_mspct(e2)) {
     for (spct.name in names(e2)) {
       e3[[spct.name]] <- oper(e1, e2[[spct.name]], ...)
     }
     z <- generic_mspct(e3, class = shared_member_class(e3),
                        ncol = ncol(e2),
                        byrow = attr(e2, "mspct.byrow", exact = TRUE))
-  } else if (is.any_mspct(e1) & is.any_mspct(e2)) {
+  } else if (is.any_mspct(e1) && is.any_mspct(e2)) {
     for (spct.name1 in names(e1)) {
       for (spct.name2 in names(e2)) {
         combined.name <- paste(spct.name1, spct.name2, sep = sep)

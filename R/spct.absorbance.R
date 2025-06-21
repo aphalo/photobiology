@@ -57,15 +57,25 @@
 #'
 #' @export
 #'
-absorbance <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) UseMethod("absorbance")
+absorbance <- function(spct,
+                       w.band,
+                       quantity,
+                       wb.trim,
+                       use.hinges,
+                       ...) UseMethod("absorbance")
 
 #' @describeIn absorbance Default for generic function
 #'
 #' @export
 #'
-absorbance.default <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) {
+absorbance.default <- function(spct,
+                               w.band,
+                               quantity,
+                               wb.trim,
+                               use.hinges,
+                               ...) {
   warning("'absorbance' is not defined for objects of class ", class(spct)[1])
-  return(NA_real_)
+  NA_real_
 }
 
 #' @describeIn absorbance Specialization for filter spectra
@@ -80,7 +90,6 @@ absorbance.filter_spct <-
            use.hinges = NULL,
            naming = "default",
            ...) {
-
     # we look for multiple spectra in long form
     if (getMultipleWl(spct) > 1) {
       # convert to a collection of spectra
@@ -117,7 +126,6 @@ absorbance.object_spct <-
            use.hinges = NULL,
            naming = "default",
            ...) {
-
     # we look for multiple spectra in long form
     if (getMultipleWl(spct) > 1) {
       # convert to a collection of spectra
@@ -173,7 +181,6 @@ absorbance_spct <-
            use.hinges,
            naming,
            ...) {
-
     summary.name <-
       switch(quantity,
              total = "A",
@@ -300,14 +307,17 @@ absorbance_spct <-
 
 #' @describeIn absorbance Calculates absorbance from a \code{filter_mspct}
 #'
-#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the
+#'   syntax for \code{attr2tb} passed as is to formal parameter
+#'   \code{col.names}.
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
 #'
 #' @export
 #'
 absorbance.filter_mspct <-
-  function(spct, w.band=NULL,
+  function(spct,
+           w.band = NULL,
            quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = NULL,

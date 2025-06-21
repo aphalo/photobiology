@@ -11,8 +11,8 @@
 #'   in \code{x} must share the same set of wavelengths. An error is triggered
 #'   if this condition is nor fulfilled. The value passed as argument to `mult`
 #'
-#' @param x An R object Currently this package defines methods for collections of
-#'    spectral objects.
+#' @param x An R object Currently this package defines methods for collections
+#'    of spectral objects.
 #' @param na.rm	logical A value indicating whether NA values should be stripped
 #'   before the computation proceeds.
 #' @param mult	numeric number of multiples of standard error.

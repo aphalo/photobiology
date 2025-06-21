@@ -13,6 +13,6 @@
 #'
 #' @family quantity conversion functions
 #'
-e2qmol_multipliers <- function(w.length){
-  return(e2quantum_multipliers(w.length, molar=TRUE))
+e2qmol_multipliers <- function(w.length) {
+  e2quantum_multipliers(w.length, molar = TRUE)
 }

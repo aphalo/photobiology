@@ -76,8 +76,8 @@ compute the denominator(s) of the fraction(s).}
 \item{wb.trim}{logical if TRUE wavebands crossing spectral data boundaries
 are trimmed, if FALSE, they are discarded}
 
-\item{use.cached.mult}{logical Flag telling whether multiplier values should be
-cached between calls.}
+\item{use.cached.mult}{logical Flag telling whether multiplier values should
+be cached between calls.}
 
 \item{use.hinges}{logical Flag indicating whether to insert "hinges" into the
 spectral data before integration so as to reduce interpolation errors at
@@ -138,8 +138,8 @@ With the default \code{quantity = "total"} the fraction is based on
   \deqn{\frac{E(s, wb_\mathrm{num})}{E(s, wb_\mathrm{denom}) + E(s, wb_\mathrm{num})}}
 
 If the argument is set to \code{quantity = "mean"} or
- \code{quantity = "average"} the ratio is based on
-  two \strong{mean spectral energy irradiances}, one computed for each waveband.
+ \code{quantity = "average"} the ratio is based on two
+ \strong{mean spectral energy irradiances}, one computed for each waveband.
 
   \deqn{\frac{\overline{Q_\lambda}(s, wb_\mathrm{num})}{\overline{Q_\lambda}(s, wb_\mathrm{denom}) + \overline{Q_\lambda}(s, wb_\mathrm{num})}}
 
@@ -152,8 +152,8 @@ ratios are numerically identical.
 
 \item \code{e_fraction(source_spct)}: Method for \code{source_spct} objects
 
-\item \code{e_fraction(source_mspct)}: Calculates energy:energy fraction from a \code{source_mspct}
-object.
+\item \code{e_fraction(source_mspct)}: Calculates energy:energy fraction from a
+\code{source_mspct} object.
 
 }}
 \note{
