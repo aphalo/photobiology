@@ -17,9 +17,8 @@ editor_options:
 
 ## Radiation, astronomy and atmosphere
 
-The User Guide is divided into two volumes: *1. Radiation* and *2.
-Astronomy*. The second volume also describes functions related to water
-vapour in the atmosphere.
+The User Guide was earlier divided into two parts: *1. Radiation* and *2.
+Astronomy*. The astronomy related functions and the [former part 2 of this User Guide](https://docs.r4photobiology.info/SunCalcMeeus/articles/userguide-1-astronomy.html) are now in package 'SunCalcMeeus'. This User Guide is the updated version of former part 1.
 
 ## Naming conventions
 
