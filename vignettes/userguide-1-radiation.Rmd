@@ -18,7 +18,10 @@ editor_options:
 ## Radiation, astronomy and atmosphere
 
 The User Guide was earlier divided into two parts: *1. Radiation* and *2.
-Astronomy*. The astronomy related functions and the [former part 2 of this User Guide](https://docs.r4photobiology.info/SunCalcMeeus/articles/userguide-1-astronomy.html) are now in package 'SunCalcMeeus'. This User Guide is the updated version of former part 1.
+Astronomy*. The astronomy related functions and the 
+[former part 2 of this User Guide](https://docs.r4photobiology.info/SunCalcMeeus/articles/userguide-1-astronomy.html)
+are now in package 'SunCalcMeeus'. This User Guide is the updated version of 
+former part 1.
 
 ## Naming conventions
 
@@ -2815,12 +2818,22 @@ wl_range(filters.mspct)
 
 Peaks and valleys in spectra are usually features of interest, while in
 most cases spikes (very narrow peaks or valleys) are undesired "noise".
-Of course, there are exceptions and for this reason methods used for
+Of course, there are exceptions and for this reason methods used to
 extract any of these features have a similar interface.
 
 Peaks and valleys can be identified simply as local maxima and minima,
-or their actual location better estimated by fitted a model to the local
-maximum or minimum and its neighbours.
+or their actual location better estimated by fitted a model to the `local
+maximum or minimum and its neighbours. It is possible to be `strict`
+when searching and discard non-unique maxima and minima or altrenatively
+accept them.
+
+In practice, a frequent difficulty is separating true local features of
+a spectrum from measuring noise, or from less prominent peaks and valleys
+that can be considering as not interesting. One approach is to use global
+thresholds for the height of peaks and depth of valleys. Locally maxima
+and minima are searched within a moving window, and their heigh or depth
+can be compared to a local threshold, relative to a computed 
+within-moving-window baseline such as the local median, minimum or MAD. 
 
 #### Individual spectra
 
@@ -2829,20 +2842,39 @@ a subset of the spectral object data corresponding to local maxima and
 local minima of the measured variable. `span` defines the width of the
 *window* used as a number of observations.
 
+The default is `span = 5` which finds many peaks and valleys in the solar
+spectrum. Of `r nrow(sun.spct)` in the input `r `nrow(peaks(sun.spct))` rows
+are returned by `peaks(sun.spct)` and `r nrow(valleys(sun.spct))` rows
+are returned by `valleys(sun.spct)`
+
 ```{r, summary-5}
+nrow(sun.spct)
+nrow(peaks(sun.spct))
+nrow(valleys(sun.spct))
+```
+
+With a wider window, here 51 consecutive wavelengths, fewer peaks and valleys
+are returned.
+
+```{r, summary-5a}
 peaks(sun.spct, span = 51)
 valleys(sun.spct, span = 51)
 ```
 
-A value of `NULL` as argument to `span` searches for a single maximum
-for the whole spectrum.
+With a value of `NULL` or an `integer` larger than the number of wavelength 
+values passed as argument to `span` method `peaks` returns the row 
+corresponding to the global maximum, the highest vakue in the whole 
+spectrum.
 
 ```{r, summary-8}
 peaks(sun.spct, span = NULL)
 ```
 
 By passing `refine.wl = TRUE` we request that location of the peaks is
-*refined* by fitting a model to describe the peak. **The interpolated `w.length` estimate can be usually trusted as good if the data are not noisy, while the `s.e.irrad` and `s.q.irrad` estimates should be always checked as their values are frequently suspect.** 
+*refined* by fitting a model to describe the peak. **The interpolated 
+`w.length` estimate can be usually trusted as good if the data are not noisy,
+while the `s.e.irrad` and `s.q.irrad` estimates should be always checked as 
+their values are frequently suspect.**
 
 ```{r, summary-6a}
 peaks(sun.spct, 
@@ -2850,10 +2882,16 @@ peaks(sun.spct,
       refine.wl = TRUE)
 ```
 
+In the example above, a single peak was fitted, but it is also possible to
+fit multiple peaks, i.e., when `span` is passed as argument an odd `integer`
+vale smaller the the number of rows in the input.
+
 In the case of `source_spct` and `response_spct` methods `unit.out` can
 be used to force peaks to be searched using either energy or photon
 based spectral irradiance. The default is energy, or the option
-`"photobiology.radiation.unit"` if set. As expected, the wavelength at the maximum differs when the data are expressed as a flux of energy or of photons.
+`"photobiology.radiation.unit"` if set. In most cases, the wavelength at the
+maximum differs when the data are expressed as a flux of energy or as a flux
+of photons.
 
 ```{r, summary-6}
 peaks(sun.spct, 
@@ -2865,36 +2903,55 @@ peaks(sun.spct,
       unit.out = "photon")
 ```
 
-As `span` is given as a number of successive observations, if this step varies significantly, the algorithm fails except for the global maximum. In such a case a warning is issued.
+As `span` is given as a number of successive observations, if the wavelength 
+step varies significantly along the spectrum, the algorithm used, based only on
+the sequence of values fails, or at least requires careful interpretation of
+the returned value, except for the global maximum. When the wavelength step
+size varies strongly a warning is issued. Given that trimming the ends of a 
+spectrum can result in abnormally narrow steps, steps narrower than 1 nm are
+not taken into account when assessing the variation in step size.
 
-```{r, summary-9}
-peaks(sun.spct, span = NULL, refine.wl = TRUE)
-```
-
-Frequently, we are not interested in all local maxima, but instead only in those that exceed a certain heigh globally or locally (within the window of width `span`). Arguments passed to additional parameters make this possible as described in the help page of `peaks()`and `valleys()` methods.
+Frequently, we are not interested in all local maxima, but instead only in those
+that exceed a certain heigh globally or locally (within the window of width
+`span`). Arguments passed to additional parameters make this possible as
+described in detail in the help page of `peaks`and `valleys` methods.
 
 Method `spikes` differs from `peaks` in that it uses a different
-algorithm that detects only very narrow peaks, usually called by the
+algorithm that detects only narrow peaks, usually called by the
 name of spikes. The value returned is as in the case of `peaks` a subset
-of the original spectrum. The parameters controlling the sensitivity
-also differ.
+of the original spectrum, however, each spike can be composed of multiple
+successive observations.
 
 ```{r, summary-10}
 spikes(sun.spct)
 ```
 
-Low level functions `find_peaks`, `find_valleys`, `fit_peaks`, `fit_valleys`, and `find_spikes` take numeric vectors as first argument.
+The parameters controlling the sensitivity
+also differ as the algorithm is based on a local estimate of variance, 
+constrained to a given maximum width. With `z.threshold = 6` instead
+of the default `z.threshold = 9` more spikes are detected.
+
+```{r, summary-10}
+spikes(sun.spct, z.threshold = 6)
+```
+
+Low level functions `find_peaks`, `find_valleys`, `fit_peaks`, `fit_valleys`,
+and `find_spikes` take numeric vectors as first argument and return a `logical`
+vector that can be used as an index to extract the rows from a vector, data
+frame, or spectral object.
 
 #### Collections of spectra
 
-The methods are also implemented for collections of spectra.
+The methods are also implemented for collections of spectra and multiple
+spectra stored in long form.
 
 ```{r, col-summary-1}
-msmsply(filters.mspct, peaks, span = 21)
+peaks(sun_evening.mspct, span = NULL)
 ```
 
-Two of the filters in the collection do not have peaks, and a spectrum
-object of length zero is returned for them.
+```{r, col-summary-1}
+peaks(sun_evening.spct, span = NULL)
+```
 
 ### Wavelengths at target value
 
