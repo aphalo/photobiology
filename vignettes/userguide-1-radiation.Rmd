@@ -90,8 +90,10 @@ $\lambda = 560\,$nm, while in the CIE standard they are normalized to
 details and data sources.
 
 | Object                  | class            | units                        | data description                 |
-|:-------------|:-------------|:-------------|:------------------------------|
+|:------------------------|:-----------------|:-----------------------------|:---------------------------------|
 | `sun.spct`              | `source_spct`    | $W\,m^{-2}\,nm^{-1}$         | solar spectral irradiance        |
+| `sun_evening.spct`      | `source_spct`    | $W\,m^{-2}\,nm^{-1}$         | solar spectral irradiance        |
+| `sun_evening.mspct`     | `source_mspct`   | $W\,m^{-2}\,nm^{-1}$         | solar spectral irradiance        |
 | `sun_daily.spct`        | `source_spct`    | $J\,m^{-2}\,d^{-1}\,nm^{-1}$ | solar spectral exposure          |
 | `sun.data`              | `data.frame`     | $W\,m^{-2}\,nm^{-1}$         | solar spectral irradiance        |
 | `sun_daily.data`        | `data.frame`     | $J\,m^{-2}\,d^{-1}\,nm^{-1}$ | solar spectral exposure          |
@@ -101,6 +103,8 @@ details and data sources.
 | `opaque.spct`           | `filter_spct`    | fraction                     | ideal opaque filter              |
 | `polyester.spct`        | `filter_spct`    | fraction                     | plastic film                     |
 | `yellow_gel.spct`       | `filter_spct`    | fraction                     | theatrical *gel* filter          |
+| `two_filters.spct`      | `filter_spct`    | fraction                     | theatrical *gel* filter          |
+| `two_filters.mspct`     | `filter_mspct`   | fraction                     | theatrical *gel* filter          |
 | `green_leaf.spct`       | `reflector_spct` | fraction                     | a birch leaf                     |
 | `clear_body.spct`       | `object_spct`    | fraction                     | ideal transparent body           |
 | `black_body.spct`       | `object_spct`    | fraction                     | ideal black body                 |
@@ -113,6 +117,8 @@ details and data sources.
 | `phenylalanine`         | `solute_spct`    | $m^{-1}$                     | phenylalanine molar att. coef.   |
 | `photodiode.spct`       | `response_spct`  | $A / W$                      | typical Si photodiode            |
 | `ccd.spct`              | `response_spct`  | $A / W$                      | typical CCD array                |
+| `two_sensors.spct`      | `response_spct`  | $A / W$                      | typical CCD array                |
+| `two_sensors.mspct`     | `response_mspct` | $A / W$                      | typical CCD array                |
 | `white_led.raw_spct`    | `raw_spct`       | counts                       | example raw detector counts data |
 | `white_led.cps_spct`    | `cps_spct`       | counts / s                   | example detector counts data     |
 | `white_led.source_spct` | `source_spct`    | $W\,m^{-2}\,nm^{-1}$         | spectral irradiance              |
@@ -169,7 +175,7 @@ methods including extraction (indexing) methods and partial assignment
 methods are defined to ensure that the expectations on the variables
 contained in objects of these classes remain valid in most situations.
 Other specializations of methods and functions are related to achieving
-a convenient and concise syntax tailored for spectral data as in the
+a convenient and concise syntax tailored to spectral data as in the
 case of mathematical operators and functions.
 
 Another important aspect is that when spectral data are stored in
@@ -182,7 +188,8 @@ time of object creation, to a large extent the responsibility of
 ensuring that the numbers provided as argument to object constructors
 comply with expectations remains with the users of the package.**
 
-In addition to the classes for storing individual spectra, classes for
+In addition to the classes for storing individual spectra or multiple 
+spectra in long form, classes for
 storing collections of these spectral objects are defined. These classes
 are derived from class `list` and can contain member spectra of
 different lengths and measured at different wavelength values.
@@ -256,7 +263,7 @@ data from different observations are stored "longitudinally" and
 observations must use consistent units of expression. This long format is 
 useful, for example, when producing plots with package 'ggplot2' or when
 acquiring or storing time series of spectra. If spectra are stored in 
-*long form*, e.g. for plotting with 'ggplot2', attributes are stored as named 
+*long form*, e.g., for plotting with 'ggplot2', attributes are stored as named 
 lists or enforced to be the same across spectra. This allows to reconstruct a
 collection of spectra from a long-form spectral object and *vice versa*
 preserving nearly all of the metadata. In 'photobiology' (<= 0.11.0) the
@@ -267,13 +274,28 @@ to metadata loss on conversion to collections of spectra.
 
 ------------------------------------------------------------------------
 
-*Collections of spectra are to be in general preferred to multiple
-spectra stored in a single spectral object.* This is because collections are the
-"native" storage approach in the 'photobiology' package, supporting all
-operations efficiently, while operations on spectra stored in long form are
-implemented by means of two way on-the-fly conversions into collections of
-spectra. Two-way conversions can be expected to depend on memory allocation and
-thus to decrease performance.
+Initially 'photobiology' supported only the storage of a single spectrum per
+object. Later the possibility of storing multiple spectra in a list-like
+collection was implemented, and more recently storage of multiple spectra in
+long form was made possible. This progression was the result of a shift in
+the number of spectra being analysed, starting from individual spectra early
+on to hundreds of thousands or even millions of spectra nowadays. Each format
+has advantages and disadvantages. Spectra in long-form are a recent addition
+and some methods rely on conversion into collections of spectra. This approach
+can be slow when many spectra are involved, as memory allocation and copy is
+done during the conversion. However, some of the most frequently used 
+operations have now been optimised for performance on spectra in long form
+by avoiding the conversion.
+
+**Rule of thumb** Collections of spectra are the only option when different 
+members belong to different classes. Collections of spectra are the best 
+approach when spectra are to be extracted from the collection or operated upon
+or plotted individually. Storage in long form can consistently save some storage
+space but can either decrease or increase execution time depending on the 
+operation (and package version). Such advantages for storage in long form 
+towards performance and memory use are relevant only when many spectra are to be
+operated upon consistently, say compute the same irradiance summaries from a
+time series of many thousands of spectra.
 
 ------------------------------------------------------------------------
 
@@ -1234,17 +1256,17 @@ In the case of `msdply()` the applied function is expected to return an
 R object of the same length for each of the member spectra.
 
 ```{r, apply-3}
-msdply(two.mspct, max)
+msdply(two.mspct, wl_max)
 ```
 
 ```{r, apply-4}
-ranges.df <- msdply(two.mspct, range)
-ranges.df
-cat(comment(ranges.df))
+wl_ranges.df <- msdply(two.mspct, wl_range)
+wl_ranges.df
+cat(comment(wl_ranges.df))
 ```
 
 ```{r, apply-5}
-msdply(two.mspct, range, na.rm = TRUE)
+msdply(two.mspct, wl_range, na.rm = TRUE)
 ```
 
 In the case of `mslply()` the applied function is expected to return an
@@ -1259,16 +1281,22 @@ R object of length 1, although a list with dimensions will be returned
 for longer return values.
 
 ```{r, apply-7}
-str(msaply(two.mspct, max))
+str(msaply(two.mspct, wl_max))
 ```
 
 ```{r, apply-8}
-msaply(two.mspct, range)
+msaply(two.mspct, wl_range)
 ```
 
 For the most common cases for which one would use the *apply* functions
 described in the previous section methods and functions for operations
-on collections of spectra are defined in the package. These methods are
+on collections of spectra are defined in the package. 
+
+```{r}
+wl_range(two.mspct)
+```
+
+These methods are
 described in a later section and listed in Table 9.
 
 ### Summary spectra
@@ -1687,10 +1715,10 @@ options(tibble.print_min = 4)
 For explicit calls to `print()` its argument `n` can be used to control
 the number of lines printed. If `n` is set to `Inf` the whole spectrum
 is always printed. The output differs from that of the `print()` method
-from package 'dplyr' in that additional metadata specific to spectra are
+from package 'dplyr' in that additional metadata specific to each type of spectra are
 shown.
 
-```{r, print-1, eval=FALSE}
+```{r, print-1}
 print(sun.spct, n = 3)
 ```
 
@@ -1704,13 +1732,47 @@ method for data frames, and accepts the same arguments. The main
 difference is that the attributes containing metadata and dimensions of
 the original spectrum object are copied to the summary object.
 
-```{r, print-2, eval=FALSE}
-summary(sun.spct)
+```{r, print-2}
+str(summary(sun.spct))
 ```
 
 Specialized `print()` methods for summaries of spectra are defined. The
 output differs from that of the `print()` method from base R in that
 additional metadata specific to spectra are shown.
+
+```{r, print-2a}
+summary(sun.spct)
+```
+
+In the case of collections of spectra and multiple spectra in long form
+additional parameters accept arguments that control the type of summary
+computed. For collections the default is to return a data frame lisitng
+the member spectra and their properties.
+
+```{r, print-2b}
+summary(sun_evening.mspct)
+```
+
+Passing `expand = "each"` summarises each member of the collection individually, returning a list of summaries. _The long output from the chunk below is not shown._
+
+```{r, print-2c, eval = FALSE}
+summary(sun_evening.mspct, expand = "each")
+```
+
+The default for multiple spectra in long form is a joint summary, similar to
+that of the underlying data frame but with the additional metadata as
+attributes.
+
+```{r, print-2d}
+summary(sun_evening.spct)
+```
+
+To obtain a summary matching that of a collection we can passed 
+`expand = "collection"`.
+
+```{r, print-2e}
+summary(sun_evening.spct, expand = "collection")
+```
 
 ### Handling `NA`s
 
@@ -2931,7 +2993,7 @@ also differ as the algorithm is based on a local estimate of variance,
 constrained to a given maximum width. With `z.threshold = 6` instead
 of the default `z.threshold = 9` more spikes are detected.
 
-```{r, summary-10}
+```{r, summary-10a}
 spikes(sun.spct, z.threshold = 6)
 ```
 
@@ -2949,7 +3011,7 @@ spectra stored in long form.
 peaks(sun_evening.mspct, span = NULL)
 ```
 
-```{r, col-summary-1}
+```{r, col-summary-1a}
 peaks(sun_evening.spct, span = NULL)
 ```
 

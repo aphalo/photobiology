@@ -15,6 +15,7 @@ This modifies the behaviour compared to version 0.13.0, when first introduced.
 * Add utility function `check_wl_stepsize()`.
 * These changes, repair the behaviour of `peaks()` and `valleys()` methods. In
 particular, they remain backwards compatible with versions < 0.13.0.
+* Update the vignette.
 
 # photobiology 0.13.0
 
