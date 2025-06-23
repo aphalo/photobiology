@@ -423,6 +423,11 @@ navbar:
       menu:
       - text: R for Photobiology web site
         href: https://www.r4photobiology.info/
+      - text: R for Photobiology Suite CRAN releases
+        href: https://www.r4photobiology.info/pages/CRAN-activity.html
+      - text: ------
+      - text: Book 'Learn R - As a Language'
+        href: https://www.learnr-book.info/
       - text: A handbook of methods
         href: https://doi.org/10.31885/9789521083631
       - text: Photobiological Sciences Online
