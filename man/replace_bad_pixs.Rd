@@ -71,6 +71,7 @@ spectra. Chemometrics and Intelligent Laboratory Systems, 179, 82-84.
 Other peaks and valleys functions: 
 \code{\link{find_peaks}()},
 \code{\link{find_spikes}()},
+\code{\link{get_peaks}()},
 \code{\link{peaks}()},
 \code{\link{spikes}()},
 \code{\link{valleys}()},

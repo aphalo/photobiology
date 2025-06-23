@@ -520,6 +520,7 @@ peaks(sun.spct)
 Other peaks and valleys functions: 
 \code{\link{find_peaks}()},
 \code{\link{find_spikes}()},
+\code{\link{get_peaks}()},
 \code{\link{replace_bad_pixs}()},
 \code{\link{spikes}()},
 \code{\link{valleys}()},
