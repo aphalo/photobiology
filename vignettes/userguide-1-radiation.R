@@ -261,24 +261,27 @@ msmsply(two.mspct, `+`, 0.1)
 msmsply(two.mspct, trim_wl, range = c(285, 500), fill = NA)
 
 ## ----apply-3------------------------------------------------------------------
-msdply(two.mspct, max)
+msdply(two.mspct, wl_max)
 
 ## ----apply-4------------------------------------------------------------------
-ranges.df <- msdply(two.mspct, range)
-ranges.df
-cat(comment(ranges.df))
+wl_ranges.df <- msdply(two.mspct, wl_range)
+wl_ranges.df
+cat(comment(wl_ranges.df))
 
 ## ----apply-5------------------------------------------------------------------
-msdply(two.mspct, range, na.rm = TRUE)
+msdply(two.mspct, wl_range, na.rm = TRUE)
 
 ## ----apply-6------------------------------------------------------------------
 str(mslply(two.mspct, colnames))
 
 ## ----apply-7------------------------------------------------------------------
-str(msaply(two.mspct, max))
+str(msaply(two.mspct, wl_max))
 
 ## ----apply-8------------------------------------------------------------------
-msaply(two.mspct, range)
+msaply(two.mspct, wl_range)
+
+## -----------------------------------------------------------------------------
+wl_range(two.mspct)
 
 ## -----------------------------------------------------------------------------
 s_mean(sun_evening.mspct)
@@ -404,11 +407,26 @@ split_bands(list(c(100, 150, 200), c(800, 825)), length.out = 1)
 # options(tibble.print_max = 4)
 # options(tibble.print_min = 4)
 
-## ----print-1, eval=FALSE------------------------------------------------------
-# print(sun.spct, n = 3)
+## ----print-1------------------------------------------------------------------
+print(sun.spct, n = 3)
 
-## ----print-2, eval=FALSE------------------------------------------------------
-# summary(sun.spct)
+## ----print-2------------------------------------------------------------------
+str(summary(sun.spct))
+
+## ----print-2a-----------------------------------------------------------------
+summary(sun.spct)
+
+## ----print-2b-----------------------------------------------------------------
+summary(sun_evening.mspct)
+
+## ----print-2c, eval = FALSE---------------------------------------------------
+# summary(sun_evening.mspct, expand = "each")
+
+## ----print-2d-----------------------------------------------------------------
+summary(sun_evening.spct)
+
+## ----print-2e-----------------------------------------------------------------
+summary(sun_evening.spct, expand = "collection")
 
 ## -----------------------------------------------------------------------------
 na.omit(sun.spct)
@@ -644,6 +662,11 @@ filters.mspct <- filter_mspct(list(none = clear.spct,
 wl_range(filters.mspct)
 
 ## ----summary-5----------------------------------------------------------------
+nrow(sun.spct)
+nrow(peaks(sun.spct))
+nrow(valleys(sun.spct))
+
+## ----summary-5a---------------------------------------------------------------
 peaks(sun.spct, span = 51)
 valleys(sun.spct, span = 51)
 
@@ -664,14 +687,17 @@ peaks(sun.spct,
       span = NULL, 
       unit.out = "photon")
 
-## ----summary-9----------------------------------------------------------------
-peaks(sun.spct, span = NULL, refine.wl = TRUE)
-
 ## ----summary-10---------------------------------------------------------------
 spikes(sun.spct)
 
+## ----summary-10a--------------------------------------------------------------
+spikes(sun.spct, z.threshold = 6)
+
 ## ----col-summary-1------------------------------------------------------------
-msmsply(filters.mspct, peaks, span = 21)
+peaks(sun_evening.mspct, span = NULL)
+
+## ----col-summary-1a-----------------------------------------------------------
+peaks(sun_evening.spct, span = NULL)
 
 ## ----find-wls-1---------------------------------------------------------------
 wls_at_target(Ler_leaf_trns.spct, 
