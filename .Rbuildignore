@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.git/*
+^\.lintr$
 ^test/*
 ^data-raw$
 ^data-old$
