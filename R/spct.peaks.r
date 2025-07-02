@@ -1,11 +1,12 @@
 #' Find local maxima or global maximum (peaks)
 #'
 #' These functions find peaks (local maxima) and valleys (local minima) in a
-#' numeric vector, using a user selectable span and global and local size
-#' thresholds, returning a \code{logical} vector.
+#' numeric vector, using a user selectable span or window. Global and local
+#' size thresholds based on different criteria make it possible restrict
+#' the returned peaks to those more prominent. A \code{logical} vector is
+#' returned.
 #'
-#' @param x numeric vector. Hint: to find valleys, change the sign of the
-#'   argument with the unnary operator \code{-}.
+#' @param x numeric vector.
 #' @param global.threshold numeric A value belonging to class \code{"AsIs"} is
 #'   interpreted as an absolute minimum height or depth expressed in data units.
 #'   A bare \code{numeric} value (normally between 0.0 and 1.0), is interpreted
@@ -78,12 +79,11 @@
 #'   \code{\link{peaks}} and \code{\link{valleys}} accept as input different R
 #'   objects, including spectra and collections of spectra and return a subset
 #'   of the object. These methods are implemented using calls to functions
-#'   \code{find_peaks} and \code{\link{fit_peaks}}.
+#'   \code{find_peaks}, \code{find_valleys} and \code{\link{fit_peaks}}.
 #'
 #' @note The default for parameter \code{strict} is \code{FALSE} in functions
-#'   \code{peaks()} and \code{find_peaks()}, as in \code{stat_peaks()} and in
-#'   \code{stat_valleys()}, while the default in \code{\link[splus2R]{peaks}}
-#'   is \code{strict = FALSE}.
+#'   \code{find_peaks()} and \code{find_valleys()}, while the default in
+#'   \code{\link[splus2R]{peaks}} is \code{strict = TRUE}.
 #'
 #' @seealso \code{\link[splus2R]{peaks}}.
 #'
