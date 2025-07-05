@@ -120,11 +120,33 @@ find_peaks <-
     if (!is.null(span) && (is.na(span) || !is.numeric(span) || span < 1)) {
       stop("'span' must be NULL or a positive odd integer, not: ", format(span))
     }
-    if (!is.null(local.threshold) && !is.numeric(local.threshold)) {
-      stop("'local.threshold' must be NULL or a number, not: ", format(local.threshold))
+    if (!is.null(local.threshold)) {
+      if (is.na(local.threshold)) {
+        return(rep(NA, length(x)))
+      }
+      if (!is.numeric(local.threshold) || length(local.threshold) > 1L ||
+          local.threshold < 0 || local.threshold > 1) {
+        stop("'local.threshold' must be NULL or a single number in [0..1], not: ",
+             local.threshold)
+      }
     }
-    if (!is.null(global.threshold) && !is.numeric(global.threshold)) {
-      stop("'global.threshold' must be NULL or a number, not: ", format(local.threshold))
+
+    if (!is.null(global.threshold)) {
+      if (is.na(global.threshold)) {
+        return(rep(NA, length(x)))
+      }
+      if (!is.numeric(global.threshold) || length(global.threshold) > 1L) {
+        stop("'global.threshold' must be NULL or a single number, not: ",
+             local.threshold)
+      } else if (!inherits(global.threshold, "AsIs") &&
+                 (global.threshold < -1 || global.threshold > 1)) {
+        stop("'global.threshold' when not \"AsIs\" must be a number in [-1..1]",
+             "not: ", global.threshold)
+      }
+      if (inherits(global.threshold, "AsIs") && !is.finite(global.threshold)) {
+        # accept all peaks/valleys
+        global.threshold <- NULL
+      }
     }
 
     # Replace NA, NaN and Inf with smallest finite value
@@ -148,24 +170,38 @@ find_peaks <-
         return(logical(length(x)))
       }
     }
-    # compute only if needed
+    # compute threshold range only if needed
+    if (!is.null(global.threshold) || !is.null(local.threshold)) {
+      if (is.null(threshold.range)) {
+        threshold.range <- range(x, na.rm = TRUE)
+      } else if (length(threshold.range) == 1L) {
+        threshold.range <- range(threshold.range, x, na.rm = TRUE)
+      } else {
+        threshold.range <- range(threshold.range, na.rm = TRUE)
+      }
+      if (length(threshold.range) != 2L ||
+          (threshold.range[2] - threshold.range[1]) < 1e-16) {
+        warning("Skipping! Bad 'threshold.range': [",
+                paste(threshold.range, collapse = ", "), "]")
+        return(logical(length(x)))
+      }
+    }
+    # compute global multiplier and base only if needed
     if (!is.null(global.threshold)) {
       if (inherits(global.threshold, "AsIs")) {
         global.multiplier <- 1
         global.base <- 0
       } else {
-        global.multiplier <- threshold.range[2] - threshold.range[1]
+        global.multiplier <- abs(threshold.range[2] - threshold.range[1])
         global.base <- threshold.range[1]
       }
     }
-    # compute only if needed
+    # compute local multiplier only if needed
     if (!is.null(local.threshold)) {
       if (inherits(local.threshold, "AsIs")) {
         local.multiplier <- 1
-        local.base <- 0
       } else {
         local.multiplier <- threshold.range[2] - threshold.range[1]
-        local.base <- threshold.range[1]
       }
     }
 

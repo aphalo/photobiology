@@ -100,7 +100,7 @@ Function \code{find_peaks} is a wrapper built onto function
   \code{\link{peaks}} and \code{\link{valleys}} accept as input different R
   objects, including spectra and collections of spectra and return a subset
   of the object. These methods are implemented using calls to functions
-  \code{find_peaks} and \code{\link{fit_peaks}}.
+  \code{find_peaks}, \code{find_valleys} and \code{\link{fit_peaks}}.
 }
 \note{
 The use of these two functions is deprecated. They are retained for

@@ -7,8 +7,7 @@
 check_wl_stepsize(x, span = Inf, na.rm = FALSE)
 }
 \arguments{
-\item{x}{numeric vector. Hint: to find valleys, change the sign of the
-argument with the unnary operator \code{-}.}
+\item{x}{numeric vector.}
 
 \item{span}{odd positive integer A peak is defined as an element in a
 sequence which is greater than all other elements within a moving window of

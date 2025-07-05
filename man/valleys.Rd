@@ -327,8 +327,7 @@ valleys(
 )
 }
 \arguments{
-\item{x}{numeric vector. Hint: to find valleys, change the sign of the
-argument with the unnary operator \code{-}.}
+\item{x}{numeric vector.}
 
 \item{span}{odd positive integer A peak is defined as an element in a
 sequence which is greater than all other elements within a moving window of
@@ -437,7 +436,7 @@ Function \code{find_peaks} is a wrapper built onto function
   \code{\link{peaks}} and \code{\link{valleys}} accept as input different R
   objects, including spectra and collections of spectra and return a subset
   of the object. These methods are implemented using calls to functions
-  \code{find_peaks} and \code{\link{fit_peaks}}.
+  \code{find_peaks}, \code{find_valleys} and \code{\link{fit_peaks}}.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -482,9 +481,8 @@ Function \code{find_peaks} is a wrapper built onto function
 }}
 \note{
 The default for parameter \code{strict} is \code{FALSE} in functions
-  \code{peaks()} and \code{find_peaks()}, as in \code{stat_peaks()} and in
-  \code{stat_valleys()}, while the default in \code{\link[splus2R]{peaks}}
-  is \code{strict = FALSE}.
+  \code{find_peaks()} and \code{find_valleys()}, while the default in
+  \code{\link[splus2R]{peaks}} is \code{strict = TRUE}.
 }
 \examples{
 # default span = 5
