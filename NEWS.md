@@ -5,6 +5,11 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.13.2
+
+* Support `log()` and `sqrt()` transformations for `local.reference` in
+`find_peaks()` and `find_valleys()`.
+
 # photobiology 0.13.1
 
 * Rewrite function `find_peaks()` fixing a bug in the logic of threshold tests.
