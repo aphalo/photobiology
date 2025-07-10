@@ -41,7 +41,6 @@
 #'   extends the span to the whole length of \code{x}.
 #' @param strict logical flag: if \code{TRUE}, an element must be strictly
 #'   greater than all other values in its window to be considered a peak.
-#'   Default: \code{FALSE} (since version 0.13.1).
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for peaks.
 #'
@@ -49,17 +48,20 @@
 #'   that are TRUE correspond to local peaks in vector \code{x} and can be used
 #'   to extract the rows corresponding to peaks from a data frame.
 #'
-#' @details  As
-#'   \code{find_valleys}, \code{peaks} and \code{valleys} call
-#'   \code{find_peaks} to search for peaks and valleys, this explanation
-#'   applies to the four functions. Function \code{find_peaks} is a wrapper built onto function
+#' @details  As \code{\link[photobiology]{find_valleys}},
+#'   \code{\link[photobiology]{peaks}} and \code{\link[photobiology]{valleys}}
+#'   call \code{\link[photobiology]{find_peaks}} to search for peaks and
+#'   valleys, this explanation applies to the four functions. It also applies to
+#'   \code{\link[ggspectra]{stat_peaks}} and
+#'   \code{\link[ggspectra:stat_peaks]{stat_valleys}}. Function
+#'   \code{find_peaks} is a wrapper built onto function
 #'   \code{\link[splus2R]{peaks}} from \pkg{splus2R}, adds support for peak
 #'   height thresholds and handles \code{span = NULL} and non-finite (including
 #'   NA) values differently than \code{splus2R::peaks}. Instead of giving an
 #'   error when \code{na.rm = FALSE} and \code{x} contains \code{NA} values,
 #'   \code{NA} values are replaced with the smallest finite value in \code{x}.
 #'   \code{span = NULL} is treated as a special case and selects \code{max(x)}.
-#'   Passing `strict = TRUE` ensures that multiple global and within window
+#'   Passing \code{strict = TRUE} ensures that non-unique global and within window
 #'   maxima are ignored, and can result in no peaks being returned.
 #'
 #'   Two tests make it possible to ignore irrelevant peaks. One test
@@ -86,20 +88,21 @@
 #'   increases together with increasing computed within window median or
 #'   farthest value applies apply a less stringent height requirement in regions
 #'   with overall low height. In this case, natural logarithm or square root
-#'   weighting can be requested with `local.reference` arguments `"median.log"`,
-#'   `"farthest.log"`, `"median.sqrt"`, and `"farthest.sqrt"` as arguments for
-#'   \code{local.reference}.
+#'   weighting can be requested with \code{local.reference} arguments
+#'   \code{"median.log"}, \code{"farthest.log"}, \code{"median.sqrt"}, and
+#'   \code{"farthest.sqrt"} as arguments for \code{local.reference}.
 #'
-#'   While functions \code{find_peaks} and \code{find_valleys()} accept as input
-#'   a \code{numeric} vector and return a \code{logical} vector, methods
-#'   \code{\link{peaks}} and \code{\link{valleys}} accept as input different R
-#'   objects, including spectra and collections of spectra and return a subset
-#'   of the object. These methods are implemented using calls to functions
-#'   \code{find_peaks}, \code{find_valleys} and \code{\link{fit_peaks}}.
+#'   While functions \code{\link{find_peaks}} and \code{\link{find_valleys}}
+#'   accept as input a \code{numeric} vector and return a \code{logical} vector,
+#'   methods \code{\link{peaks}} and \code{\link{valleys}} accept as input
+#'   different R objects, including spectra and collections of spectra and
+#'   return a subset of the object. These methods are implemented using calls to
+#'   functions \code{find_peaks}, \code{find_valleys} and
+#'   \code{\link{fit_peaks}}.
 #'
 #' @note The default for parameter \code{strict} is \code{FALSE} in functions
-#'   \code{find_peaks()} and \code{find_valleys()}, while the default in
-#'   \code{\link[splus2R]{peaks}} is \code{strict = TRUE}.
+#'   \code{\link{find_peaks}} and \code{\link{find_valleys}}, while the default
+#'   in \code{\link[splus2R]{peaks}} is \code{strict = TRUE}.
 #'
 #' @seealso \code{\link[splus2R]{peaks}}.
 #'
@@ -497,8 +500,10 @@ peaks <- function(x,
                   na.rm,
                   ...) UseMethod("peaks")
 
-#' @describeIn peaks Default returning always NA.
+#' @rdname peaks
+#'
 #' @export
+#'
 peaks.default <-
   function(x,
            span = NA,
@@ -513,8 +518,10 @@ peaks.default <-
   x[NA]
 }
 
-#' @describeIn peaks Default function usable on numeric vectors.
+#' @rdname peaks
+#'
 #' @export
+#'
 peaks.numeric <-
   function(x,
            span = 5,
@@ -535,7 +542,7 @@ peaks.numeric <-
                na.rm = na.rm)]
 }
 
-#' @describeIn peaks  Method for "data.frame" objects.
+#' @rdname peaks
 #'
 #' @export
 #'
@@ -589,7 +596,7 @@ peaks.data.frame <-
     }
   }
 
-#' @describeIn peaks  Method for "generic_spct" objects.
+#' @rdname peaks
 #'
 #' @export
 #'
@@ -661,7 +668,7 @@ peaks.generic_spct <-
     }
   }
 
-#' @describeIn peaks  Method for "source_spct" objects.
+#' @rdname peaks
 #'
 #' @param unit.out character One of "energy" or "photon"
 #'
@@ -737,7 +744,7 @@ peaks.source_spct <-
     }
   }
 
-#' @describeIn peaks  Method for "response_spct" objects.
+#' @rdname peaks
 #'
 #' @export
 #'
@@ -808,7 +815,7 @@ peaks.response_spct <-
     }
   }
 
-#' @describeIn peaks  Method for "filter_spct" objects.
+#' @rdname peaks
 #'
 #' @param filter.qty character One of "transmittance" or "absorbance"
 #'
@@ -882,7 +889,7 @@ peaks.filter_spct <-
     }
   }
 
-#' @describeIn peaks  Method for "reflector_spct" objects.
+#' @rdname peaks
 #'
 #' @export
 #'
@@ -942,7 +949,7 @@ peaks.reflector_spct <- function(x,
   }
 }
 
-#' @describeIn peaks  Method for "solute_spct" objects.
+#' @rdname peaks
 #'
 #' @export
 #'
@@ -1009,7 +1016,7 @@ peaks.solute_spct <-
     }
   }
 
-#' @describeIn peaks  Method for "cps_spct" objects.
+#' @rdname peaks
 #'
 #' @export
 #'
@@ -1070,7 +1077,7 @@ peaks.cps_spct <- function(x,
   }
 }
 
-#' @describeIn peaks  Method for "raw_spct" objects.
+#' @rdname peaks
 #'
 #' @export
 #'
@@ -1134,7 +1141,7 @@ peaks.raw_spct <- function(x, span = 5,
 # _mspct ------------------------------------------------------------------
 
 
-#' @describeIn peaks  Method for "generic_mspct" objects.
+#' @rdname peaks
 #'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
@@ -1180,7 +1187,7 @@ peaks.generic_mspct <- function(x,
           .paropts = .paropts)
   }
 
-#' @describeIn peaks  Method for "source_mspct" objects.
+#' @rdname peaks
 #'
 #' @export
 #'
@@ -1220,7 +1227,7 @@ peaks.source_mspct <-
             .paropts = .paropts)
   }
 
-#' @describeIn peaks  Method for "cps_mspct" objects.
+#' @rdname peaks
 #'
 #' @export
 #'
@@ -1260,7 +1267,7 @@ peaks.response_mspct <-
             .paropts = .paropts)
   }
 
-#' @describeIn peaks  Method for "filter_mspct" objects.
+#' @rdname peaks
 #'
 #' @export
 #'
@@ -1301,7 +1308,7 @@ peaks.filter_mspct <-
   }
 
 
-#' @describeIn peaks  Method for "reflector_mspct" objects.
+#' @rdname peaks
 #'
 #' @export
 #'
@@ -1339,13 +1346,13 @@ peaks.reflector_mspct <-
   }
 
 
-#' @describeIn peaks  Method for "solute_mspct" objects.
+#' @rdname peaks
 #'
 #' @export
 #'
 peaks.solute_mspct <- peaks.reflector_mspct
 
-#' @describeIn peaks  Method for "cps_mspct" objects.
+#' @rdname peaks
 #'
 #' @export
 #'
@@ -1383,7 +1390,7 @@ peaks.cps_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn peaks  Method for "raw_mspct" objects.
+#' @rdname peaks
 #'
 #' @export
 #'
@@ -1477,7 +1484,8 @@ valleys <- function(x,
                     strict,
                     ...) UseMethod("valleys")
 
-#' @describeIn valleys Default returning always NA.
+#' @rdname valleys
+#'
 #' @export
 valleys.default <- function(x,
                             span,
@@ -1491,7 +1499,8 @@ valleys.default <- function(x,
   x[NA]
 }
 
-#' @describeIn valleys Default function usable on numeric vectors.
+#' @rdname valleys
+#'
 #' @export
 valleys.numeric <-
   function(x,
@@ -1513,7 +1522,7 @@ valleys.numeric <-
                    na.rm = na.rm)]
   }
 
-#' @describeIn valleys  Method for "data.frame" objects.
+#' @rdname valleys
 #'
 #' @export
 #'
@@ -1557,7 +1566,7 @@ valleys.data.frame <-
     }
   }
 
-#' @describeIn valleys  Method for "generic_spct" objects.
+#' @rdname valleys
 #'
 #' @export
 #'
@@ -1629,7 +1638,7 @@ valleys.generic_spct <-
     }
   }
 
-#' @describeIn valleys  Method for "source_spct" objects.
+#' @rdname valleys
 #'
 #' @param unit.out character One of "energy" or "photon"
 #'
@@ -1705,7 +1714,7 @@ valleys.source_spct <-
     }
   }
 
-#' @describeIn valleys  Method for "response_spct" objects.
+#' @rdname valleys
 #'
 #' @export
 #'
@@ -1776,7 +1785,7 @@ valleys.response_spct <-
     }
   }
 
-#' @describeIn valleys  Method for "filter_spct" objects.
+#' @rdname valleys
 #'
 #' @param filter.qty character One of "transmittance" or "absorbance"
 #'
@@ -1849,7 +1858,7 @@ valleys.filter_spct <-
     }
   }
 
-#' @describeIn valleys  Method for "reflector_spct".
+#' @rdname valleys
 #'
 #' @export
 #'
@@ -1910,7 +1919,7 @@ valleys.reflector_spct <-
     }
   }
 
-#' @describeIn valleys  Method for "solute_spct" objects.
+#' @rdname valleys
 #'
 #' @export
 #'
@@ -1977,7 +1986,7 @@ valleys.solute_spct <-
     }
   }
 
-#' @describeIn valleys  Method for "cps_spct" objects.
+#' @rdname valleys
 #'
 #' @export
 #'
@@ -2039,7 +2048,7 @@ valleys.cps_spct <-
     }
   }
 
-#' @describeIn valleys  Method for "raw_spct" objects.
+#' @rdname valleys
 #'
 #' @export
 #'
@@ -2103,7 +2112,7 @@ valleys.raw_spct <- function(x, span = 5,
 # _mspct ------------------------------------------------------------------
 
 
-#' @describeIn valleys  Method for "generic_mspct" objects.
+#' @rdname valleys
 #'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
@@ -2149,7 +2158,7 @@ valleys.generic_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn valleys  Method for "source_mspct" objects.
+#' @rdname valleys
 #'
 #' @export
 #'
@@ -2189,7 +2198,7 @@ valleys.source_mspct <-
             .paropts = .paropts)
   }
 
-#' @describeIn valleys  Method for "cps_mspct" objects.
+#' @rdname valleys
 #'
 #' @export
 #'
@@ -2229,7 +2238,7 @@ valleys.response_mspct <-
             .paropts = .paropts)
   }
 
-#' @describeIn valleys  Method for "filter_mspct" objects.
+#' @rdname valleys
 #'
 #' @export
 #'
@@ -2270,7 +2279,7 @@ valleys.filter_mspct <-
   }
 
 
-#' @describeIn valleys  Method for "reflector_mspct" objects.
+#' @rdname valleys
 #'
 #' @export
 #'
@@ -2308,13 +2317,13 @@ valleys.reflector_mspct <-
   }
 
 
-#' @describeIn valleys  Method for "solute_mspct" objects.
+#' @rdname valleys
 #'
 #' @export
 #'
 valleys.solute_mspct <- valleys.reflector_mspct
 
-#' @describeIn valleys  Method for "cps_mspct" objects.
+#' @rdname valleys
 #'
 #' @export
 #'
@@ -2352,7 +2361,7 @@ valleys.cps_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn valleys  Method for "raw_mspct" objects.
+#' @rdname valleys
 #'
 #' @export
 #'
@@ -2657,8 +2666,8 @@ wls_at_target <- function(x,
                           na.rm,
                           ...) UseMethod("wls_at_target")
 
-#' @describeIn wls_at_target Default returning always an empty object of the
-#'   same class as \code{x}.
+#' @rdname wls_at_target
+#'
 #' @export
 #'
 wls_at_target.default <-
@@ -2672,7 +2681,7 @@ wls_at_target.default <-
     x[NULL]
   }
 
-#' @describeIn wls_at_target  Method for "data.frame" objects.
+#' @rdname wls_at_target
 #'
 #' @export
 #'
@@ -2699,7 +2708,7 @@ wls_at_target.data.frame <-
              na.rm = na.rm)
   }
 
-#' @describeIn wls_at_target Method for "generic_spct" objects.
+#' @rdname wls_at_target
 #'
 #' @export
 #'
@@ -2740,7 +2749,7 @@ wls_at_target.generic_spct <-
              ...)
   }
 
-#' @describeIn wls_at_target Method for "source_spct" objects.
+#' @rdname wls_at_target
 #'
 #' @param unit.out character One of "energy" or "photon"
 #'
@@ -2789,7 +2798,8 @@ wls_at_target.source_spct <-
              na.rm = na.rm)
   }
 
-#' @describeIn wls_at_target Method for "response_spct" objects.
+#' @rdname wls_at_target
+#'
 #' @export
 #'
 wls_at_target.response_spct <-
@@ -2836,7 +2846,7 @@ wls_at_target.response_spct <-
              na.rm = na.rm)
   }
 
-#' @describeIn wls_at_target Method for "filter_spct" objects.
+#' @rdname wls_at_target
 #'
 #' @param filter.qty character One of "transmittance" or "absorbance"
 #'
@@ -2886,7 +2896,8 @@ wls_at_target.filter_spct <-
              na.rm = na.rm)
   }
 
-#' @describeIn wls_at_target Method for "reflector_spct" objects.
+#' @rdname wls_at_target
+#'
 #' @export
 #'
 wls_at_target.reflector_spct <-
@@ -2921,7 +2932,7 @@ wls_at_target.reflector_spct <-
              na.rm = na.rm)
   }
 
-#' @describeIn wls_at_target Method for "solute_spct" objects.
+#' @rdname wls_at_target
 #'
 #' @export
 #'
@@ -2964,7 +2975,7 @@ wls_at_target.solute_spct <-
              na.rm = na.rm)
   }
 
-#' @describeIn wls_at_target Method for "cps_spct" objects.
+#' @rdname wls_at_target
 #'
 #' @export
 #'
@@ -3001,7 +3012,7 @@ wls_at_target.cps_spct <-
   }
 
 
-#' @describeIn wls_at_target Method for "raw_spct" objects.
+#' @rdname wls_at_target
 #'
 #' @export
 #'
@@ -3041,7 +3052,7 @@ wls_at_target.raw_spct <-
 # _mspct ------------------------------------------------------------------
 
 
-#' @describeIn wls_at_target  Method for "generic_mspct" objects.
+#' @rdname wls_at_target
 #'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach

@@ -183,32 +183,6 @@ The name of the column of the spectral data to be used is inferred from the
 class of \code{x} and the argument passed to \code{unit.out} or
 \code{filter.qty} or their defaults that depend on R options set.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{wls_at_target(default)}: Default returning always an empty object of the
-same class as \code{x}.
-
-\item \code{wls_at_target(data.frame)}: Method for "data.frame" objects.
-
-\item \code{wls_at_target(generic_spct)}: Method for "generic_spct" objects.
-
-\item \code{wls_at_target(source_spct)}: Method for "source_spct" objects.
-
-\item \code{wls_at_target(response_spct)}: Method for "response_spct" objects.
-
-\item \code{wls_at_target(filter_spct)}: Method for "filter_spct" objects.
-
-\item \code{wls_at_target(reflector_spct)}: Method for "reflector_spct" objects.
-
-\item \code{wls_at_target(solute_spct)}: Method for "solute_spct" objects.
-
-\item \code{wls_at_target(cps_spct)}: Method for "cps_spct" objects.
-
-\item \code{wls_at_target(raw_spct)}: Method for "raw_spct" objects.
-
-\item \code{wls_at_target(generic_mspct)}: Method for "generic_mspct" objects.
-
-}}
 \note{
 When interpolation is used, only column \code{w.length} and the column
   against which the target value was compared are included in the returned

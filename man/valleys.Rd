@@ -367,8 +367,7 @@ length one \code{range(threshold.range, x)} is used, i.e., the range
 is expanded.}
 
 \item{strict}{logical flag: if \code{TRUE}, an element must be strictly
-greater than all other values in its window to be considered a peak.
-Default: \code{FALSE} (since version 0.13.1).}
+greater than all other values in its window to be considered a peak.}
 
 \item{...}{ignored}
 
@@ -406,17 +405,20 @@ Function that returns a subset of an R object with observations corresponding
 to local maxima.
 }
 \details{
-As
-  \code{find_valleys}, \code{peaks} and \code{valleys} call
-  \code{find_peaks} to search for peaks and valleys, this explanation
-  applies to the four functions. Function \code{find_peaks} is a wrapper built onto function
+As \code{\link[photobiology]{find_valleys}},
+  \code{\link[photobiology]{peaks}} and \code{\link[photobiology]{valleys}}
+  call \code{\link[photobiology]{find_peaks}} to search for peaks and
+  valleys, this explanation applies to the four functions. It also applies to
+  \code{\link[ggspectra]{stat_peaks}} and
+  \code{\link[ggspectra:stat_peaks]{stat_valleys}}. Function
+  \code{find_peaks} is a wrapper built onto function
   \code{\link[splus2R]{peaks}} from \pkg{splus2R}, adds support for peak
   height thresholds and handles \code{span = NULL} and non-finite (including
   NA) values differently than \code{splus2R::peaks}. Instead of giving an
   error when \code{na.rm = FALSE} and \code{x} contains \code{NA} values,
   \code{NA} values are replaced with the smallest finite value in \code{x}.
   \code{span = NULL} is treated as a special case and selects \code{max(x)}.
-  Passing `strict = TRUE` ensures that multiple global and within window
+  Passing \code{strict = TRUE} ensures that non-unique global and within window
   maxima are ignored, and can result in no peaks being returned.
 
   Two tests make it possible to ignore irrelevant peaks. One test
@@ -443,62 +445,22 @@ As
   increases together with increasing computed within window median or
   farthest value applies apply a less stringent height requirement in regions
   with overall low height. In this case, natural logarithm or square root
-  weighting can be requested with `local.reference` arguments `"median.log"`,
-  `"farthest.log"`, `"median.sqrt"`, and `"farthest.sqrt"` as arguments for
-  \code{local.reference}.
+  weighting can be requested with \code{local.reference} arguments
+  \code{"median.log"}, \code{"farthest.log"}, \code{"median.sqrt"}, and
+  \code{"farthest.sqrt"} as arguments for \code{local.reference}.
 
-  While functions \code{find_peaks} and \code{find_valleys()} accept as input
-  a \code{numeric} vector and return a \code{logical} vector, methods
-  \code{\link{peaks}} and \code{\link{valleys}} accept as input different R
-  objects, including spectra and collections of spectra and return a subset
-  of the object. These methods are implemented using calls to functions
-  \code{find_peaks}, \code{find_valleys} and \code{\link{fit_peaks}}.
+  While functions \code{\link{find_peaks}} and \code{\link{find_valleys}}
+  accept as input a \code{numeric} vector and return a \code{logical} vector,
+  methods \code{\link{peaks}} and \code{\link{valleys}} accept as input
+  different R objects, including spectra and collections of spectra and
+  return a subset of the object. These methods are implemented using calls to
+  functions \code{find_peaks}, \code{find_valleys} and
+  \code{\link{fit_peaks}}.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{valleys(default)}: Default returning always NA.
-
-\item \code{valleys(numeric)}: Default function usable on numeric vectors.
-
-\item \code{valleys(data.frame)}: Method for "data.frame" objects.
-
-\item \code{valleys(generic_spct)}: Method for "generic_spct" objects.
-
-\item \code{valleys(source_spct)}: Method for "source_spct" objects.
-
-\item \code{valleys(response_spct)}: Method for "response_spct" objects.
-
-\item \code{valleys(filter_spct)}: Method for "filter_spct" objects.
-
-\item \code{valleys(reflector_spct)}: Method for "reflector_spct".
-
-\item \code{valleys(solute_spct)}: Method for "solute_spct" objects.
-
-\item \code{valleys(cps_spct)}: Method for "cps_spct" objects.
-
-\item \code{valleys(raw_spct)}: Method for "raw_spct" objects.
-
-\item \code{valleys(generic_mspct)}: Method for "generic_mspct" objects.
-
-\item \code{valleys(source_mspct)}: Method for "source_mspct" objects.
-
-\item \code{valleys(response_mspct)}: Method for "cps_mspct" objects.
-
-\item \code{valleys(filter_mspct)}: Method for "filter_mspct" objects.
-
-\item \code{valleys(reflector_mspct)}: Method for "reflector_mspct" objects.
-
-\item \code{valleys(solute_mspct)}: Method for "solute_mspct" objects.
-
-\item \code{valleys(cps_mspct)}: Method for "cps_mspct" objects.
-
-\item \code{valleys(raw_mspct)}: Method for "raw_mspct" objects.
-
-}}
 \note{
 The default for parameter \code{strict} is \code{FALSE} in functions
-  \code{find_peaks()} and \code{find_valleys()}, while the default in
-  \code{\link[splus2R]{peaks}} is \code{strict = TRUE}.
+  \code{\link{find_peaks}} and \code{\link{find_valleys}}, while the default
+  in \code{\link[splus2R]{peaks}} is \code{strict = TRUE}.
 }
 \examples{
 # default span = 5
