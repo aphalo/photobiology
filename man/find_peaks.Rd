@@ -87,7 +87,10 @@ the returned peaks to those more prominent. A \code{logical} vector is
 returned.
 }
 \details{
-Function \code{find_peaks} is a wrapper built onto function
+As
+  \code{find_valleys}, \code{peaks} and \code{valleys} call
+  \code{find_peaks} to search for peaks and valleys, this explanation
+  applies to the four functions. Function \code{find_peaks} is a wrapper built onto function
   \code{\link[splus2R]{peaks}} from \pkg{splus2R}, adds support for peak
   height thresholds and handles \code{span = NULL} and non-finite (including
   NA) values differently than \code{splus2R::peaks}. Instead of giving an
@@ -105,13 +108,25 @@ Function \code{find_peaks} is a wrapper built onto function
   not locally prominent. In this second approach the height of each peak is
   compared to a summary computed from other values within the window of width
   equal to \code{span} where it was found. In this second case, the reference
-  value used within each window containing a peak is given by
-  \code{local.reference}. Parameter \code{threshold.range} determines how the
-  values passed as argument to \code{global.threshold} and
+  value used within each window containing a peak is given by the argument
+  passed to \code{local.reference}. Parameter \code{threshold.range}
+  determines how the values passed as argument to \code{global.threshold} and
   \code{local.threshold} are scaled. The default, \code{NULL} uses the range
   of \code{x}. Thresholds for ignoring too small peaks are applied after
-  peaks are searched for, and threshold values can in some cases
-  result in no peaks being returned.
+  peaks are searched for, and threshold values can in some cases result in no
+  peaks being returned.
+
+  The \code{local.threshold} argument is used \emph{as is} when
+  \code{local.reference} is \code{"median"} or \code{"farthest"}, i.e., the
+  same distance between peak and reference is used as cut-off irrespective of
+  the value of the reference. In cases when the prominence of peaks is
+  positively correlated with the baseline, a \code{local.threshold} that
+  increases together with increasing computed within window median or
+  farthest value applies apply a less stringent height requirement in regions
+  with overall low height. In this case, natural logarithm or square root
+  weighting can be requested with `local.reference` arguments `"median.log"`,
+  `"farthest.log"`, `"median.sqrt"`, and `"farthest.sqrt"` as arguments for
+  \code{local.reference}.
 
   While functions \code{find_peaks} and \code{find_valleys()} accept as input
   a \code{numeric} vector and return a \code{logical} vector, methods
