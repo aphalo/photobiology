@@ -62,27 +62,6 @@ Method specializations compute the product at each wavelength across
   share the same set of wavelengths. An error is triggered if this condition
   is nor fulfilled.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{s_prod(default)}: 
-
-\item \code{s_prod(generic_spct)}: 
-
-\item \code{s_prod(source_mspct)}: 
-
-\item \code{s_prod(response_mspct)}: 
-
-\item \code{s_prod(filter_mspct)}: 
-
-\item \code{s_prod(reflector_mspct)}: 
-
-\item \code{s_prod(calibration_mspct)}: 
-
-\item \code{s_prod(cps_mspct)}: 
-
-\item \code{s_prod(raw_mspct)}: 
-
-}}
 \note{
 Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
   from multiple scans in multiple variables or "columns". The methods accept

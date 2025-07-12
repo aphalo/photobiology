@@ -47,7 +47,7 @@
 s_quantile <- function(x, probs, na.rm, ...) UseMethod("s_quantile")
 
 
-#' @describeIn s_quantile
+#' @rdname s_quantile
 #'
 #' @export
 #'
@@ -58,7 +58,7 @@ s_quantile.default <-
     ifelse(is.any_mspct(x), do.call(class(x[[1]])[1], args = list()), NA)
   }
 
-#' @describeIn s_quantile
+#' @rdname s_quantile
 #'
 #' @export
 #'
@@ -72,7 +72,7 @@ s_quantile.generic_spct <-
     }
   }
 
-#' @describeIn s_quantile
+#' @rdname s_quantile
 #'
 #' @export
 #'
@@ -94,7 +94,7 @@ s_quantile.source_mspct <-
     }
 }
 
-#' @describeIn s_quantile
+#' @rdname s_quantile
 #'
 #' @export
 #'
@@ -117,7 +117,7 @@ s_quantile.response_mspct <-
   }
 
 
-#' @describeIn s_quantile
+#' @rdname s_quantile
 #'
 #' @export
 #'
@@ -139,7 +139,7 @@ s_quantile.filter_mspct <-
     }
   }
 
-#' @describeIn s_quantile
+#' @rdname s_quantile
 #'
 #' @export
 #'
@@ -161,7 +161,7 @@ s_quantile.reflector_mspct <-
     }
   }
 
-#' @describeIn s_quantile
+#' @rdname s_quantile
 #'
 #' @export
 #'
@@ -183,7 +183,7 @@ s_quantile.calibration_mspct <-
     }
   }
 
-#' @describeIn s_quantile
+#' @rdname s_quantile
 #'
 #' @export
 #'
@@ -205,7 +205,7 @@ s_quantile.cps_mspct <-
     }
   }
 
-#' @describeIn s_quantile
+#' @rdname s_quantile
 #'
 #' @export
 #'

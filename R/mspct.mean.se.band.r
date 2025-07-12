@@ -42,7 +42,7 @@
 s_mean_se_band <- function(x, na.rm, mult, ...)
   UseMethod("s_mean_se_band")
 
-#' @describeIn s_mean_se_band
+#' @rdname s_mean_se_band
 #'
 #' @export
 #'
@@ -53,7 +53,7 @@ s_mean_se_band.default <- function(x, na.rm = FALSE, mult = 1, ...) {
   ifelse(is.any_mspct(x), do.call(class(x[[1]])[1], args = list()), NA)
 }
 
-#' @describeIn s_mean_se_band
+#' @rdname s_mean_se_band
 #'
 #' @export
 #'
@@ -61,7 +61,7 @@ s_mean_se_band.generic_spct <- function(x, na.rm = FALSE, mult = 1, ...) {
   s_mean_se_band(subset2mspct(x), na.rm = na.rm, mult = mult, ...)
 }
 
-#' @describeIn s_mean_se_band
+#' @rdname s_mean_se_band
 #'
 #' @export
 #'
@@ -77,7 +77,7 @@ s_mean_se_band.filter_mspct <-
     )
   }
 
-#' @describeIn s_mean_se_band
+#' @rdname s_mean_se_band
 #'
 #' @export
 #'
@@ -93,7 +93,7 @@ s_mean_se_band.source_mspct <-
     )
   }
 
-#' @describeIn s_mean_se_band
+#' @rdname s_mean_se_band
 #'
 #' @export
 #'
@@ -109,7 +109,7 @@ s_mean_se_band.response_mspct <-
     )
   }
 
-#' @describeIn s_mean_se_band
+#' @rdname s_mean_se_band
 #'
 #' @export
 #'
@@ -125,7 +125,7 @@ s_mean_se_band.reflector_mspct <-
     )
   }
 
-#' @describeIn s_mean_se_band
+#' @rdname s_mean_se_band
 #'
 #' @export
 #'
@@ -141,7 +141,7 @@ s_mean_se_band.calibration_mspct <-
     )
   }
 
-#' @describeIn s_mean_se_band
+#' @rdname s_mean_se_band
 #'
 #' @export
 #'
@@ -156,7 +156,7 @@ s_mean_se_band.cps_mspct <- function(x, na.rm = FALSE, mult = 1, ...) {
   )
 }
 
-#' @describeIn s_mean_se_band
+#' @rdname s_mean_se_band
 #'
 #' @export
 #'

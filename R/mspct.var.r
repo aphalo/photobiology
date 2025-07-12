@@ -41,7 +41,7 @@
 s_var <- function(x, na.rm, ...)
   UseMethod("s_var")
 
-#' @describeIn s_var
+#' @rdname s_var
 #'
 #' @export
 #'
@@ -52,7 +52,7 @@ s_var.default <- function(x, na.rm = FALSE, ...) {
   ifelse(is.any_mspct(x), generic_spct(), NA)
 }
 
-#' @describeIn s_var
+#' @rdname s_var
 #'
 #' @export
 #'
@@ -60,7 +60,7 @@ s_var.generic_spct <- function(x, na.rm = FALSE, ...) {
   s_var(subset2mspct(x), na.rm = na.rm, ...)
 }
 
-#' @describeIn s_var
+#' @rdname s_var
 #'
 #' @export
 #'
@@ -74,7 +74,7 @@ s_var.filter_mspct <- function(x, na.rm = FALSE, ...) {
   )
 }
 
-#' @describeIn s_var
+#' @rdname s_var
 #'
 #' @export
 #'
@@ -88,7 +88,7 @@ s_var.source_mspct <- function(x, na.rm = FALSE, ...) {
   )
 }
 
-#' @describeIn s_var
+#' @rdname s_var
 #'
 #' @export
 #'
@@ -102,7 +102,7 @@ s_var.response_mspct <- function(x, na.rm = FALSE, ...) {
   )
 }
 
-#' @describeIn s_var
+#' @rdname s_var
 #'
 #' @export
 #'
@@ -116,7 +116,7 @@ s_var.reflector_mspct <- function(x, na.rm = FALSE, ...) {
   )
 }
 
-#' @describeIn s_var
+#' @rdname s_var
 #'
 #' @export
 #'
@@ -130,7 +130,7 @@ s_var.calibration_mspct <- function(x, na.rm = FALSE, ...) {
   )
 }
 
-#' @describeIn s_var
+#' @rdname s_var
 #'
 #' @export
 #'
@@ -144,7 +144,7 @@ s_var.cps_mspct <- function(x, na.rm = FALSE, ...) {
   )
 }
 
-#' @describeIn s_var
+#' @rdname s_var
 #'
 #' @export
 #'

@@ -44,7 +44,7 @@
 s_prod <- function(x, na.rm, ...)
   UseMethod("s_prod")
 
-#' @describeIn s_prod
+#' @rdname s_prod
 #'
 #' @export
 #'
@@ -55,7 +55,7 @@ s_prod.default <- function(x, na.rm = FALSE, ...) {
   ifelse(is.any_mspct(x), do.call(class(x[[1]])[1], args = list()), NA)
 }
 
-#' @describeIn s_prod
+#' @rdname s_prod
 #'
 #' @export
 #'
@@ -67,7 +67,7 @@ s_prod.generic_spct <- function(x, na.rm = FALSE, ...) {
   }
 }
 
-#' @describeIn s_prod
+#' @rdname s_prod
 #'
 #' @export
 #'
@@ -82,7 +82,7 @@ s_prod.source_mspct <- function(x, na.rm = FALSE, ...) {
   )
 }
 
-#' @describeIn s_prod
+#' @rdname s_prod
 #'
 #' @export
 #'
@@ -97,7 +97,7 @@ s_prod.response_mspct <- function(x, na.rm = FALSE, ...) {
   )
 }
 
-#' @describeIn s_prod
+#' @rdname s_prod
 #'
 #' @export
 #'
@@ -108,7 +108,7 @@ s_prod.filter_mspct <- function(x, na.rm = FALSE, ...) {
                  .fun.name = "Product of")
 }
 
-#' @describeIn s_prod
+#' @rdname s_prod
 #'
 #' @export
 #'
@@ -119,7 +119,7 @@ s_prod.reflector_mspct <- function(x, na.rm = FALSE, ...) {
                     .fun.name = "Product of")
 }
 
-#' @describeIn s_prod
+#' @rdname s_prod
 #'
 #' @export
 #'
@@ -133,7 +133,7 @@ s_prod.calibration_mspct <- function(x, na.rm = FALSE, ...) {
   )
 }
 
-#' @describeIn s_prod
+#' @rdname s_prod
 #'
 #' @export
 #'
@@ -147,7 +147,7 @@ s_prod.cps_mspct <- function(x, na.rm = FALSE, ...) {
   )
 }
 
-#' @describeIn s_prod
+#' @rdname s_prod
 #'
 #' @export
 #'

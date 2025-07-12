@@ -69,27 +69,6 @@ Method specializations compute the qunatiles at each wavelength
   share the same set of wavelengths. An error is triggered if this condition
   is not fulfilled.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{s_quantile(default)}: 
-
-\item \code{s_quantile(generic_spct)}: 
-
-\item \code{s_quantile(source_mspct)}: 
-
-\item \code{s_quantile(response_mspct)}: 
-
-\item \code{s_quantile(filter_mspct)}: 
-
-\item \code{s_quantile(reflector_mspct)}: 
-
-\item \code{s_quantile(calibration_mspct)}: 
-
-\item \code{s_quantile(cps_mspct)}: 
-
-\item \code{s_quantile(raw_mspct)}: 
-
-}}
 \note{
 Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
   from multiple scans in multiple variables or "columns". The methods accept

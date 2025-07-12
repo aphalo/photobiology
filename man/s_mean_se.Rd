@@ -64,27 +64,6 @@ Method specializations compute the  mean and SEM at
   in \code{x} must share the same set of wavelengths. An error is triggered
   if this condition is nor fulfilled. The value passed as argument to `mult`
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{s_mean_se(default)}: 
-
-\item \code{s_mean_se(generic_spct)}: 
-
-\item \code{s_mean_se(filter_mspct)}: 
-
-\item \code{s_mean_se(source_mspct)}: 
-
-\item \code{s_mean_se(response_mspct)}: 
-
-\item \code{s_mean_se(reflector_mspct)}: 
-
-\item \code{s_mean_se(calibration_mspct)}: 
-
-\item \code{s_mean_se(cps_mspct)}: 
-
-\item \code{s_mean_se(raw_mspct)}: 
-
-}}
 \note{
 Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
   from multiple scans in multiple variables or "columns". The methods accept

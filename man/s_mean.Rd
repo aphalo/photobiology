@@ -37,7 +37,7 @@ s_mean(x, trim, na.rm, ...)
 \item{x}{An R object.}
 
 \item{trim}{numeric The fraction (0 to 0.5) of observations to be trimmed
-from each end of x before the mean is computed. Values of trim outside 
+from each end of x before the mean is computed. Values of trim outside
 that range are taken as the nearest endpoint.}
 
 \item{na.rm}{logical A value indicating whether NA values should be stripped
@@ -66,27 +66,6 @@ Method specializations compute the mean at each wavelength across a
   share the same set of wavelengths. An error is triggered if this condition
   is nor fulfilled.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{s_mean(default)}: 
-
-\item \code{s_mean(generic_spct)}: 
-
-\item \code{s_mean(source_mspct)}: 
-
-\item \code{s_mean(response_mspct)}: 
-
-\item \code{s_mean(filter_mspct)}: 
-
-\item \code{s_mean(reflector_mspct)}: 
-
-\item \code{s_mean(calibration_mspct)}: 
-
-\item \code{s_mean(cps_mspct)}: 
-
-\item \code{s_mean(raw_mspct)}: 
-
-}}
 \note{
 Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
   from multiple scans in multiple variables or "columns". The methods accept

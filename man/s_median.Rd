@@ -62,27 +62,6 @@ Method specializations compute the median at each wavelength across
   in \code{x} must share the same set of wavelengths. An error is triggered
   if this condition is nor fulfilled.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{s_median(default)}: 
-
-\item \code{s_median(generic_spct)}: 
-
-\item \code{s_median(source_mspct)}: 
-
-\item \code{s_median(response_mspct)}: 
-
-\item \code{s_median(filter_mspct)}: 
-
-\item \code{s_median(reflector_mspct)}: 
-
-\item \code{s_median(calibration_mspct)}: 
-
-\item \code{s_median(cps_mspct)}: 
-
-\item \code{s_median(raw_mspct)}: 
-
-}}
 \note{
 Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
   from multiple scans in multiple variables or "columns". The methods accept

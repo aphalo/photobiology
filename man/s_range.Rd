@@ -62,27 +62,6 @@ Method specializations compute the range at each wavelength across a
   in \code{x} must share the same set of wavelengths. An error is triggered
   if this condition is nor fulfilled.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{s_range(default)}: 
-
-\item \code{s_range(generic_spct)}: 
-
-\item \code{s_range(filter_mspct)}: 
-
-\item \code{s_range(source_mspct)}: 
-
-\item \code{s_range(response_mspct)}: 
-
-\item \code{s_range(reflector_mspct)}: 
-
-\item \code{s_range(calibration_mspct)}: 
-
-\item \code{s_range(cps_mspct)}: 
-
-\item \code{s_range(raw_mspct)}: 
-
-}}
 \note{
 Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
   from multiple scans in multiple variables or "columns". The methods accept

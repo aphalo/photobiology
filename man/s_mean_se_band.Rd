@@ -64,27 +64,6 @@ Method specializations compute the  mean and limits based on SEM at
   if this condition is nor fulfilled. The value passed as argument to `mult`
   can be used to estimate a confidence interval for each mean value.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{s_mean_se_band(default)}: 
-
-\item \code{s_mean_se_band(generic_spct)}: 
-
-\item \code{s_mean_se_band(filter_mspct)}: 
-
-\item \code{s_mean_se_band(source_mspct)}: 
-
-\item \code{s_mean_se_band(response_mspct)}: 
-
-\item \code{s_mean_se_band(reflector_mspct)}: 
-
-\item \code{s_mean_se_band(calibration_mspct)}: 
-
-\item \code{s_mean_se_band(cps_mspct)}: 
-
-\item \code{s_mean_se_band(raw_mspct)}: 
-
-}}
 \note{
 Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
   from multiple scans in multiple variables or "columns". The methods accept

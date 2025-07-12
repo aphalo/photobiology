@@ -40,7 +40,7 @@
 #'
 s_median <- function(x, na.rm, ...) UseMethod("s_median")
 
-#' @describeIn s_median
+#' @rdname s_median
 #'
 #' @export
 #'
@@ -49,7 +49,7 @@ s_median.default <- function(x, na.rm = FALSE, ...) {
   ifelse(is.any_mspct(x), do.call(class(x[[1]])[1], args = list()), NA)
 }
 
-#' @describeIn s_median
+#' @rdname s_median
 #'
 #' @export
 #'
@@ -61,7 +61,7 @@ s_median.generic_spct <- function(x, na.rm = FALSE, ...) {
   }
 }
 
-#' @describeIn s_median
+#' @rdname s_median
 #'
 #' @export
 #'
@@ -69,7 +69,7 @@ s_median.source_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_source(x = x, .fun = stats::median, na.rm = na.rm, .fun.name = "Median of")
 }
 
-#' @describeIn s_median
+#' @rdname s_median
 #'
 #' @export
 #'
@@ -77,7 +77,7 @@ s_median.response_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_response(x = x, .fun = stats::median, na.rm = na.rm, .fun.name = "Median of")
 }
 
-#' @describeIn s_median
+#' @rdname s_median
 #'
 #' @export
 #'
@@ -85,7 +85,7 @@ s_median.filter_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_filter(x = x, .fun = stats::median, na.rm = na.rm, .fun.name = "Median of")
 }
 
-#' @describeIn s_median
+#' @rdname s_median
 #'
 #' @export
 #'
@@ -93,7 +93,7 @@ s_median.reflector_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_reflector(x = x, .fun = stats::median, na.rm = na.rm, .fun.name = "Median of")
 }
 
-#' @describeIn s_median
+#' @rdname s_median
 #'
 #' @export
 #'
@@ -101,7 +101,7 @@ s_median.calibration_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_calibration(x = x, .fun = stats::median, na.rm = na.rm, .fun.name = "Median of")
 }
 
-#' @describeIn s_median
+#' @rdname s_median
 #'
 #' @export
 #'
@@ -109,7 +109,7 @@ s_median.cps_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_cps(x = x, .fun = stats::median, na.rm = na.rm, .fun.name = "Median of")
 }
 
-#' @describeIn s_median
+#' @rdname s_median
 #'
 #' @export
 #'

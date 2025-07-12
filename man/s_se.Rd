@@ -62,27 +62,6 @@ Method specializations compute the standard error of the mean at
   in \code{x} must share the same set of wavelengths. An error is triggered
   if this condition is nor fulfilled.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{s_se(default)}: 
-
-\item \code{s_se(generic_spct)}: 
-
-\item \code{s_se(source_mspct)}: 
-
-\item \code{s_se(response_mspct)}: 
-
-\item \code{s_se(filter_mspct)}: 
-
-\item \code{s_se(reflector_mspct)}: 
-
-\item \code{s_se(calibration_mspct)}: 
-
-\item \code{s_se(cps_mspct)}: 
-
-\item \code{s_se(raw_mspct)}: 
-
-}}
 \note{
 Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
   from multiple scans in multiple variables or "columns". The methods accept

@@ -43,7 +43,7 @@
 s_sum <- function(x, na.rm, ...)
   UseMethod("s_sum")
 
-#' @describeIn s_sum
+#' @rdname s_sum
 #'
 #' @export
 #'
@@ -54,7 +54,7 @@ s_sum.default <- function(x, na.rm = FALSE, ...) {
   ifelse(is.any_mspct(x), do.call(class(x[[1]])[1], args = list()), NA)
 }
 
-#' @describeIn s_sum
+#' @rdname s_sum
 #'
 #' @export
 #'
@@ -62,7 +62,7 @@ s_sum.generic_spct <- function(x, na.rm = FALSE, ...) {
   s_sum(subset2mspct(x), na.rm = na.rm, ...)
 }
 
-#' @describeIn s_sum
+#' @rdname s_sum
 #'
 #' @export
 #'
@@ -78,7 +78,7 @@ s_sum.filter_mspct <- function(x, na.rm = FALSE, ...) {
   )
 }
 
-#' @describeIn s_sum
+#' @rdname s_sum
 #'
 #' @export
 #'
@@ -89,7 +89,7 @@ s_sum.source_mspct <- function(x, na.rm = FALSE, ...) {
                  .fun.name = "Sum of")
 }
 
-#' @describeIn s_sum
+#' @rdname s_sum
 #'
 #' @export
 #'
@@ -100,7 +100,7 @@ s_sum.response_mspct <- function(x, na.rm = FALSE, ...) {
                    .fun.name = "Sum of")
 }
 
-#' @describeIn s_sum
+#' @rdname s_sum
 #'
 #' @export
 #'
@@ -115,7 +115,7 @@ s_sum.reflector_mspct <- function(x, na.rm = FALSE, ...) {
   )
 }
 
-#' @describeIn s_sum
+#' @rdname s_sum
 #'
 #' @export
 #'
@@ -130,7 +130,7 @@ s_sum.calibration_mspct <- function(x, na.rm = FALSE, ...) {
   )
 }
 
-#' @describeIn s_sum
+#' @rdname s_sum
 #'
 #' @export
 #'
@@ -144,7 +144,7 @@ s_sum.cps_mspct <- function(x, na.rm = FALSE, ...) {
   )
 }
 
-#' @describeIn s_sum
+#' @rdname s_sum
 #'
 #' @export
 #'

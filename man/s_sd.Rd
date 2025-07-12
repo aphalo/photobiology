@@ -62,27 +62,6 @@ Method specializations compute the standard deviation at each
   in \code{x} must share the same set of wavelengths. An error is triggered
   if this condition is nor fulfilled.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{s_sd(default)}: 
-
-\item \code{s_sd(generic_spct)}: 
-
-\item \code{s_sd(filter_mspct)}: 
-
-\item \code{s_sd(source_mspct)}: 
-
-\item \code{s_sd(response_mspct)}: 
-
-\item \code{s_sd(reflector_mspct)}: 
-
-\item \code{s_sd(calibration_mspct)}: 
-
-\item \code{s_sd(cps_mspct)}: 
-
-\item \code{s_sd(raw_mspct)}: 
-
-}}
 \note{
 Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
   from multiple scans in multiple variables or "columns". The methods accept
