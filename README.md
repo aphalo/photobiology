@@ -73,9 +73,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::now(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2025-06-23 03:21:17 UTC"
+#> [1] "2025-07-12 03:37:54 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 17.36736
+#> [1] 16.9267
 ```
 
 ## Installation

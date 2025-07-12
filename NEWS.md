@@ -9,6 +9,8 @@ editor_options:
 
 * Support `log()` and `sqrt()` transformations for `local.reference` in
 `find_peaks()` and `find_valleys()`.
+* Add `s_quantile()` methods for parallel quantiles from a collection of
+spectra.
 
 # photobiology 0.13.1
 

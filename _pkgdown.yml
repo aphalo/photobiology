@@ -126,6 +126,7 @@ reference:
     - s_mean
     - s_median
     - s_range
+    - s_quantile
     - s_var
     - s_sd
     - s_se

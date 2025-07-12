@@ -92,7 +92,7 @@ name for the output from each of the functions. If
 \item{...}{Arguments passed to .fun.}
 }
 \description{
-Private methods for collections of spectra. Applies a function at each 
+Private methods for collections of spectra. Applies a function at each
 wavelength across all the spectra in the collection.
 }
 \note{

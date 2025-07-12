@@ -1,6 +1,6 @@
 #' rowwise functions for collections of spectra
 #'
-#' Private methods for collections of spectra. Applies a function at each 
+#' Private methods for collections of spectra. Applies a function at each
 #' wavelength across all the spectra in the collection.
 #'
 #' @param x An R object. Currently this package defines methods for collections
@@ -36,7 +36,7 @@ rowwise_filter <-
            w.length.out = NULL,
            ...) {
     # we accept both function objects and lists of functions as input, but we
-    # convert function arguments to lists of length 1..
+    # convert function arguments to lists of length 1.
     if (is.function(.fun)) {
       .fun <- list(.fun)
     }
@@ -105,7 +105,7 @@ rowwise_filter <-
                            multiple.wl = 1L)
     }
     what.measured <- what_measured(x, simplify = TRUE)
-    what_measured(zz) <- 
+    what_measured(zz) <-
       paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
             what.measured)
     how_measured(zz) <- how_measured(x, simplify = TRUE)
@@ -427,7 +427,7 @@ rowwise_calibration <-
     zz <- setCalibrationSpct(zz, multiple.wl = 1L)
 
     what.measured <- what_measured(x, simplify = TRUE)
-    what_measured(zz) <- 
+    what_measured(zz) <-
       paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
             what.measured)
     how_measured(zz) <- how_measured(x, simplify = TRUE)
@@ -563,7 +563,7 @@ rowwise_raw <-
     }
 
     what.measured <- what_measured(x, simplify = TRUE)
-    what_measured(zz) <- 
+    what_measured(zz) <-
       paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
             what.measured)
     how_measured(zz) <- how_measured(x, simplify = TRUE)
@@ -618,7 +618,7 @@ make_wl_consistent <- function(x,
         wl.range[1] <- min(wl.ranges["min.wl"])
         wl.range[2] <- max(wl.ranges["max.wl"])
         max.length <- max(msaply(x, .fun = length))
-        stepsize <- 
+        stepsize <-
           min(msaply(x,
                      .fun = function(x) {stats::median(diff(x[["w.length"]]))}))
         length.out <- max(max.length, diff(wl.range) / stepsize)
