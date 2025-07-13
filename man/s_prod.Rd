@@ -34,19 +34,18 @@ s_prod(x, na.rm, ...)
 \method{s_prod}{raw_mspct}(x, na.rm = FALSE, ...)
 }
 \arguments{
-\item{x}{An R object. Currently this package defines methods for collections
-of spectral objects.}
+\item{x}{An R object.}
 
-\item{na.rm}{logical. A value indicating whether NA values should be stripped
+\item{na.rm}{logical A value indicating whether NA values should be stripped
 before the computation proceeds.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }
 \value{
 If \code{x} is a collection spectral of objects, such as a
-  \code{"filter_mspct"} object, the returned object is of same class as the
-  members of the collection, such as \code{"filter_spct"}, containing the
-  summary spectrum, with variables with names tagged for summaries other
+  \code{"filter_mspct"} object, the returned object belongs to the same class
+  as the members of the collection, such as \code{"filter_spct"}, containing
+  the summary spectrum, with variables with names tagged for summaries other
   than mean or median.
 }
 \description{
@@ -63,14 +62,7 @@ Method specializations compute the product at each wavelength across
   is nor fulfilled.
 }
 \note{
-Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
-  from multiple scans in multiple variables or "columns". The methods accept
-  as arguments objects of these classes only if spectra contain data for a
-  single spectrometer scan. In the case of \code{cps_spct} objects, a single
-  column can also contain data from multiple scans spliced into a single
-  variable.
-
-  The product operation is meaningful only for certain physical
+The product operation is meaningful only for certain physical
   quantities or bases of expression.
 }
 \examples{

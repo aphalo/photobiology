@@ -11,32 +11,24 @@
 #'   share the same set of wavelengths. An error is triggered if this condition
 #'   is not fulfilled.
 #'
-#' @param x An R object. Currently this package defines methods for collections
-#'   of spectral objects.
+#' @inheritParams s_mean
 #' @param probs numeric vector of probabilities with values in \eqn{[0, 1]}.
-#' @param na.rm	logical. A value indicating whether NA values should be stripped
-#'   before the computation proceeds.
-#' @param ...	Further arguments passed by name to \code{\link[stats]{quantile}}.
 #' @param simplify logical If \code{TRUE} and a single quantile is computed,
 #'   return an spectrum by itself instead of as a single member of a collection.
 #'
 #' @return If \code{x} is a collection spectral of objects, such as a
 #'   \code{"filter_mspct"} object, the returned object is of same class as the
 #'   the collection, such as \code{"filter_mspct"}, containing one member
-#'   summary spectrum for each value in \code{probs}, with variables with names
-#'   tagged for summaries other than mean, median or quantiles. If a single
-#'   quantile is computed and \code{simplify = TRUE} a single spectrum such as
-#'    \code{"filter_spct"} is returned.
+#'   summary spectrum for each value in \code{probs} with the same variable
+#'   names as in the input. If a single quantile is computed and \code{simplify
+#'   = TRUE} a single spectrum such as \code{"filter_spct"} is returned.
 #'
-#' @note Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
-#'   from multiple scans in multiple variables or "columns". The methods accept
-#'   as arguments objects of these classes only if spectra contain data for a
-#'   single spectrometer scan. In the case of \code{cps_spct} objects, a single
-#'   column can also contain data from multiple scans spliced into a single
-#'   variable.
+#' @inherit s_mean note
 #'
-#' @seealso See \code{\link[stats]{quantile}} for the \code{qunatile()} method
-#'   used for the computations. Additional arguments can be paased by name to
+#' @inheritSection s_mean Deepest Curves
+#'
+#' @seealso See \code{\link[stats]{quantile}} for the \code{quantile} method
+#'   used for the computations. Additional arguments can be passed by name to
 #'   be forwarded to \code{quantile}.
 #'
 #' @export

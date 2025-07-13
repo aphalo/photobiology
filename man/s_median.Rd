@@ -34,19 +34,18 @@ s_median(x, na.rm, ...)
 \method{s_median}{raw_mspct}(x, na.rm = FALSE, ...)
 }
 \arguments{
-\item{x}{An R object. Currently this package defines methods for collections
-of spectral objects.}
+\item{x}{An R object.}
 
-\item{na.rm}{logical. A value indicating whether NA values should be stripped
+\item{na.rm}{logical A value indicating whether NA values should be stripped
 before the computation proceeds.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }
 \value{
 If \code{x} is a collection spectral of objects, such as a
-  \code{"filter_mspct"} object, the returned object is of same class as the
-  members of the collection, such as \code{"filter_spct"}, containing the
-  summary spectrum, with variables with names tagged for summaries other
+  \code{"filter_mspct"} object, the returned object belongs to the same class
+  as the members of the collection, such as \code{"filter_spct"}, containing
+  the summary spectrum, with variables with names tagged for summaries other
   than mean or median.
 }
 \description{
@@ -64,12 +63,22 @@ Method specializations compute the median at each wavelength across
 }
 \note{
 Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
-  from multiple scans in multiple variables or "columns". The methods accept
-  as arguments objects of these classes only if spectra contain data for a
-  single spectrometer scan. In the case of \code{cps_spct} objects, a single
-  column can also contain data from multiple scans spliced into a single
-  variable.
+  from multiple scans in multiple variables or "columns". The parallel
+  summaries' methods accept as arguments objects of these classes only if
+  spectra contain data for a single spectrometer scan. In the case of
+  \code{cps_spct} objects, a single column can also contain data from
+  multiple scans spliced into a single variable.
 }
+\section{Deepest Curves}{
+ Parallel summaries differ fundamentally from the
+  "deepest curves" obtained through functional data analysis (FDA) in that in
+  functional data analysis one of the input curves is returned as the deepest
+  one based on a decision criterion. In contrast the parallel summaries from
+  package 'photobioloy' return one or more "fictional" curves different to
+  any of those passed as inputs. This curve is constructed from independent
+  summaries at each wavelength value.
+}
+
 \examples{
 s_median(sun_evening.mspct)
 

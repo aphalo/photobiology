@@ -43,9 +43,9 @@ before the computation proceeds.}
 }
 \value{
 If \code{x} is a collection spectral of objects, such as a
-  \code{"filter_mspct"} object, the returned object is of same class as the
-  members of the collection, such as \code{"filter_spct"}, containing the
-  summary spectrum, with variables with names tagged for summaries other
+  \code{"filter_mspct"} object, the returned object belongs to the same class
+  as the members of the collection, such as \code{"filter_spct"}, containing
+  the summary spectrum, with variables with names tagged for summaries other
   than mean or median.
 }
 \description{
@@ -62,14 +62,7 @@ Method specializations compute the sum at each wavelength across a
   if this condition is nor fulfilled.
 }
 \note{
-Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
-  from multiple scans in multiple variables or "columns". The methods accept
-  as arguments objects of these classes only if spectra contain data for a
-  single spectrometer scan. In the case of \code{cps_spct} objects, a single
-  column can also contain data from multiple scans spliced into a single
-  variable.
-
-  The sum operation is meaningful only for certain physical
+The sum operation is meaningful only for certain physical
   quantities or bases of expression.
 }
 \examples{

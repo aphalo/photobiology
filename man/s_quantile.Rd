@@ -34,15 +34,14 @@ s_quantile(x, probs, na.rm, ...)
 \method{s_quantile}{raw_mspct}(x, probs = c(0.25, 0.5, 0.75), na.rm = FALSE, ..., simplify = TRUE)
 }
 \arguments{
-\item{x}{An R object. Currently this package defines methods for collections
-of spectral objects.}
+\item{x}{An R object.}
 
 \item{probs}{numeric vector of probabilities with values in \eqn{[0, 1]}.}
 
-\item{na.rm}{logical. A value indicating whether NA values should be stripped
+\item{na.rm}{logical A value indicating whether NA values should be stripped
 before the computation proceeds.}
 
-\item{...}{Further arguments passed by name to \code{\link[stats]{quantile}}.}
+\item{...}{Further arguments passed to or from other methods.}
 
 \item{simplify}{logical If \code{TRUE} and a single quantile is computed,
 return an spectrum by itself instead of as a single member of a collection.}
@@ -51,10 +50,9 @@ return an spectrum by itself instead of as a single member of a collection.}
 If \code{x} is a collection spectral of objects, such as a
   \code{"filter_mspct"} object, the returned object is of same class as the
   the collection, such as \code{"filter_mspct"}, containing one member
-  summary spectrum for each value in \code{probs}, with variables with names
-  tagged for summaries other than mean, median or quantiles. If a single
-  quantile is computed and \code{simplify = TRUE} a single spectrum such as
-   \code{"filter_spct"} is returned.
+  summary spectrum for each value in \code{probs} with the same variable
+  names as in the input. If a single quantile is computed and \code{simplify
+  = TRUE} a single spectrum such as \code{"filter_spct"} is returned.
 }
 \description{
 Method to compute the "parallel" quantiles of values across members of a
@@ -71,18 +69,28 @@ Method specializations compute the qunatiles at each wavelength
 }
 \note{
 Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
-  from multiple scans in multiple variables or "columns". The methods accept
-  as arguments objects of these classes only if spectra contain data for a
-  single spectrometer scan. In the case of \code{cps_spct} objects, a single
-  column can also contain data from multiple scans spliced into a single
-  variable.
+  from multiple scans in multiple variables or "columns". The parallel
+  summaries' methods accept as arguments objects of these classes only if
+  spectra contain data for a single spectrometer scan. In the case of
+  \code{cps_spct} objects, a single column can also contain data from
+  multiple scans spliced into a single variable.
 }
+\section{Deepest Curves}{
+ Parallel summaries differ fundamentally from the
+  "deepest curves" obtained through functional data analysis (FDA) in that in
+  functional data analysis one of the input curves is returned as the deepest
+  one based on a decision criterion. In contrast the parallel summaries from
+  package 'photobioloy' return one or more "fictional" curves different to
+  any of those passed as inputs. This curve is constructed from independent
+  summaries at each wavelength value.
+}
+
 \examples{
 s_quantile(sun_evening.mspct)
 
 }
 \seealso{
-See \code{\link[stats]{quantile}} for the \code{qunatile()} method
-  used for the computations. Additional arguments can be paased by name to
+See \code{\link[stats]{quantile}} for the \code{quantile} method
+  used for the computations. Additional arguments can be passed by name to
   be forwarded to \code{quantile}.
 }

@@ -11,26 +11,13 @@
 #'   in \code{x} must share the same set of wavelengths. An error is triggered
 #'   if this condition is nor fulfilled.
 #'
-#' @param x An R object. Currently this package defines methods for collections
-#'    of spectral objects.
-#' @param na.rm	logical. A value indicating whether NA values should be stripped
-#'   before the computation proceeds.
-#' @param ...	Further arguments passed to or from other methods.
+#' @inheritParams s_mean
 #'
-#' @return If \code{x} is a collection spectral of objects, such as a
-#'   \code{"filter_mspct"} object, the returned object is of same class as the
-#'   members of the collection, such as \code{"filter_spct"}, containing the
-#'   summary spectrum, with variables with names tagged for summaries other
-#'   than mean or median.
+#' @inherit s_mean note return
 #'
-#' @note Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
-#'   from multiple scans in multiple variables or "columns". The methods accept
-#'   as arguments objects of these classes only if spectra contain data for a
-#'   single spectrometer scan. In the case of \code{cps_spct} objects, a single
-#'   column can also contain data from multiple scans spliced into a single
-#'   variable.
+#' @inheritSection s_mean Deepest Curves
 #'
-#' @seealso See \code{\link[base]{Extremes}} details on the \code{min()} and
+#' @seealso See \code{\link[base]{Extremes}} for details on the \code{min()} and
 #'   \code{max()} methods used for the computations.
 #'
 #' @export
