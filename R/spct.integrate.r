@@ -72,21 +72,11 @@ average_spct <- function(spct) {
 #' @param fill a value to be assigned to out of range wavelengths
 #' @param length.out numeric value
 #'
-#' @details If \code{length.out} it is a numeric value, then gives the number of
-#'   rows in the output, if it is \code{NULL}, the values in the numeric vector
-#'   \code{w.length.out} are used. If both are not \code{NULL} then the range of
-#'   \code{w.length.out} and \code{length.out} are used to generate a vector of
-#'   wavelength. A value of \code{NULL} for \code{fill} prevents extrapolation.
-#'   If both \code{w.length.out} and \code{length.out} are \code{NULL} the input
-#'   is returned as is. If \code{w.length.out} has length equal to zero, zero
-#'   rows from the input are returned.
+#' @inherit interpolate_spectrum details
 #'
-#' @note The default \code{fill = NA} fills extrapolated values with NA. Giving NULL as
-#' argument for \code{fill} deletes wavelengths outside the input data range from the
-#' returned spectrum. A numerical value can be also be provided as fill. This function calls
-#' \code{interpolate_spectrum} for each non-wavelength column in the input spectra object.
-#'
-#' @return A new spectral object of the same class as argument \code{spct}.
+#' @return A new spectral object of the same class as argument \code{spct} with
+#'   a different number of rows than \code{x}, different \code{w.length} values
+#'   and new numeric values for spectral data obtained by interpolation.
 #'
 #' @export
 #' @examples
@@ -263,18 +253,12 @@ interpolate_mspct <- function(mspct,
 #' @param length.out numeric value
 #' @param ... not used
 #'
-#' @details If \code{length.out} it is a numeric value, then gives the number of rows in the
-#' output, if it is \code{NULL}, the values in the numeric vector \code{w.length.out} are used.
-#' If both are not \code{NULL} then the range of \code{w.length.out} and \code{length.out} are
-#' used to generate a vector of wavelength. A value of \code{NULL} for \code{fill} prevents
-#' extrapolation.
+#' @inherit interpolate_spectrum details
 #'
-#' @note The default \code{fill = NA} fills extrapolated values with NA. Giving NULL as
-#' argument for \code{fill} deletes wavelengths outside the input data range from the
-#' returned spectrum. A numerical value can be also be provided as fill. This function calls
-#' \code{interpolate_spectrum} for each non-wavelength column in the input spectra object.
-#'
-#' @return A new spectral object of the same class as argument \code{spct}.
+#' @return A new spectral object or collection of spectral objects, of the same
+#'   class as argument \code{x}. Each spectrum returned with more or fewer rows
+#'   than in \code{x}, the requested new \code{w.length} values and new numeric
+#'   values for spectral quantities, obtained by interpolation.
 #'
 #' @family interpolate functions
 #' @export

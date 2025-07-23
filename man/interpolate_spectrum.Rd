@@ -26,11 +26,31 @@ values at new wavelengths values. This is a low-level function operating
 on numeric vectors and called by higher level functions in the package,
 such as mathematical operators for classes for spectral data.
 }
-\note{
-The current version of interpolate uses \code{spline} if fewer than 25
-data points are available. Otherwise it uses \code{approx}. In the first case
-a cubic spline is used, in the second case linear interpolation, which should
-be faster.
+\details{
+Depending on the extent of the data natural spline interpolation or
+  linear interpolation are used. In the first case a call to
+  \code{\link[stats:splinefun]{spline}} with \code{method = "natural"} is
+  used when 25 or fewer distinct wavelengths are available as input, or if
+  the wavelengths in the output are more than three times those in the input.
+  In the second case, a call to \code{\link[stats:approxfun]{approx}} is
+  used.
+
+  If \code{w.length.out} is a numeric vector and \code{length.out = NULL}, it
+  directly gives the target wavelengths for interpolation. If it is
+  \code{NULL}, and \code{length.out} is an integer value evenly spaced
+  wavelength values covering the same wavelength range as in the input are
+  generated. If \code{w.length.out} is a numeric vector and \code{length.out}
+  is an integer value, \code{length.out} evenly spaced wavelengths covering
+  the wavelength range of \code{w.length.out} are generated.
+  \emph{Extrapolation is not supported.}
+
+  With default \code{fill = NA} if the output exceeds the wavelength range of
+  the input, extrapolated values are filled with \code{NA} values. With
+  \code{fill = NULL} wavelengths outside the wavelength range of input data
+  are discarded. A numerical value can be also be provided as fill. While
+  \code{interpolate_spectrum} supports interpolation of a single numeric
+  vector, \code{interpolate_wl} applies, one at a time, interpolation to all
+  numeric columns found in \code{x}.
 }
 \examples{
 
@@ -39,7 +59,8 @@ with(sun.data, interpolate_spectrum(w.length, s.e.irrad, my.w.length))
 
 }
 \seealso{
-\code{\link[stats]{splinefun}}.
+\code{\link[stats:splinefun]{spline}} and
+  \code{\link[stats:approxfun]{approx}}.
 
 Other low-level functions operating on numeric vectors.: 
 \code{\link{as_energy}()},

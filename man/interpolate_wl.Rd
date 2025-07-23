@@ -44,18 +44,40 @@ your code relies on external data or packages: use the .export and
 correct environment set up for computing.}
 }
 \value{
-A new spectral object of the same class as argument \code{spct}.
+A new spectral object or collection of spectral objects, of the same
+  class as argument \code{x}. Each spectrum returned with more or fewer rows
+  than in \code{x}, the requested new \code{w.length} values and new numeric
+  values for spectral quantities, obtained by interpolation.
 }
 \description{
 This function returns the result of interpolating spectral data from the original set of
 wavelengths to a new one.
 }
 \details{
-If \code{length.out} it is a numeric value, then gives the number of rows in the
-output, if it is \code{NULL}, the values in the numeric vector \code{w.length.out} are used.
-If both are not \code{NULL} then the range of \code{w.length.out} and \code{length.out} are
-used to generate a vector of wavelength. A value of \code{NULL} for \code{fill} prevents
-extrapolation.
+Depending on the extent of the data natural spline interpolation or
+  linear interpolation are used. In the first case a call to
+  \code{\link[stats:splinefun]{spline}} with \code{method = "natural"} is
+  used when 25 or fewer distinct wavelengths are available as input, or if
+  the wavelengths in the output are more than three times those in the input.
+  In the second case, a call to \code{\link[stats:approxfun]{approx}} is
+  used.
+
+  If \code{w.length.out} is a numeric vector and \code{length.out = NULL}, it
+  directly gives the target wavelengths for interpolation. If it is
+  \code{NULL}, and \code{length.out} is an integer value evenly spaced
+  wavelength values covering the same wavelength range as in the input are
+  generated. If \code{w.length.out} is a numeric vector and \code{length.out}
+  is an integer value, \code{length.out} evenly spaced wavelengths covering
+  the wavelength range of \code{w.length.out} are generated.
+  \emph{Extrapolation is not supported.}
+
+  With default \code{fill = NA} if the output exceeds the wavelength range of
+  the input, extrapolated values are filled with \code{NA} values. With
+  \code{fill = NULL} wavelengths outside the wavelength range of input data
+  are discarded. A numerical value can be also be provided as fill. While
+  \code{interpolate_spectrum} supports interpolation of a single numeric
+  vector, \code{interpolate_wl} applies, one at a time, interpolation to all
+  numeric columns found in \code{x}.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -68,12 +90,6 @@ extrapolation.
 "generic_mspct" or derived.
 
 }}
-\note{
-The default \code{fill = NA} fills extrapolated values with NA. Giving NULL as
-argument for \code{fill} deletes wavelengths outside the input data range from the
-returned spectrum. A numerical value can be also be provided as fill. This function calls
-\code{interpolate_spectrum} for each non-wavelength column in the input spectra object.
-}
 \examples{
 interpolate_wl(sun.spct, 400:500, NA)
 interpolate_wl(sun.spct, 400:500, NULL)

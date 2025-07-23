@@ -11,6 +11,10 @@ editor_options:
 `find_peaks()` and `find_valleys()`.
 * Add `s_quantile()` methods for parallel quantiles from a collection of
 spectra.
+* Fix long-standing bug in interpolation of spectra: `approx()` called instead
+of `spline()` even for sparse or short input. (Values returned by 
+`interpolate_wl()` and low-level functions it calls are different in
+some cases.)
 
 # photobiology 0.13.1
 
