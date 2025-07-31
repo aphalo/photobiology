@@ -42,7 +42,7 @@
 #'
 #'   When a numeric value is passed as argument to keep.scaling, the scaling
 #'   uses \code{f = "total"} or \code{f = "mean"} depending on the class of
-#'   \code{x}. Prescaling is only occasionally needed.
+#'   \code{x}. Rescaling is only occasionally needed.
 #'
 #'   Method \code{normalize} is implemented for \code{solute_spct} objects but
 #'   as the spectral data stored in them are a description of an intensive
@@ -711,7 +711,8 @@ normalize_spct <- function(spct,
       !any(is.na(unlist(old.normalization.ls[required.fields])))
 
     if (!has.normalization.metadata) {
-      warning("Normalization not updated: action not supported for objects created with 'photobiology' (<= 0.10.9).")
+      warning("Normalization not updated: action not supported for ",
+              "objects created with 'photobiology' (<= 0.10.9).")
       return(spct)
     } else {
       if (norm[1] != "undo") {

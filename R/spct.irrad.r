@@ -24,7 +24,7 @@
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands. If NULL, default is chosen based on data.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
-#'   as argument to spct are flagged as an error.
+#'   as argument to \code{spct} trigger an error.
 #' @param naming character one of \code{"long"}, \code{"default"},
 #'   \code{"short"} or \code{"none"}. Used to select the type of names to assign
 #'   to returned value.
@@ -85,7 +85,7 @@
 irrad <- function(spct, w.band, unit.out, quantity, time.unit, scale.factor, wb.trim,
                   use.cached.mult, use.hinges, allow.scaled, ...) UseMethod("irrad")
 
-#' @describeIn irrad Default for generic function
+#' @rdname irrad
 #'
 #' @export
 #'
@@ -95,8 +95,7 @@ irrad.default <- function(spct, w.band, unit.out, quantity, time.unit, scale.fac
   return(NA_real_)
 }
 
-#' @describeIn irrad  Calculates irradiance from a \code{source_spct}
-#'   object.
+#' @rdname irrad
 #'
 #' @method irrad source_spct
 #' @export
@@ -191,12 +190,16 @@ irrad.source_spct <-
     }
 
     if (!allow.scaled && is_normalized(spct)) {
-      warning("The spectral data has been normalized or scaled, ",
-              "making impossible to calculate irradiance")
+      warning("The spectral data have been normalized, ",
+              "preventing calculation of irradiance. ",
+              "See 'setNormalised()' and 'normalise()'.")
       return(NA_real_)
     }
     if (!allow.scaled && is_scaled(spct)) {
-      warning("Summarized spectral data have been rescaled")
+      warning("The spectral data have been scaled, ",
+              "preventing calculation of irradiance. ",
+              "See 'setScaled()' and 'fscale()'.")
+      return(NA_real_)
     }
 
     data.time.unit <-

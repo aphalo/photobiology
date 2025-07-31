@@ -88,12 +88,16 @@ illuminance.source_spct <-
     }
 
     if (!allow.scaled && is_normalized(spct)) {
-      warning("The spectral data has been normalized or scaled, ",
-              "making impossible to calculate irradiance")
+      warning("The spectral data have been normalized, ",
+              "preventing calculation of illuminance. ",
+              "See 'setNormalised()' and 'normalise()'.")
       return(NA_real_)
     }
     if (!allow.scaled && is_scaled(spct)) {
-      warning("Summarized spectral data have been rescaled")
+      warning("The spectral data have been scaled, ",
+              "preventing calculation of illuminance. ",
+              "See 'setScaled()' and 'fscale()'.")
+      return(NA_real_)
     }
 
     data.time.unit <- getTimeUnit(spct, force.duration = TRUE)

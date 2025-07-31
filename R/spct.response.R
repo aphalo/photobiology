@@ -187,11 +187,16 @@ resp_spct <-
     }
 
     if (!allow.scaled && is_normalized(spct)) {
-      warning("The spectral data has been normalized, making impossible to calculate response")
+      warning("The spectral data have been normalized, ",
+              "preventing calculation of irradiance. ",
+              "See 'setNormalised()' and 'normalise()'.")
       return(NA_real_)
     }
-    if (!allow.scaled && is_scaled(spct) && quantity == "total") {
-      warning("Summary calculated from rescaled data")
+    if (!allow.scaled && is_scaled(spct)) {
+      warning("The spectral data have been scaled, ",
+              "preventing calculation of irradiance. ",
+              "See 'setScaled()' and 'fscale()'.")
+      return(NA_real_)
     }
 
     data.time.unit <- getTimeUnit(spct, force.duration = lubridate::is.duration(time.unit))
