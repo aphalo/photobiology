@@ -91,7 +91,7 @@ q_ratio <- function(spct,
                     use.hinges,
                     ...) UseMethod("q_ratio")
 
-#' @describeIn q_ratio Default for generic function
+#' @rdname q_ratio
 #'
 #' @export
 #'
@@ -107,7 +107,7 @@ q_ratio.default <- function(spct,
   NA_real_
 }
 
-#' @describeIn q_ratio Method for \code{source_spct} objects
+#' @rdname q_ratio
 #'
 #' @export
 #'
@@ -179,8 +179,7 @@ q_ratio.source_spct <-
     return(ratio)
   }
 
-#' @describeIn q_ratio Calculates photon:photon from a \code{source_mspct}
-#'   object.
+#' @rdname q_ratio
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
 #'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
@@ -334,7 +333,7 @@ e_ratio <- function(spct,
                     use.cached.mult,
                     use.hinges, ...) UseMethod("e_ratio")
 
-#' @describeIn e_ratio Default for generic function
+#' @rdname e_ratio
 #'
 #' @export
 #'
@@ -350,7 +349,7 @@ e_ratio.default <- function(spct,
   return(NA)
 }
 
-#' @describeIn e_ratio Method for \code{source_spct} objects
+#' @rdname e_ratio
 #'
 #' @export
 #'
@@ -422,8 +421,7 @@ e_ratio.source_spct <-
     return(ratio)
   }
 
-#' @describeIn e_ratio Calculates energy:energy ratio from a \code{source_mspct}
-#'   object.
+#' @rdname e_ratio
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
 #'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
@@ -560,7 +558,7 @@ qe_ratio <- function(spct,
                      use.hinges,
                      ...) UseMethod("qe_ratio")
 
-#' @describeIn qe_ratio Default for generic function
+#' @rdname qe_ratio
 #'
 #' @export
 #'
@@ -575,7 +573,7 @@ qe_ratio.default <- function(spct,
   return(NA)
 }
 
-#' @describeIn qe_ratio Method for \code{source_spct} objects
+#' @rdname qe_ratio
 #'
 #' @export
 #'
@@ -631,8 +629,7 @@ qe_ratio.source_spct <-
     return(ratio)
   }
 
-#' @describeIn qe_ratio Calculates photon:energy ratio from a
-#'   \code{source_mspct} object.
+#' @rdname qe_ratio
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
 #'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
@@ -782,7 +779,7 @@ eq_ratio <- function(spct,
                      use.hinges,
                      ...) UseMethod("eq_ratio")
 
-#' @describeIn eq_ratio Default for generic function
+#' @rdname eq_ratio
 #'
 #' @export
 #'
@@ -797,7 +794,7 @@ eq_ratio.default <- function(spct,
   return(NA)
 }
 
-#' @describeIn eq_ratio Method for \code{source_spct} objects
+#' @rdname eq_ratio
 #'
 #' @export
 #'
@@ -845,8 +842,7 @@ eq_ratio.source_spct <-
     return(ratio)
   }
 
-#' @describeIn eq_ratio Calculates energy:photon from a \code{source_mspct}
-#'   object.
+#' @rdname eq_ratio
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
 #'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.

@@ -327,7 +327,7 @@ When the spectrum passed as argument to \code{x} had been previously
 
   When a numeric value is passed as argument to keep.scaling, the scaling
   uses \code{f = "total"} or \code{f = "mean"} depending on the class of
-  \code{x}. Prescaling is only occasionally needed.
+  \code{x}. Rescaling is only occasionally needed.
 
   Method \code{normalize} is implemented for \code{solute_spct} objects but
   as the spectral data stored in them are a description of an intensive

@@ -137,17 +137,6 @@ A named \code{numeric} vector in the case of a \code{_spct} object
 Photon irradiance (i.e. quantum irradiance) for one or more wavebands of a
 light source spectrum.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{q_irrad(default)}: Default for generic function
-
-\item \code{q_irrad(source_spct)}: Calculates photon irradiance from a \code{source_spct}
-object.
-
-\item \code{q_irrad(source_mspct)}: Calculates photon (quantum) irradiance from a
-\code{source_mspct} object.
-
-}}
 \note{
 The last two parameters control speed optimizations. The defaults
   should be suitable in most cases. If you will use repeatedly the same SWFs

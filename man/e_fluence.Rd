@@ -113,17 +113,6 @@ One numeric value for each waveband with no change in scale factor,
 Energy fluence for one or more wavebands of a light source spectrum and a
 duration of the exposure.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{e_fluence(default)}: Default for generic function
-
-\item \code{e_fluence(source_spct)}: Calculate energy fluence from a \code{source_spct}
-object and the duration of the exposure.
-
-\item \code{e_fluence(source_mspct)}: Calculates energy fluence from a \code{source_mspct}
-object.
-
-}}
 \note{
 The last two parameters control speed optimizations. The defaults
   should be suitable in most cases. If you will use repeatedly the same SWFs
