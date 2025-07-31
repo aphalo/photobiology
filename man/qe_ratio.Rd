@@ -19,7 +19,7 @@ qe_ratio(spct, w.band, scale.factor, wb.trim, use.cached.mult, use.hinges, ...)
   use.cached.mult = FALSE,
   use.hinges = NULL,
   naming = "short",
-  name.tag = ifelse(naming != "none", "[q:e]", ""),
+  name.tag = "[q:e]",
   ...
 )
 
@@ -31,7 +31,7 @@ qe_ratio(spct, w.band, scale.factor, wb.trim, use.cached.mult, use.hinges, ...)
   use.cached.mult = FALSE,
   use.hinges = NULL,
   naming = "short",
-  name.tag = ifelse(naming != "none", "[q:e]", ""),
+  name.tag = "[q:e]",
   ...,
   attr2tb = NULL,
   idx = "spct.idx",

@@ -19,7 +19,7 @@ eq_ratio(spct, w.band, scale.factor, wb.trim, use.cached.mult, use.hinges, ...)
   use.cached.mult = FALSE,
   use.hinges = NULL,
   naming = "short",
-  name.tag = ifelse(naming != "none", "[e:q]", ""),
+  name.tag = "[e:q]",
   ...
 )
 
@@ -31,7 +31,7 @@ eq_ratio(spct, w.band, scale.factor, wb.trim, use.cached.mult, use.hinges, ...)
   use.cached.mult = FALSE,
   use.hinges = NULL,
   naming = "short",
-  name.tag = ifelse(naming != "none", "[e:q]", ""),
+  name.tag = "[e:q]",
   ...,
   attr2tb = NULL,
   idx = "spct.idx",

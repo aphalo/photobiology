@@ -53,7 +53,7 @@ e_ratio(
   use.hinges = NULL,
   quantity = "total",
   naming = "short",
-  name.tag = ifelse(naming != "none", "[e:e]", ""),
+  name.tag = "[e:e]",
   ...,
   attr2tb = NULL,
   idx = "spct.idx",

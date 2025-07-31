@@ -166,8 +166,10 @@ q_ratio.source_spct <-
     q.irrad.num <- irrads[["irrad.num"]]
     q.irrad.denom <- irrads[["irrad.denom"]]
     ratio <- q.irrad.num / q.irrad.denom * scale.factor
-    names(ratio) <-
-      paste(names(q.irrad.num), ":", names(q.irrad.denom), name.tag, sep = "")
+    if (naming != "none") {
+      names(ratio) <-
+        paste(names(q.irrad.num), ":", names(q.irrad.denom), name.tag, sep = "")
+    }
     attr(ratio, "time.unit") <- NULL
     if (quantity == "total") {
       attr(ratio, "radiation.unit") <- "q:q ratio"
@@ -204,7 +206,7 @@ q_ratio.source_mspct <-
            use.hinges = NULL,
            quantity = "total",
            naming = "short",
-           name.tag = ifelse(naming != "none", "[q:q]", ""),
+           name.tag = "[q:q]",
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
@@ -407,8 +409,10 @@ e_ratio.source_spct <-
     e.irrad.num <- irrads[["irrad.num"]]
     e.irrad.denom <- irrads[["irrad.denom"]]
     ratio <- e.irrad.num / e.irrad.denom * scale.factor
-    names(ratio) <-
-      paste(names(e.irrad.num), ":", names(e.irrad.denom), name.tag, sep = "")
+    if (naming != "none") {
+      names(ratio) <-
+        paste(names(e.irrad.num), ":", names(e.irrad.denom), name.tag, sep = "")
+    }
     attr(ratio, "time.unit") <- NULL
     if (quantity == "total") {
       attr(ratio, "radiation.unit") <- "e:e ratio"
@@ -444,7 +448,7 @@ e_ratio.source_mspct <-
            use.hinges = NULL,
            quantity = "total",
            naming = "short",
-           name.tag = ifelse(naming != "none", "[e:e]", ""),
+           name.tag = "[e:e]",
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
@@ -583,7 +587,7 @@ qe_ratio.source_spct <-
            use.cached.mult = FALSE,
            use.hinges = NULL,
            naming = "short",
-           name.tag = ifelse(naming != "none", "[q:e]", ""),
+           name.tag = "[q:e]",
            ...) {
 
     # we look for multiple spectra in long form
@@ -619,7 +623,9 @@ qe_ratio.source_spct <-
     e.irrad <- irrads[["irrad.denom"]]
 
     ratio <- q.irrad / e.irrad * scale.factor
-    names(ratio) <- paste(names(q.irrad), name.tag, sep = "")
+    if (naming != "none") {
+      names(ratio) <- paste(names(q.irrad), name.tag, sep = "")
+    }
     attr(ratio, "time.unit") <- NULL
     attr(ratio, "radiation.unit") <- "q:e ratio"
     return(ratio)
@@ -649,7 +655,7 @@ qe_ratio.source_mspct <-
            use.cached.mult = FALSE,
            use.hinges = NULL,
            naming = "short",
-           name.tag = ifelse(naming != "none", "[q:e]", ""),
+           name.tag = "[q:e]",
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
@@ -803,11 +809,15 @@ eq_ratio.source_spct <-
            use.cached.mult = FALSE,
            use.hinges  = NULL,
            naming = "short",
-           name.tag = ifelse(naming != "none", "[e:q]", ""),
+           name.tag = "[e:q]",
            ...) {
 
     # we look for multiple spectra in long form
     if (getMultipleWl(spct) > 1) {
+      if (naming == "none") {
+        # needed for variable name
+        naming <- "short"
+      }
       # convert to a collection of spectra
       mspct <- subset2mspct(x = spct,
                             idx.var = getIdFactor(spct),
@@ -827,7 +837,9 @@ eq_ratio.source_spct <-
     ratio <- scale.factor /
       qe_ratio(spct = spct, w.band = w.band, wb.trim = wb.trim,
                use.cached.mult = use.cached.mult, use.hinges = use.hinges)
-    names(ratio) <- gsub("q:e", "e:q", names(ratio), fixed = TRUE )
+    if (naming != "none") {
+      names(ratio) <- gsub("q:e", "e:q", names(ratio), fixed = TRUE )
+    }
     attr(ratio, "time.unit") <- NULL
     attr(ratio, "radiation.unit") <- "e:q ratio"
     return(ratio)
@@ -857,7 +869,7 @@ eq_ratio.source_mspct <-
            use.cached.mult = FALSE,
            use.hinges = NULL,
            naming = "short",
-           name.tag = ifelse(naming != "none", "[e:q]", ""),
+           name.tag = "[e:q]",
            ...,
            attr2tb = NULL,
            idx = "spct.idx",

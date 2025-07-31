@@ -53,7 +53,7 @@ q_ratio(
   use.hinges = NULL,
   quantity = "total",
   naming = "short",
-  name.tag = ifelse(naming != "none", "[q:q]", ""),
+  name.tag = "[q:q]",
   ...,
   attr2tb = NULL,
   idx = "spct.idx",

@@ -15,6 +15,8 @@ spectra.
 of `spline()` even for sparse or short input. (Values returned by 
 `interpolate_wl()` and low-level functions it calls are different in
 some cases.)
+* Fix bug in naming of ratios: character(0)/colon set as name with 
+`naming = "none"`.
 
 # photobiology 0.13.1
 
