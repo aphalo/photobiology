@@ -192,13 +192,13 @@ irrad.source_spct <-
     if (!allow.scaled && is_normalized(spct)) {
       warning("The spectral data have been normalized, ",
               "preventing calculation of irradiance. ",
-              "See 'setNormalised()' and 'normalise()'.")
+              "'allow.scaled = TRUE' disables this test.")
       return(NA_real_)
     }
     if (!allow.scaled && is_scaled(spct)) {
       warning("The spectral data have been scaled, ",
               "preventing calculation of irradiance. ",
-              "See 'setScaled()' and 'fscale()'.")
+              "'allow.scaled = TRUE' disables this test.")
       return(NA_real_)
     }
 

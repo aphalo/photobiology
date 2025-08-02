@@ -5,6 +5,16 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.13.3
+
+* As the bug-fix in interpolation of spectra turned out to be more disruptive
+than expected, the default was change to `"approx"`, the previous _accidental_
+default, and parameter `method` added to allow overriding of this default.
+Using linear approximation is in general safer, as interpolation with natural
+splines can behave badly with noisy input data.
+* Set stirct test for scaled and normalised input in `irrad()`, `q_irrad()`,
+`e_irrad()`.
+
 # photobiology 0.13.2
 
 * Support `log()` and `sqrt()` transformations for `local.reference` in

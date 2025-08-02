@@ -7,17 +7,25 @@
 \alias{interpolate_wl.generic_mspct}
 \title{Map spectra to new wavelength values.}
 \usage{
-interpolate_wl(x, w.length.out, fill, length.out, ...)
+interpolate_wl(x, w.length.out, fill, length.out, method, ...)
 
-\method{interpolate_wl}{default}(x, w.length.out, fill, length.out, ...)
+\method{interpolate_wl}{default}(x, w.length.out, fill, length.out, method, ...)
 
-\method{interpolate_wl}{generic_spct}(x, w.length.out = NULL, fill = NA, length.out = NULL, ...)
+\method{interpolate_wl}{generic_spct}(
+  x,
+  w.length.out = NULL,
+  fill = NA,
+  length.out = NULL,
+  method = "approx",
+  ...
+)
 
 \method{interpolate_wl}{generic_mspct}(
   x,
   w.length.out = NULL,
   fill = NA,
   length.out = NULL,
+  method = "approx",
   ...,
   .parallel = FALSE,
   .paropts = NULL
@@ -26,13 +34,18 @@ interpolate_wl(x, w.length.out, fill, length.out, ...)
 \arguments{
 \item{x}{an R object}
 
-\item{w.length.out}{numeric vector of wavelengths (nm)}
+\item{w.length.out}{numeric vector of wavelengths (nm).}
 
-\item{fill}{a value to be assigned to out of range wavelengths}
+\item{fill}{a numeric value to be assigned to out of range wavelengths.}
 
-\item{length.out}{numeric value}
+\item{length.out}{integer Length of the wavelength vector in the returned
+value. Overrides \code{w.length.out} is not \code{NULL}, respects its
+range but overrides the actual values.}
 
-\item{...}{not used}
+\item{method}{character string One of \code{"auto"}, \code{"approx"},
+\code{"spline"}, \code{"skip"}.}
+
+\item{...}{additional arguments passed to \code{spline()}.}
 
 \item{.parallel}{if TRUE, apply function in parallel, using parallel backend
 provided by foreach}
@@ -50,17 +63,20 @@ A new spectral object or collection of spectral objects, of the same
   values for spectral quantities, obtained by interpolation.
 }
 \description{
-This function returns the result of interpolating spectral data from the original set of
-wavelengths to a new one.
+This method returns the result of interpolating spectral data from the
+original set of wavelengths to a new one.
 }
 \details{
-Depending on the extent of the data natural spline interpolation or
-  linear interpolation are used. In the first case a call to
+Depending on \code{method} natural spline interpolation or linear
+  interpolation are used. With \code{method = spline} a call to
   \code{\link[stats:splinefun]{spline}} with \code{method = "natural"} is
-  used when 25 or fewer distinct wavelengths are available as input, or if
-  the wavelengths in the output are more than three times those in the input.
-  In the second case, a call to \code{\link[stats:approxfun]{approx}} is
-  used.
+  used and with \code{method = "approx"} a call to
+  \code{\link[stats:approxfun]{approx}} is used. If \code{method = "auto"} or
+  \code{method = NULL} when 100 or fewer distinct wavelengths are available
+  as input and/or the maximum wavelength step size in \code{w.length.in} is
+  more than three times the minimum wavelength step size in
+  \code{w.length.out} \code{"spline"} is used and \code{"approx"} otherwise.
+  Finally, with \code{method = "skip"} the input is returned unchanged.
 
   If \code{w.length.out} is a numeric vector and \code{length.out = NULL}, it
   directly gives the target wavelengths for interpolation. If it is

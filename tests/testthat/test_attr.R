@@ -320,7 +320,12 @@ test_that("fscale", {
   expect_lt(abs(integrate_spct(fscale(my.spct, f = "total")) - 1), 1e-6)
   expect_lt(abs(average_spct(fscale(my.spct, f = "mean")) - 1), 1e-6)
   expect_warning(irrad(fscale(my.spct, f = "mean")))
-  expect_equivalent(suppressWarnings(irrad(fscale(my.spct, f = "mean"))), 520)
+#  behaviour changed in 0.13.3
+#  expect_equivalent(suppressWarnings(irrad(fscale(my.spct, f = "mean"))), 520)
+  expect_true(is.na(suppressWarnings(irrad(fscale(my.spct, f = "mean")))))
+  expect_no_warning(irrad(fscale(my.spct, f = "mean"), allow.scaled = TRUE))
+  expect_equivalent(irrad(fscale(my.spct, f = "mean"),
+                          allow.scaled = TRUE), 520)
   expect_named(fscale(my.spct), names(my.spct))
   expect_equal(class(fscale(my.spct)), class(my.spct))
   expect_warning(fscale(my.spct, range = 100))

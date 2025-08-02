@@ -4,7 +4,14 @@
 \alias{interpolate_spectrum}
 \title{Calculate spectral values at a different set of wavelengths}
 \usage{
-interpolate_spectrum(w.length.in, s.irrad, w.length.out, fill = NA, ...)
+interpolate_spectrum(
+  w.length.in,
+  s.irrad,
+  w.length.out,
+  fill = NA,
+  method = "approx",
+  ...
+)
 }
 \arguments{
 \item{w.length.in}{numeric vector of wavelengths (nm).}
@@ -13,7 +20,10 @@ interpolate_spectrum(w.length.in, s.irrad, w.length.out, fill = NA, ...)
 
 \item{w.length.out}{numeric vector of wavelengths (nm).}
 
-\item{fill}{a value to be assigned to out of range wavelengths.}
+\item{fill}{a numeric value to be assigned to out of range wavelengths.}
+
+\item{method}{character string One of \code{"auto"}, \code{"approx"},
+\code{"spline"}, \code{"skip"}.}
 
 \item{...}{additional arguments passed to \code{spline()}.}
 }
@@ -27,13 +37,16 @@ on numeric vectors and called by higher level functions in the package,
 such as mathematical operators for classes for spectral data.
 }
 \details{
-Depending on the extent of the data natural spline interpolation or
-  linear interpolation are used. In the first case a call to
+Depending on \code{method} natural spline interpolation or linear
+  interpolation are used. With \code{method = spline} a call to
   \code{\link[stats:splinefun]{spline}} with \code{method = "natural"} is
-  used when 25 or fewer distinct wavelengths are available as input, or if
-  the wavelengths in the output are more than three times those in the input.
-  In the second case, a call to \code{\link[stats:approxfun]{approx}} is
-  used.
+  used and with \code{method = "approx"} a call to
+  \code{\link[stats:approxfun]{approx}} is used. If \code{method = "auto"} or
+  \code{method = NULL} when 100 or fewer distinct wavelengths are available
+  as input and/or the maximum wavelength step size in \code{w.length.in} is
+  more than three times the minimum wavelength step size in
+  \code{w.length.out} \code{"spline"} is used and \code{"approx"} otherwise.
+  Finally, with \code{method = "skip"} the input is returned unchanged.
 
   If \code{w.length.out} is a numeric vector and \code{length.out = NULL}, it
   directly gives the target wavelengths for interpolation. If it is
@@ -59,8 +72,8 @@ with(sun.data, interpolate_spectrum(w.length, s.e.irrad, my.w.length))
 
 }
 \seealso{
-\code{\link[stats:splinefun]{spline}} and
-  \code{\link[stats:approxfun]{approx}}.
+\code{\link[stats:splinefun]{spline}()} and
+  \code{\link[stats:approxfun]{approx}()}.
 
 Other low-level functions operating on numeric vectors.: 
 \code{\link{as_energy}()},

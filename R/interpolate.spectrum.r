@@ -8,23 +8,28 @@
 #' @param w.length.in numeric vector of wavelengths (nm).
 #' @param s.irrad a numeric vector of spectral values.
 #' @param w.length.out numeric vector of wavelengths (nm).
-#' @param fill a value to be assigned to out of range wavelengths.
+#' @param fill a numeric value to be assigned to out of range wavelengths.
+#' @param method character string One of \code{"auto"}, \code{"approx"},
+#'   \code{"spline"}, \code{"skip"}.
 #' @param ... additional arguments passed to \code{spline()}.
 #'
-#' @seealso \code{\link[stats:splinefun]{spline}} and
-#'   \code{\link[stats:approxfun]{approx}}.
+#' @seealso \code{\link[stats:splinefun]{spline}()} and
+#'   \code{\link[stats:approxfun]{approx}()}.
 #'
 #' @return a numeric vector of interpolated spectral values.
 #'
 #' @export
 #'
-#' @details Depending on the extent of the data natural spline interpolation or
-#'   linear interpolation are used. In the first case a call to
+#' @details Depending on \code{method} natural spline interpolation or linear
+#'   interpolation are used. With \code{method = spline} a call to
 #'   \code{\link[stats:splinefun]{spline}} with \code{method = "natural"} is
-#'   used when 25 or fewer distinct wavelengths are available as input, or if
-#'   the wavelengths in the output are more than three times those in the input.
-#'   In the second case, a call to \code{\link[stats:approxfun]{approx}} is
-#'   used.
+#'   used and with \code{method = "approx"} a call to
+#'   \code{\link[stats:approxfun]{approx}} is used. If \code{method = "auto"} or
+#'   \code{method = NULL} when 100 or fewer distinct wavelengths are available
+#'   as input and/or the maximum wavelength step size in \code{w.length.in} is
+#'   more than three times the minimum wavelength step size in
+#'   \code{w.length.out} \code{"spline"} is used and \code{"approx"} otherwise.
+#'   Finally, with \code{method = "skip"} the input is returned unchanged.
 #'
 #'   If \code{w.length.out} is a numeric vector and \code{length.out = NULL}, it
 #'   directly gives the target wavelengths for interpolation. If it is
@@ -54,6 +59,7 @@ interpolate_spectrum <- function(w.length.in,
                                  s.irrad,
                                  w.length.out,
                                  fill = NA,
+                                 method = "approx",
                                  ...) {
   if (length(w.length.in) == length(w.length.out) &&
         all(w.length.in == w.length.out)) {
@@ -68,23 +74,37 @@ interpolate_spectrum <- function(w.length.in,
   }
   selector <- w.length.out >= w.length.in[1] &
                 w.length.out <= w.length.in[length(w.length.in)]
+  if (sum(selector) < 1 || length(w.length.in) < 2) {
+    method <- "skip"
+  }
+  step.size.ratio <-
+    photobiology::stepsize(w.length.out)[1] /
+    photobiology::stepsize(w.length.in)[2]
+  if (is.null(method) || method == "auto") {
+    if (length(w.length.in) <= 100 || step.size.ratio > 3) {
+      method <- "spline"
+    } else {
+      method <- "approx"
+    }
+  }
   s.irrad.out <- numeric(length(w.length.out))
   if (!is.null(fill)) {
     s.irrad.out[!selector] <- fill
   }
-  if (sum(selector) < 1 || length(w.length.in) < 2) {
-    NULL
-  } else if (length(w.length.in) <= 25 ||
-             (sum(selector) / length(w.length.in)) > 3) { # was sum(selector) <= 25
-    s.irrad.out[selector] <- stats::spline(x = w.length.in,
-                                           y = s.irrad,
-                                           xout = w.length.out[selector],
-                                           method = "natural",
-                                           ...)[["y"]]
-  } else {
-    s.irrad.out[selector] <- stats::approx(x = w.length.in,
-                                           y = s.irrad,
-                                           xout = w.length.out[selector])[["y"]]
+  if (method == "spline") {
+    s.irrad.out[selector] <-
+      stats::spline(x = w.length.in,
+                    y = s.irrad,
+                    xout = w.length.out[selector],
+                    method = "natural",
+                    ...)[["y"]]
+  } else if (method == "approx") {
+    s.irrad.out[selector] <-
+      stats::approx(x = w.length.in,
+                    y = s.irrad,
+                    xout = w.length.out[selector])[["y"]]
+  } else if (method != "skip") {
+    stop("Wrong 'method' argument: ", method)
   }
   return(s.irrad.out)
 }

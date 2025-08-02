@@ -67,10 +67,11 @@ average_spct <- function(spct) {
 #' This function gives the result of interpolating spectral data from the original set of
 #' wavelengths to a new one.
 #'
+#' @inheritParams interpolate_spectrum
 #' @param spct generic_spct
-#' @param w.length.out numeric vector of wavelengths (nm)
-#' @param fill a value to be assigned to out of range wavelengths
-#' @param length.out numeric value
+#' @param length.out integer Length of the wavelength vector in the returned
+#'   value. Overrides \code{w.length.out} is not \code{NULL}, respects its
+#'   range but overrides the actual values.
 #'
 #' @inherit interpolate_spectrum details
 #'
@@ -89,7 +90,9 @@ average_spct <- function(spct) {
 interpolate_spct <- function(spct,
                              w.length.out = NULL,
                              fill = NA,
-                             length.out = NULL) {
+                             length.out = NULL,
+                             method = "approx",
+                             ...) {
 
   stopifnot(is.generic_spct(spct))
 
@@ -202,10 +205,11 @@ interpolate_spct <- function(spct,
   for (data.col in data.cols) {
     temp.values <-  with(spct, get(data.col))
     if (is.numeric(temp.values)) {
-      new.values <- interpolate_spectrum(spct[["w.length"]],
-                                         temp.values,
-                                         w.length.out,
-                                         fill)
+      new.values <- interpolate_spectrum(w.length.in = spct[["w.length"]],
+                                         s.irrad = temp.values,
+                                         w.length.out = w.length.out,
+                                         fill = fill,
+                                         method = method)
       new.spct[[data.col]] <- new.values
     }
   }
@@ -230,6 +234,8 @@ interpolate_mspct <- function(mspct,
                               w.length.out = NULL,
                               fill = NA,
                               length.out = NULL,
+                              method = "approx",
+                              ...,
                               .parallel = FALSE,
                               .paropts = NULL) {
 
@@ -238,22 +244,21 @@ interpolate_mspct <- function(mspct,
           w.length.out = w.length.out,
           fill = fill,
           length.out = length.out,
+          method = method,
           .parallel = .parallel,
-          .paropts = .paropts)
+          .paropts = .paropts,
+          ...)
 }
 
 #' Map spectra to new wavelength values.
 #'
-#' This function returns the result of interpolating spectral data from the original set of
-#' wavelengths to a new one.
+#' This method returns the result of interpolating spectral data from the
+#' original set of wavelengths to a new one.
 #'
+#' @inheritParams interpolate_spct
 #' @param x an R object
-#' @param w.length.out numeric vector of wavelengths (nm)
-#' @param fill a value to be assigned to out of range wavelengths
-#' @param length.out numeric value
-#' @param ... not used
 #'
-#' @inherit interpolate_spectrum details
+#' @inherit interpolate_spct details
 #'
 #' @return A new spectral object or collection of spectral objects, of the same
 #'   class as argument \code{x}. Each spectrum returned with more or fewer rows
@@ -272,6 +277,7 @@ interpolate_wl <- function(x,
                            w.length.out,
                            fill,
                            length.out,
+                           method,
                            ...) UseMethod("interpolate_wl")
 
 #' @describeIn interpolate_wl Default for generic function
@@ -282,6 +288,7 @@ interpolate_wl.default <- function(x,
                                    w.length.out,
                                    fill,
                                    length.out,
+                                   method,
                                    ...) {
   stop("'interpolate_wl()' is not defined for objects of class '", class(x)[1], "'.")
 }
@@ -295,6 +302,7 @@ interpolate_wl.generic_spct <- function(x,
                                         w.length.out = NULL,
                                         fill = NA,
                                         length.out = NULL,
+                                        method = "approx",
                                         ...) {
 
   # we look for multiple spectra in long form
@@ -308,13 +316,15 @@ interpolate_wl.generic_spct <- function(x,
                           w.length.out = w.length.out,
                           fill = fill,
                           length.out = length.out,
+                          method = method,
                           ...))
   }
 
   interpolate_spct(spct = x,
                    w.length.out = w.length.out,
                    fill = fill,
-                   length.out = length.out)
+                   length.out = length.out,
+                   method = method)
 }
 
 #' @describeIn interpolate_wl  Interpolate wavelength in an object of class
@@ -333,6 +343,7 @@ interpolate_wl.generic_mspct <- function(x,
                                          w.length.out = NULL,
                                          fill = NA,
                                          length.out = NULL,
+                                         method = "approx",
                                          ...,
                                          .parallel = FALSE,
                                          .paropts = NULL) {
@@ -343,6 +354,7 @@ interpolate_wl.generic_mspct <- function(x,
                     w.length.out = w.length.out,
                     fill = fill,
                     length.out = length.out,
+                    method = method,
                     .parallel = .parallel,
                     .paropts = .paropts)
 }
