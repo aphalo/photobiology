@@ -49,11 +49,13 @@
 #' @examples
 #' VIS <- waveband(c(380, 760)) # manometers
 #'
-#' trim_waveband(VIS, c(400,700))
+#' trim_waveband(VIS, c(400, 700))
+#' trim_waveband(VIS, c(NA, 700))
+#' trim_waveband(VIS, c(400, NA))
 #' trim_waveband(VIS, low.limit = 400)
 #' trim_waveband(VIS, high.limit = 700)
-#' trim_waveband(VIS, c(400,700), trunc.labels = c(">", "<"))
-#' trim_waveband(VIS, c(400,700), trunc.labels = "!")
+#' trim_waveband(VIS, c(400, 700), trunc.labels = c(">", "<"))
+#' trim_waveband(VIS, c(400, 700), trunc.labels = "!")
 #'
 trim_waveband <-
   function(w.band,
@@ -112,19 +114,21 @@ trim_waveband <-
             if (length(trunc.labels) == 1L) {
               trunc.labels <- rep(trunc.labels, 2L)
             }
+            trimmed.wb[["label"]] <- wb[["label"]]
+            trimmed.wb[["name"]] <- wb[["name"]]
             if (trimmed.low &&
                 !startsWith(trimmed.wb[["label"]], trunc.labels[1])) {
-                  trimmed.wb[["label"]] <-
-                    paste(trunc.labels[1], wb[["label"]], sep = "")
-                  trimmed.wb[["name"]] <-
-                    paste(trunc.labels[1], wb[["name"]], sep = "")
+              trimmed.wb[["label"]] <-
+                paste(trunc.labels[1], trimmed.wb[["label"]], sep = "")
+              trimmed.wb[["name"]] <-
+                paste(trunc.labels[1], trimmed.wb[["name"]], sep = "")
             }
             if (trimmed.high &&
                 !endsWith(trimmed.wb[["label"]], trunc.labels[2])) {
               trimmed.wb[["label"]] <-
-                paste(wb[["label"]], trunc.labels[2], sep = "")
+                paste(trimmed.wb[["label"]], trunc.labels[2], sep = "")
               trimmed.wb[["name"]] <-
-                paste(wb[["name"]], trunc.labels[2], sep = "")
+                paste(trimmed.wb[["name"]], trunc.labels[2], sep = "")
             }
           } else {
             trimmed.tag <-  paste("tr", ifelse(trimmed.low, ".lo", ""),
