@@ -13,7 +13,7 @@ _accidental_ default, and parameter `method` added to allow overriding of this
 default. Using linear approximation is in general safer, as interpolation with
 natural splines can behave badly with noisy input data.
 * Make test for scaled and normalised input in `irrad()`, `q_irrad()`, and
-`e_irrad()` with `NA` as default returned value.
+`e_irrad()` more stringent, with `NA` as default returned value.
 
 # photobiology 0.13.2
 

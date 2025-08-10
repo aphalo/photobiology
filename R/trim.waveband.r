@@ -112,14 +112,20 @@ trim_waveband <-
             if (length(trunc.labels) == 1L) {
               trunc.labels <- rep(trunc.labels, 2L)
             }
-            trimmed.wb[["label"]] <-
-              paste(ifelse(trimmed.low, trunc.labels[1], ""),
-                    wb[["label"]],
-                    ifelse(trimmed.high, trunc.labels[2], ""), sep = "")
-            trimmed.wb[["name"]] <-
-              paste(ifelse(trimmed.low, trunc.labels[1], ""),
-                    wb[["name"]],
-                    ifelse(trimmed.high, trunc.labels[2], ""), sep = "")
+            if (trimmed.low &&
+                !startsWith(trimmed.wb[["label"]], trunc.labels[1])) {
+                  trimmed.wb[["label"]] <-
+                    paste(trunc.labels[1], wb[["label"]], sep = "")
+                  trimmed.wb[["name"]] <-
+                    paste(trunc.labels[1], wb[["name"]], sep = "")
+            }
+            if (trimmed.high &&
+                !endsWith(trimmed.wb[["label"]], trunc.labels[2])) {
+              trimmed.wb[["label"]] <-
+                paste(wb[["label"]], trunc.labels[2], sep = "")
+              trimmed.wb[["name"]] <-
+                paste(wb[["name"]], trunc.labels[2], sep = "")
+            }
           } else {
             trimmed.tag <-  paste("tr", ifelse(trimmed.low, ".lo", ""),
                                   ifelse(trimmed.high, ".hi", ""), sep = "")
