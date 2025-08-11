@@ -47,7 +47,7 @@
 #' @family trim functions
 #' @export
 #' @examples
-#' VIS <- waveband(c(380, 760)) # manometers
+#' VIS <- waveband(c(380, 760)) # nanometres
 #'
 #' trim_waveband(VIS, c(400, 700))
 #' trim_waveband(VIS, c(NA, 700))

@@ -70,13 +70,15 @@ Modification of the name and label stored in the wavebands passed as
   part of the definitions.
 }
 \examples{
-VIS <- waveband(c(380, 760)) # manometers
+VIS <- waveband(c(380, 760)) # nanometres
 
-trim_waveband(VIS, c(400,700))
+trim_waveband(VIS, c(400, 700))
+trim_waveband(VIS, c(NA, 700))
+trim_waveband(VIS, c(400, NA))
 trim_waveband(VIS, low.limit = 400)
 trim_waveband(VIS, high.limit = 700)
-trim_waveband(VIS, c(400,700), trunc.labels = c(">", "<"))
-trim_waveband(VIS, c(400,700), trunc.labels = "!")
+trim_waveband(VIS, c(400, 700), trunc.labels = c(">", "<"))
+trim_waveband(VIS, c(400, 700), trunc.labels = "!")
 
 }
 \seealso{
