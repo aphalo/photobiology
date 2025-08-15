@@ -1450,16 +1450,17 @@ getWhatMeasured.generic_mspct <- function(x,
 #'   \code{"where.measured"}, \code{"when.measured"}, \code{"what.measured"},
 #'   \code{"how.measured"}, \code{"comment"}, \code{"normalised"},
 #'   \code{"normalized"}, \code{"scaled"}, \code{"bswf.used"},
-#'   \code{"instr.desc"}, \code{"instr.settings"}, \code{solute.properties},
+#'   \code{"instr.desc"}, \code{"instr.sn"}, \code{solute.properties},
 #'   \code{"filter.properties"}, \code{"Tfr.type"}, \code{"Rfr.type"},
-#'   \code{"time.unit"}.
+#'   \code{"time.unit"}, \code{bswf.used}, \code{multiple.wl}. Invalid character
+#'   values are ignored with a warning.
 #'
 #' @note The order of the first two arguments is reversed in
 #'   \code{add_attr2tb()}, \code{when_measured2tb()}, \code{what_measured2tb()},
 #'   etc., compared to attribute query functions, such as \code{spct_metadata},
 #'   \code{when_measured()}, \code{what_measured()}, \code{how_measured()}, etc.
-#'   This is to allow the use of \code{add_attr2tb()} in 'pipes' to add metadata
-#'   to summaries computed at earlier steps in the pipe.
+#'   This is to allow the use of \code{add_attr2tb()} and related functions in 
+#'   'pipes' to add metadata to summaries computed at earlier steps in the pipe.
 #'
 #' @family measurement metadata functions
 #'
@@ -1527,7 +1528,7 @@ add_attr2tb <- function(tb = NULL,
     names(col.names)[selector] <- col.names[selector]
   }
   if (unnest && any(c("geocode", "where.measured") %in% col.names)) {
-    # setdiff removes names from the vector!
+    # setdiff removes names from the vector to avoid duplicated columns!
     col.names <- col.names[!col.names %in% c("lat", "lon")]
   }
   # We walk the list of attributes adding columns
