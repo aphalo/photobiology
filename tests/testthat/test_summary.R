@@ -16,11 +16,11 @@ test_that("source_spct", {
   expect_known_value(summary(my.spct, expand = "each"),
                      "./data/summary-sun-each-e", update = update_all)
   expect_known_value(summary(my.spct, expand = "collection", which.metadata = "none"),
-                     "./data/summary-sun-collection-none-e", update = update_all)
+                     "./data/summary-sun-none-e-xcoll", update = update_all)
   expect_known_value(summary(my.spct, expand = "collection", which.metadata = "all"),
-                     "./data/summary-sun-collection-all-e", update = update_all)
+                     "./data/summary-sun-all-e-xcoll", update = update_all)
   expect_known_value(summary(my.spct, expand = "collection", which.metadata = "what.measured"),
-                     "./data/summary-sun-collection-what-e", update = update_all)
+                     "./data/summary-sun-what-e-xcoll", update = update_all)
 
   my.spct <- sun_evening.spct
   expect_known_value(summary(my.spct),
@@ -32,11 +32,11 @@ test_that("source_spct", {
   expect_known_value(summary(my.spct, expand = "each"),
                      "./data/summary-eve-each-e", update = update_all)
   expect_known_value(summary(my.spct, expand = "collection", which.metadata = "none"),
-                     "./data/summary-eve-collection-none-e", update = update_all)
+                     "./data/summary-eve-none-e-xcoll", update = update_all)
   expect_known_value(summary(my.spct, expand = "collection", which.metadata = "all"),
-                     "./data/summary-eve-collection-all-e", update = update_all)
+                     "./data/summary-eve-all-e-xcoll", update = update_all)
   expect_known_value(summary(my.spct, expand = "collection", which.metadata = "what.measured"),
-                     "./data/summary-eve-collection-what-e", update = update_all)
+                     "./data/summary-eve-what-e-xcoll", update = update_all)
 
   # photon_as_default()
   #

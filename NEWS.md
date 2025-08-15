@@ -14,6 +14,8 @@ default. Using linear approximation is in general safer, as interpolation with
 natural splines can behave badly with noisy input data.
 * Make test for scaled and normalised input in `irrad()`, `q_irrad()`, and
 `e_irrad()` more stringent, with `NA` as default returned value.
+* Handle gracefully bad field names in `instr.desc` and `instr.settings`
+attributes.
 
 # photobiology 0.13.2
 

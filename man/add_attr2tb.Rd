@@ -57,16 +57,23 @@ normalized2tb(mspct, tb = NULL, col.names = "normalized", idx = "spct.idx")
 
 scaled2tb(mspct, tb = NULL, col.names = "scaled", idx = "spct.idx")
 
-instr_desc2tb(mspct, tb = NULL, col.names = "instr.desc", idx = "spct.idx")
+instr_desc2tb(
+  mspct,
+  tb = NULL,
+  col.names = "instr.desc",
+  fields = TRUE,
+  idx = "spct.idx"
+)
 
 instr_settings2tb(
   mspct,
   tb = NULL,
   col.names = "instr.settings",
+  fields = TRUE,
   idx = "spct.idx"
 )
 
-BSWF_used2tb(mspct, tb = NULL, col.names = "BSWF.used", idx = "spct.idx")
+BSWF_used2tb(mspct, tb = NULL, col.names = "bswf.used", idx = "spct.idx")
 
 filter_properties2tb(
   mspct,
@@ -106,6 +113,9 @@ collection of spectra.}
 
 \item{unnest}{logical Flag controlling if metadata attributes that are lists
 of values should be returned in a list column or in separate columns.}
+
+\item{fields}{character vector or logical Names of fields to extract from
+each descriptor record.}
 }
 \value{
 A \code{data.frame} or a \code{tibble} With the metadata attributes

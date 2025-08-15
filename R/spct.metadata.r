@@ -813,6 +813,12 @@ getInstrDesc <- function(x) {
   if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     if (isValidInstrDesc(x)) {
       instr.desc <- attr(x, "instr.desc", exact = TRUE)
+      # earlier bug created objects with extra empty fields with bad names
+      bad.fields <- which(is.na(names(instr.desc)) |
+                            names(instr.desc) %in% c("NA", ""))
+      if (length(bad.fields)) {
+        instr.desc <- instr.desc[-bad.fields]
+      }
     } else {
       instr.desc <- list()
     }
@@ -828,6 +834,7 @@ getInstrDesc <- function(x) {
       if (any(missing)) {
         instr.desc <- c(instr.desc, minimal.desc[missing])
       }
+      # very old records lack class attribute
       if (!inherits(instr.desc, "instr_desc") &&
           !inherits(instr.desc[[1]], "instr_desc")) {
         class(instr.desc) <- c("instr_desc", class(instr.desc))
@@ -1083,12 +1090,19 @@ getInstrSettings <- function(x) {
     if (getMultipleWl(x) == 1) {
       if (isValidInstrSettings(x)) {
         instr.settings <- attr(x, "instr.settings", exact = TRUE)
+        # earlier bug created objects with extra empty fields with bad names
+        bad.fields <- which(is.na(names(instr.settings)) |
+                              names(instr.settings) %in% c("NA", ""))
+        if (length(bad.fields)) {
+          instr.settings <- instr.settings[-bad.fields]
+        }
       } else {
         instr.settings <- list(integ.time = NA_real_,
                                tot.time = NA_real_,
                                num.scans = NA_integer_,
                                rel.signal = NA_real_)
       }
+      # very old records lack class attribute
       if (!inherits(instr.settings, "instr_settings") &&
           !inherits(instr.settings[[1]], "instr_settings")) {
         class(instr.settings) <- c("instr_settings", class(instr.settings))
@@ -1521,90 +1535,117 @@ add_attr2tb <- function(tb = NULL,
   for (a in names(col.names)) {
     tb <-
       switch(a,
-             multiple.wl = multiple_wl2tb(mspct = mspct,
-                                          tb = tb,
-                                          col.names = col.names["multiple.wl"],
-                                          idx = idx),
-             lon = lon2tb(mspct = mspct,
+             multiple.wl =
+               multiple_wl2tb(mspct = mspct,
+                              tb = tb,
+                              col.names = col.names["multiple.wl"],
+                              idx = idx),
+             lon =
+               lon2tb(mspct = mspct,
+                      tb = tb,
+                      col.names = col.names["lon"],
+                      idx = idx),
+             lat =
+               lat2tb(mspct = mspct,
+                      tb = tb,
+                      col.names = col.names["lat"],
+                      idx = idx),
+             address =
+               address2tb(mspct = mspct,
                           tb = tb,
-                          col.names = col.names["lon"],
+                          col.names = col.names["address"],
                           idx = idx),
-             lat = lat2tb(mspct = mspct,
+             geocode =
+               geocode2tb(mspct = mspct,
                           tb = tb,
-                          col.names = col.names["lat"],
+                          col.names = col.names["geocode"],
                           idx = idx),
-             address = address2tb(mspct = mspct,
-                                  tb = tb,
-                                  col.names = col.names["address"],
-                                  idx = idx),
-             geocode = geocode2tb(mspct = mspct,
-                                  tb = tb,
-                                  col.names = col.names["geocode"],
-                                  idx = idx),
-             where.measured = geocode2tb(mspct = mspct,
-                                         tb = tb,
-                                         col.names = col.names["where.measured"],
-                                         idx = idx),
-             when.measured = when_measured2tb(mspct = mspct,
-                                              tb = tb,
-                                              col.names = col.names["when.measured"],
-                                              idx = idx),
-             what.measured = what_measured2tb(mspct = mspct,
-                                              tb = tb,
-                                              col.names = col.names["what.measured"],
-                                              idx = idx),
-             how.measured = how_measured2tb(mspct = mspct,
-                                            tb = tb,
-                                            col.names = col.names["how.measured"],
-                                            idx = idx),
-             comment = comment2tb(mspct = mspct,
-                                  tb = tb,
-                                  col.names = col.names["comment"],
-                                  idx = idx),
-             normalized = normalized2tb(mspct = mspct,
-                                        tb = tb,
-                                        col.names = col.names["normalized"],
-                                        idx = idx),
-             normalised = normalized2tb(mspct = mspct,
-                                        tb = tb,
-                                        col.names = col.names["normalised"],
-                                        idx = idx),
-             scaled = scaled2tb(mspct = mspct,
+             where.measured =
+               geocode2tb(mspct = mspct,
+                          tb = tb,
+                          col.names = col.names["where.measured"],
+                          idx = idx),
+             when.measured =
+               when_measured2tb(mspct = mspct,
                                 tb = tb,
-                                col.names = col.names["scaled"],
+                                col.names = col.names["when.measured"],
                                 idx = idx),
-             instr.desc = instr_desc2tb(mspct = mspct,
-                                        tb = tb,
-                                        col.names = col.names["instr.desc"],
-                                        idx = idx),
-             instr.settings = instr_settings2tb(mspct = mspct,
-                                                tb = tb,
-                                                col.names = col.names["instr.settings"],
-                                                idx = idx),
-             filter.properties = filter_properties2tb(mspct = mspct,
-                                                      tb = tb,
-                                                      col.names = col.names["filter.properties"],
-                                                      idx = idx),
-             solute.properties = solute_properties2tb(mspct = mspct,
-                                                      tb = tb,
-                                                      col.names = col.names["solute.properties"],
-                                                      idx = idx),
-             Tfr.type = Tfr_type2tb(mspct = mspct,
+             what.measured =
+               what_measured2tb(mspct = mspct,
+                                tb = tb,
+                                col.names = col.names["what.measured"],
+                                idx = idx),
+             how.measured =
+               how_measured2tb(mspct = mspct,
+                               tb = tb,
+                               col.names = col.names["how.measured"],
+                               idx = idx),
+             comment =
+               comment2tb(mspct = mspct,
+                          tb = tb,
+                          col.names = col.names["comment"],
+                          idx = idx),
+             normalized =
+               normalized2tb(mspct = mspct,
+                             tb = tb,
+                             col.names = col.names["normalized"],
+                             idx = idx),
+             normalised =
+               normalized2tb(mspct = mspct,
+                             tb = tb,
+                             col.names = col.names["normalised"],
+                             idx = idx),
+             scaled =
+               scaled2tb(mspct = mspct,
+                         tb = tb,
+                         col.names = col.names["scaled"],
+                         idx = idx),
+             instr.desc =
+               instr_desc2tb(mspct = mspct,
+                             tb = tb,
+                             col.names = col.names["instr.desc"],
+                             idx = idx),
+             instr.sn =
+               instr_desc2tb(mspct = mspct,
+                             tb = tb,
+                             fields = "spectrometer.sn",
+                             col.names = col.names["instr.sn"],
+                             idx = idx),
+             instr.settings =
+               instr_settings2tb(mspct = mspct,
+                                 tb = tb,
+                                 col.names = col.names["instr.settings"],
+                                 idx = idx),
+             filter.properties =
+               filter_properties2tb(mspct = mspct,
                                     tb = tb,
-                                    col.names = col.names["Tfr.type"],
+                                    col.names = col.names["filter.properties"],
                                     idx = idx),
-             Rfr.type = Rfr_type2tb(mspct = mspct,
+             solute.properties =
+               solute_properties2tb(mspct = mspct,
                                     tb = tb,
-                                    col.names = col.names["Rfr.type"],
+                                    col.names = col.names["solute.properties"],
                                     idx = idx),
-             time.unit = time_unit2tb(mspct = mspct,
-                                      tb = tb,
-                                      col.names = col.names["time.unit"],
-                                      idx = idx),
-             bswf.used = BSWF_used2tb(mspct = mspct,
-                                      tb = tb,
-                                      col.names = col.names["bswf.used"],
-                                      idx = idx),
+             Tfr.type =
+               Tfr_type2tb(mspct = mspct,
+                           tb = tb,
+                           col.names = col.names["Tfr.type"],
+                           idx = idx),
+             Rfr.type =
+               Rfr_type2tb(mspct = mspct,
+                           tb = tb,
+                           col.names = col.names["Rfr.type"],
+                           idx = idx),
+             time.unit =
+               time_unit2tb(mspct = mspct,
+                            tb = tb,
+                            col.names = col.names["time.unit"],
+                            idx = idx),
+             bswf.used =
+               BSWF_used2tb(mspct = mspct,
+                            tb = tb,
+                            col.names = col.names["bswf.used"],
+                            idx = idx),
              {warning("Skipping unknown metada name: ", a);
                tb})
   }
@@ -1835,15 +1876,26 @@ scaled2tb <- function(mspct,
 
 #' @rdname add_attr2tb
 #'
+#' @param fields character vector or logical Names of fields to extract from
+#'   each descriptor record.
+#'
 #' @export
 #'
 instr_desc2tb <- function(mspct,
                           tb = NULL,
                           col.names = "instr.desc",
+                          fields = TRUE,
                           idx = "spct.idx") {
   stopifnot(length(col.names) == 1L)
-  # method not implemented yet for collections
-  l <- mslply(mspct = mspct, .fun = getInstrDesc)
+  # allow partial extraction
+  getInstrDescFields <- function(x, fields) {
+    z <- getInstrDesc(x)
+    selector <- ifelse(is.character(fields),
+                       intersect(names(z), fields),
+                       fields)
+    z[selector]
+  }
+  l <- mslply(mspct = mspct, .fun = getInstrDescFields, fields = fields)
   comment(l) <- NULL
   z <- list(instr.desc = l)
   z[[idx]] <- factor(names(l), levels = names(l))
@@ -1863,10 +1915,18 @@ instr_desc2tb <- function(mspct,
 instr_settings2tb <- function(mspct,
                               tb = NULL,
                               col.names = "instr.settings",
+                              fields = TRUE,
                               idx = "spct.idx") {
   stopifnot(length(col.names) == 1L)
-  # method not implemented yet for collections
-  l <- mslply(mspct = mspct, .fun = getInstrSettings)
+  # allow partial extraction
+  getInstrSettingsFields <- function(x, fields) {
+    z <- getInstrSettings(x)
+    selector <- ifelse(is.character(fields),
+                       intersect(names(z), fields),
+                       fields)
+    z[selector]
+  }
+  l <- mslply(mspct = mspct, .fun = getInstrSettingsFields, fields = fields)
   comment(l) <- NULL
   z <- list(instr.settings = l)
   z[[idx]] <- factor(names(l), levels = names(l))
@@ -1885,7 +1945,7 @@ instr_settings2tb <- function(mspct,
 #'
 BSWF_used2tb <- function(mspct,
                          tb = NULL,
-                         col.names = "BSWF.used",
+                         col.names = "bswf.used",
                          idx = "spct.idx") {
   stopifnot(length(col.names) == 1L)
   # method not implemented yet for collections
