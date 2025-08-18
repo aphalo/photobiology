@@ -50,6 +50,10 @@ trim_spct <- function(spct,
                       byref = FALSE,
                       verbose = getOption("photobiology.verbose") )
 {
+  # temporarily disable checks for performance
+  check.state <- disable_check_spct()
+  on.exit(set_check_spct(check.state))
+
   if (nrow(spct) == 0) {
     return(spct)
   }
@@ -199,9 +203,11 @@ trim_spct <- function(spct,
       }
     }
   }
-  # we still need to copy all attributes as when we use row bind to
+  # we still need to copy all attributes when we use row binding of
   # data.frames to extend the spectra.
-  spct <- copy_attributes(x, spct, copy.class = TRUE)
+  if (!is.null(fill)) {
+    spct <- copy_attributes(x, spct, copy.class = TRUE)
+  }
   check_spct(spct)
   if (byref && is.name(name)) {
     name <- as.character(name)
@@ -523,6 +529,10 @@ clip_wl.default <- function(x, range, ...) {
 #'
 clip_wl.generic_spct <- function(x, range = NULL, ...) {
 
+  # temporarily disable checks for performance
+  check.state <- disable_check_spct()
+  on.exit(set_check_spct(check.state))
+
   # this also works for multiple spectra in long form
   if (is.null(range)) {
     return(x)
@@ -539,7 +549,7 @@ clip_wl.generic_spct <- function(x, range = NULL, ...) {
       x[x[["w.length"]] >= range[1] & x[["w.length"]] < range[2] + guard, ]
     }
   } else {
-    range = range(range, na.rm = TRUE)
+    range <- range(range, na.rm = TRUE)
     row.selector <- x[["w.length"]] >= range[1] & x[["w.length"]] < range[2] + guard
     x[row.selector, ]
   }
