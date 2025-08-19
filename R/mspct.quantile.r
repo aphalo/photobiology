@@ -4,12 +4,15 @@
 #' collection of spectra or of a spectral object containing multiple spectra in
 #' long form.
 #'
-#' @details Method specializations compute the qunatiles at each wavelength
+#' @details Method specializations to compute the quantiles at each wavelength
 #'   across a group of spectra stored in an object of one of the classes defined
 #'   in package 'photobiology'. Omission of NAs is done separately at each
-#'   wavelength. Interpolation is not applied, so all spectra in \code{x} must
-#'   share the same set of wavelengths. An error is triggered if this condition
-#'   is not fulfilled.
+#'   wavelength. If \code{na.rm = FALSE} and \code{NA} values are present in any
+#'   of the spectra at a given wavelength, \code{NA} is returned at this
+#'   wavelength (this differs from \code{\link[stats]{quantile}()} but is
+#'   consistent with \code{s_mean()}, \code{s_median()}, etc.). Interpolation is
+#'   not applied, so all spectra in \code{x} must share the same set of
+#'   wavelengths. An error is triggered if this condition is not fulfilled.
 #'
 #' @inheritParams s_mean
 #' @param probs numeric vector of probabilities with values in \eqn{[0, 1]}.
@@ -70,12 +73,22 @@ s_quantile.generic_spct <-
 #'
 s_quantile.source_mspct <-
   function(x, probs = c(0.25, 0.5, 0.75), na.rm = FALSE, ..., simplify = TRUE) {
+
+    # ensure NAs are handled consistently with mean, median, etc. row by row
+    my.quantile <- function(x, probs, na.rm, ...) {
+      if (!na.rm && anyNA(x)) {
+        rep_len(NA_real_, length(probs))
+      } else {
+        stats::quantile(x = x, probs = probs, na.rm = na.rm, ... )
+      }
+    }
+
     z <- source_mspct()
     for (p in probs) {
       q.name <- paste("p", p, sep = "_")
       z[[q.name]] <-
         rowwise_source(x = x,
-                       .fun = stats::quantile,
+                       .fun = my.quantile,
                        probs = p, na.rm = na.rm, names = FALSE,
                        .fun.name = paste("Quantile P=", p, " of", sep = ""))
     }

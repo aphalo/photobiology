@@ -5,6 +5,8 @@
 \title{Overwrite spectral data values at existing wavelength values.}
 \usage{
 v_replace_hinges(x, y, h)
+
+v_replace_hinges(x, y, h)
 }
 \arguments{
 \item{x}{numeric vector (sorted in increasing order).}
@@ -18,12 +20,23 @@ numeric vector (\code{numeric(0)}).}
 \value{
 A numeric vector with the numeric values of \code{y} with values
   at the hinges replaced by interpolation of neighbours.
+
+A copy of the numeric vector \code{y} with values at the hinges
+  replaced by interpolation of neighbours. The lengths of \code{x}, \code{y}
+  and the returned vector are the same.
 }
 \description{
 Overwriting spectral data with interpolated values at wavelengths values
 containing bad data is needed when cleaning spectral data.
 This function differs from \code{insert_hinges()} in that it returns a vector
 of \code{y} values instead of a \code{tibble}.
+
+Overwriting spectral data with interpolated values at wavelengths values
+containing bad data is needed when cleaning spectral data. Linear
+interpolation between the two enclosing neighbours is used as replacement
+values.
+This function like \code{v_insert_hinges()} returns a vector
+of new \emph{y} values.
 }
 \seealso{
 Other low-level functions operating on numeric vectors.: 
@@ -49,7 +62,34 @@ Other low-level functions operating on numeric vectors.:
 \code{\link{subt_spectra}()},
 \code{\link{sum_spectra}()},
 \code{\link{trim_tails}()},
-\code{\link{v_insert_hinges}()}
+\code{\link{v_insert_hinges}()},
+\code{\link{v_paste_hinges}()}
+
+Other low-level functions operating on numeric vectors.: 
+\code{\link{as_energy}()},
+\code{\link{as_quantum_mol}()},
+\code{\link{calc_multipliers}()},
+\code{\link{div_spectra}()},
+\code{\link{energy_irradiance}()},
+\code{\link{energy_ratio}()},
+\code{\link{insert_hinges}()},
+\code{\link{integrate_xy}()},
+\code{\link{interpolate_spectrum}()},
+\code{\link{irradiance}()},
+\code{\link{l_insert_hinges}()},
+\code{\link{oper_spectra}()},
+\code{\link{photon_irradiance}()},
+\code{\link{photon_ratio}()},
+\code{\link{photons_energy_ratio}()},
+\code{\link{prod_spectra}()},
+\code{\link{s_e_irrad2rgb}()},
+\code{\link{split_energy_irradiance}()},
+\code{\link{split_photon_irradiance}()},
+\code{\link{subt_spectra}()},
+\code{\link{sum_spectra}()},
+\code{\link{trim_tails}()},
+\code{\link{v_insert_hinges}()},
+\code{\link{v_paste_hinges}()}
 }
 \concept{low-level functions operating on numeric vectors.}
 \keyword{internal.}

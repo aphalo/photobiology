@@ -60,12 +60,15 @@ collection of spectra or of a spectral object containing multiple spectra in
 long form.
 }
 \details{
-Method specializations compute the qunatiles at each wavelength
+Method specializations to compute the quantiles at each wavelength
   across a group of spectra stored in an object of one of the classes defined
   in package 'photobiology'. Omission of NAs is done separately at each
-  wavelength. Interpolation is not applied, so all spectra in \code{x} must
-  share the same set of wavelengths. An error is triggered if this condition
-  is not fulfilled.
+  wavelength. If \code{na.rm = FALSE} and \code{NA} values are present in any
+  of the spectra at a given wavelength, \code{NA} is returned at this
+  wavelength (this differs from \code{\link[stats]{quantile}()} but is
+  consistent with \code{s_mean()}, \code{s_median()}, etc.). Interpolation is
+  not applied, so all spectra in \code{x} must share the same set of
+  wavelengths. An error is triggered if this condition is not fulfilled.
 }
 \note{
 Objects of classes \code{raw_spct} and \code{cps_spct} can contain data

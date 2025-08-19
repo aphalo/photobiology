@@ -135,7 +135,7 @@ rowwise_source <-
     # validate input
     stopifnot(length(.fun) == length(col.name.tag))
 
-    # ensure rowise computtaions are possible
+    # ensure rowise computations are possible
     x <- make_wl_consistent(x = x, w.length.out = w.length.out)
 
     # collect and check consistency of attributes

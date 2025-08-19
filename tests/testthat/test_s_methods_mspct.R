@@ -14,7 +14,11 @@ test_that("source_mspct", {
   expect_equal(s_var(lamps.mspct)[[2]][100], var(row100))
   expect_equal(s_sd(lamps.mspct)[[2]][100], sd(row100))
   expect_equal(s_sum(lamps.mspct)[[2]][100], sum(row100))
-#  expect_equal(s_prod(lamps.mspct)[[2]][100], prod(row100))
+  expect_warning(z <- s_prod(lamps.mspct))
+  expect_equal(z[[2]][100], prod(row100))
+
+  expect_no_error(s_quantile(lamps.mspct, na.rm = FALSE))
+  expect_no_error(s_quantile(lamps.mspct, p = 0.5, na.rm = FALSE))
 
   print.flag <- FALSE # TRUE leads to warnings about encoding
   expect_known_value(s_mean(lamps.mspct), "data/s-mean-value", update = update_all)
@@ -24,7 +28,13 @@ test_that("source_mspct", {
   expect_known_value(s_se(lamps.mspct), "data/s-se-value", update = update_all)
   expect_known_value(s_var(lamps.mspct), "data/s-var-value", update = update_all)
   expect_known_value(s_sum(lamps.mspct), "data/s-sum-value", update = update_all)
-  expect_warning(s_prod(lamps.mspct))
+  expect_warning(z <- s_prod(lamps.mspct))
+  expect_known_value(z, "data/s-prod-value", update = update_all)
+  expect_known_value(s_quantile(lamps.mspct),
+                     "data/s-3quant-value", update = update_all)
+  expect_known_value(s_quantile(lamps.mspct, p = 0.5),
+                     "data/s-1quant-value", update = update_all)
+  expect_error(s_quantile(lamps.mspct, p = -1, na.rm = TRUE))
 
   expect_known_value(s_mean(lamps.mspct, na.rm = TRUE), "data/s-mean-na-value", update = update_all)
   expect_known_value(s_median(lamps.mspct, na.rm = TRUE), "data/s-median-na-value", update = update_all)
@@ -34,5 +44,10 @@ test_that("source_mspct", {
   expect_known_value(s_var(lamps.mspct, na.rm = TRUE), "data/s-var-na-value", update = update_all)
   expect_known_value(s_sum(lamps.mspct, na.rm = TRUE), "data/s-sum-na-value", update = update_all)
   expect_warning(s_prod(lamps.mspct, na.rm = TRUE))
+  expect_known_value(s_quantile(lamps.mspct, na.rm = TRUE),
+                     "data/s-3quant-na-value", update = update_all)
+  expect_known_value(s_quantile(lamps.mspct, p = 0.5, na.rm = TRUE),
+                     "data/s-1quant-na-value", update = update_all)
+  expect_error(s_quantile(lamps.mspct, p = -1, na.rm = TRUE))
 })
 
