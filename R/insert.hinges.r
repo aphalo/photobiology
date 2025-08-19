@@ -42,14 +42,15 @@ insert_hinges <- function(x, y, h) {
   idxs.diff <- diff(c(0, idxs.in, k))
   idxs.map <- 1:k + rep(0:j, idxs.diff)
   # we use recycling to interpolate all values and insert them into the gaps
+  # allocate vectors for the output
+  x.out <- numeric(j + k)
+  y.out <- numeric(j + k)
+  # we copy everything that does not require interpolation
+  x.out[idxs.map] <- x
+  x.out[idxs.out] <- h
   if (is.numeric(y)) {
-    # allocate vectors for the output
-    x.out <- numeric(j + k)
-    y.out <- numeric(j + k)
     # we copy everything that does not require interpolation
-    x.out[idxs.map] <- x
     y.out[idxs.map] <- y
-    x.out[idxs.out] <- h
     # we fill the hinges by interpolation
     y.out[idxs.out] <- y[idxs.in + 1] -
       (x[idxs.in + 1] - x.out[idxs.out]) /
