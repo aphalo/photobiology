@@ -1308,7 +1308,7 @@ spectra in a collection are of the same class, and data is available for each of
 them at exactly the same set of wavelengths. In the table below, 
 `source_spct/mspct` is an abbreviation for `source_spct` or `source_mspct`.
 
-| functions                 | class of argument   | class of returned spectrum | variables in spectrum                |
+| functions                 | class of argument   | class of returned spectrum/a | variables in spectrum                |
 |:------------------|:---------------|:---------------|:---------------------|
 | `s_sum`                   | `source_spct/mspct`      | `source_spct`              | same as input                        |
 | `s_sum`                   | `response_spct/mspct`    | `response_spct`            | same as input                        |
@@ -1340,6 +1340,11 @@ them at exactly the same set of wavelengths. In the table below,
 | `s_range`                 | `filter_spct/mspct`      | `generic_spct`             | input tagged `.min` and `.max`       |
 | `s_range`                 | `reflector_spct/mspct`   | `generic_spct`             | input tagged `.min` and `.max`       |
 | `s_range`                 | `calibration_spct/mspct` | `generic_spct`             | input tagged `.min` and `.max`       |
+| `s_quantile`              | `source_spct/mspct`      | `source_mspct/spct`        | same as input                        |
+| `s_quantile`              | `response_spct/mspct`    | `response_mspct/spct`      | same as input                        |
+| `s_quantile`              | `filter_spct/mspct`      | `filter_mspct/spct`        | same as input                        |
+| `s_quantile`              | `reflector_spct/mspct`   | `reflector_mspct/spct`     | same as input                        |
+| `s_quantile`              | `calibration_spct/mspct` | `calibration_mspct/spct`   | same as input                        |
 
 The calculations are done wavelength by wavelength yielding a spectrum
 at the same wavelengths than those in the input. Removal of `NA` values
