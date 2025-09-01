@@ -676,6 +676,8 @@ normalize_spct <- function(spct,
                            ...) {
   stopifnot(is.generic_spct(spct))
 
+  scale.is.dirty <- FALSE
+
   # if 'norm' is a character vector, we use the first element
   # thus, all columns always get the same type of normalization
   if (is.character(norm) && length(norm) > 1) {
@@ -708,25 +710,34 @@ normalize_spct <- function(spct,
 
     required.fields <- c("norm.type", "norm.wl", "norm.cols", "norm.range")
     has.normalization.metadata <-
+      length(old.normalization.ls) >= length(required.fields) &&
+      all(required.fields %in% names(old.normalization.ls)) &&
       !any(is.na(unlist(old.normalization.ls[required.fields])))
 
-    if (!has.normalization.metadata) {
-      warning("Normalization not updated: action not supported for ",
-              "objects created with 'photobiology' (<= 0.10.9).")
+    if (!has.normalization.metadata && norm[1] %in% c("update", "undo")) {
+      warning("Normalization not updated/undone: action not supported for ",
+              "objects lacking normalization metadata.")
       return(spct)
-    } else {
+    } else if (has.normalization.metadata) {
       if (norm[1] != "undo") {
-        norm <- old.normalization.ls$norm.type
-        if (norm[1] == "wavelength") {
+        if (old.normalization.ls$norm.type[1] == "wavelength") {
           norm <- old.normalization.ls$norm.wl
+        } else {
+          norm <- old.normalization.ls$norm.type
         }
         range <- old.normalization.ls$norm.range
       }
       # remove the old normalization
-      spct <- denormalize_spct(spct, wipe.away = FALSE)
+
+      spct <- denormalize_spct(spct,
+                               wipe.away = FALSE)
       if (norm[1] == "undo") {
         return(spct)
       }
+    } else {
+      spct <- denormalize_spct(spct,
+                               wipe.away = TRUE)
+      scale.is.dirty <- TRUE
     }
   } else if (norm[1] == "update") {
     # not normalized, nothing to update
@@ -758,7 +769,7 @@ normalize_spct <- function(spct,
     setScaled(spct, scaled = FALSE)
   } else {
     # retain scaling metadata and save norm.factors
-    scale.is.dirty <- FALSE
+    scale.is.dirty <- scale.is.dirty || FALSE
   }
 
   # normalization of one or more columns
@@ -813,6 +824,9 @@ normalize_spct <- function(spct,
                        },
                      norm.cols = col.names,
                      norm.range = range)
+  if (scale.is.dirty) {
+    message("'norm.factors' not stored")
+  }
   z # setNormalized makes its returned value invisible
 }
 
@@ -1086,6 +1100,9 @@ setNormalized <- function(x,
                           verbose = getOption("verbose_as_default", default = FALSE)) {
   name <- substitute(x)
 
+  if (is.generic_mspct(x)) {
+    warning("To apply 'setNormalized()' to members of a collection call it with 'msmsply'")
+  }
   stopifnot("'norm' must be numeric or logical, but it is not" =
               is.numeric(norm) || is.logical(norm))
 
