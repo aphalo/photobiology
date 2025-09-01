@@ -685,7 +685,7 @@ normalize_spct <- function(spct,
       warning("Multiple 'norm' values supplied by name. Using the first one: ",
               norm[1], ".")
     }
-    morm <- norm[1]
+    norm <- norm[1]
   }
 
   # handle "skip" early so that long-form multiple spectra or missing columns
