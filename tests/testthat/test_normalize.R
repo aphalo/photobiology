@@ -97,12 +97,34 @@ test_that("normalize source_spct", {
   energy_as_default()
 
   my.spct <- q2e(sun.spct, action = "replace")
+
   my_norm.spct <- normalize(my.spct)
+  expect_equal(max(my_norm.spct$s.e.irrad), 1)
+
+  my_norm.spct <- normalize(my.spct, norm = "max")
+  expect_equal(max(my_norm.spct$s.e.irrad), 1)
+
+  my_denorm.spct <- normalize(my_norm.spct, norm = "undo")
+  expect_equal(max(my_denorm.spct$s.e.irrad),
+               max(my.spct$s.e.irrad))
+
+  my_norm.spct <- normalize(my.spct, norm = "skip")
+  expect_equal(max(my_norm.spct$s.e.irrad),
+               max(my.spct$s.e.irrad))
+
+  my_norm.spct <- normalize(my.spct, norm = NULL)
+  expect_equal(max(my_norm.spct$s.e.irrad),
+               max(my.spct$s.e.irrad))
+
+  my_norm.spct <- normalize(my.spct, norm = NA_real_)
+  expect_equal(max(my_norm.spct$s.e.irrad),
+               max(my.spct$s.e.irrad))
 
   # expect_equal(my.spct, setNormalized(my_norm.spct))
   # expect_equal(my.spct, setNormalized(my_norm.spct, norm = FALSE))
 
   # check query function and method consistency
+  my_norm.spct <- normalize(my.spct)
   expect_equal(normalization(my_norm.spct),
                getNormalisation(my_norm.spct))
 
