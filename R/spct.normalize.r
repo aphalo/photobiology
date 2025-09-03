@@ -27,7 +27,7 @@
 #'   accumulated loss of precision due to floating-point arithmetic,
 #'   independently of the previous application of a different normalization.
 #'
-#' @note When the spectrum passed as argument to \code{x} had been previously
+#'   When the spectrum passed as argument to \code{x} had been previously
 #'   scaled, in 'photobiology' (<= 0.10.9) the scaling attribute was always
 #'   removed and no normalization factors returned. In 'photobiology'
 #'   (>= 0.10.10) scaling information can be preserved by passing
@@ -49,6 +49,9 @@
 #'   property of a substance, normalization is unlikely to useful. To represent
 #'   solutions of specific concentrations of solutes, \code{filter_spct} objects
 #'   should be used instead.
+#'
+#' @note The second formal argument is ellipsis, thus all parameters except
+#'   \code{x} have to be always passed by name.
 #'
 #' @param x An R object
 #' @param ... not used in current version

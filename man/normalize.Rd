@@ -273,6 +273,29 @@ By default normalization is done based on the maximum of the
   ensures that the returned object is identical, except for possible
   accumulated loss of precision due to floating-point arithmetic,
   independently of the previous application of a different normalization.
+
+  When the spectrum passed as argument to \code{x} had been previously
+  scaled, in 'photobiology' (<= 0.10.9) the scaling attribute was always
+  removed and no normalization factors returned. In 'photobiology'
+  (>= 0.10.10) scaling information can be preserved by passing
+  \code{keep.scaling = TRUE}.
+
+  By default if \code{x} contains one or more \code{NA} values and the
+  normalization is based on a summary quantity, the returned spectrum will
+  contain only \code{NA} values. If \code{na.rm == TRUE} then the summary
+  quantity will be calculated after striping \code{NA} values, and only the
+  values that were \code{NA} in \code{x} will be \code{NA} values in the
+  returned spectrum.
+
+  When a numeric value is passed as argument to keep.scaling, the scaling
+  uses \code{f = "total"} or \code{f = "mean"} depending on the class of
+  \code{x}. Rescaling is only occasionally needed.
+
+  Method \code{normalize} is implemented for \code{solute_spct} objects but
+  as the spectral data stored in them are a description of an intensive
+  property of a substance, normalization is unlikely to useful. To represent
+  solutions of specific concentrations of solutes, \code{filter_spct} objects
+  should be used instead.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -312,28 +335,8 @@ By default normalization is done based on the maximum of the
 
 }}
 \note{
-When the spectrum passed as argument to \code{x} had been previously
-  scaled, in 'photobiology' (<= 0.10.9) the scaling attribute was always
-  removed and no normalization factors returned. In 'photobiology'
-  (>= 0.10.10) scaling information can be preserved by passing
-  \code{keep.scaling = TRUE}.
-
-  By default if \code{x} contains one or more \code{NA} values and the
-  normalization is based on a summary quantity, the returned spectrum will
-  contain only \code{NA} values. If \code{na.rm == TRUE} then the summary
-  quantity will be calculated after striping \code{NA} values, and only the
-  values that were \code{NA} in \code{x} will be \code{NA} values in the
-  returned spectrum.
-
-  When a numeric value is passed as argument to keep.scaling, the scaling
-  uses \code{f = "total"} or \code{f = "mean"} depending on the class of
-  \code{x}. Rescaling is only occasionally needed.
-
-  Method \code{normalize} is implemented for \code{solute_spct} objects but
-  as the spectral data stored in them are a description of an intensive
-  property of a substance, normalization is unlikely to useful. To represent
-  solutions of specific concentrations of solutes, \code{filter_spct} objects
-  should be used instead.
+The second formal argument is ellipsis, thus all parameters except
+  \code{x} have to be always passed by name.
 
 \code{normalise()} is a synonym for this \code{normalize()} method.
 }
