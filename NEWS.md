@@ -17,6 +17,8 @@ natural splines can behave badly with noisy input data.
 * Handle gracefully bad field names and missing fields in `instr.desc` and
 `instr.settings` attributes.
 * Add `as.response_spct()` specialization for conversion of `waveband` objects.
+* **Bug fix:** preserve/restore the `normalize` and `normalization` attributes
+in `rbindspct()` and `subset2mspct()`.
 
 # photobiology 0.13.2
 

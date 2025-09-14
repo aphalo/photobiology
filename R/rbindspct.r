@@ -243,6 +243,8 @@ rbindspct <- function(l,
     where.measured <- getWhereMeasured(l[[idxs]])
     what.measured <- getWhatMeasured(l[[idxs]])
     how.measured <- getHowMeasured(l[[idxs]])
+    normalized <- getNormalized(l[[idxs]])
+    normalization <- getNormalization(l[[idxs]])
   } else {
     # we avoid duplicating the attributes when possible
     comments <- lapply(l[idxs], comment)
@@ -292,6 +294,12 @@ rbindspct <- function(l,
       names(how.measured) <- names.spct[idxs]
     }
 
+    normalized <- lapply(l[idxs], getNormalized)
+    names(normalized) <- names.spct[idxs]
+
+    normalization <- lapply(l[idxs], getNormalization)
+    names(normalization) <- names.spct[idxs]
+
   }
 
   if (l.class == "source_spct") {
@@ -332,7 +340,7 @@ rbindspct <- function(l,
               "passed to rbindspct")
       return(filter_spct())
     }
-    filter.descriptor <- 
+    filter.descriptor <-
       sapply(l, FUN = getFilterProperties, return.null = TRUE)
     # TODO merge it if possible
     # and then set
@@ -401,9 +409,6 @@ rbindspct <- function(l,
   if (any(scaled.input)) {
     attr(ans, "scaled") <- TRUE
   }
-  if (any(normalized.input)) {
-    attr(ans, "normalized") <- TRUE
-  }
   if (!is.null(comment.ans)) {
     comment(ans) <- comment.ans
   }
@@ -414,6 +419,10 @@ rbindspct <- function(l,
   setWhereMeasured(ans, where.measured)
   setWhatMeasured(ans, what.measured)
   setHowMeasured(ans, how.measured)
+  attr(ans, "normalized") <- normalized
+  if (any(normalized.input)) {
+    attr(ans, "normalization") <- normalization
+  }
   if (!all(is.na(instr.desc))) {
     setInstrDesc(ans, instr.desc)
   }

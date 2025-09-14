@@ -1904,6 +1904,18 @@ subset2mspct <- function(x,
         groups <- unique(x[[idx]])
       }
       l <- list()
+      if (!is.any_spct(x)) {
+        normalized <- FALSE
+      } else {
+        normalized <- getNormalized(x)
+      }
+      if (length(normalized) == 1) {
+        normalized <- as.list(rep(normalized, length(groups)))
+        names(normalized) <- groups
+      }
+      if (any(as.logical(unlist(normalized, use.names = FALSE)))) {
+        normalization <- getNormalization(x)
+      }
       for (grp in groups) {
         slice <- subset(x, x[[idx]] == grp)
         if (drop.idx) {
@@ -1915,6 +1927,10 @@ subset2mspct <- function(x,
         args <- list(x = slice)
         args.ellipsis <- list(...)
         l[[grp]] <- do.call(member.constr, c(args, args.ellipsis))
+        attr(l[[grp]], "normalized") <- normalized[[grp]]
+        if (normalized[[grp]]) {
+          attr(l[[grp]], "normalization") <- normalization[[grp]]
+        }
       }
       margs <- list(l = l, ncol = ncol, byrow = byrow)
       z <- do.call(collection.constr, margs)

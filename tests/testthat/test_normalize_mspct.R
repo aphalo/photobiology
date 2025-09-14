@@ -46,6 +46,7 @@ test_that("normalization of long source_spct", {
   my.mspct <- source_mspct(spct.l)
   my.spct <- rbindspct(my.mspct, idfactor = "test.id")
 
+  expect_false(is_normalised(my.spct))
   normalized.spct <- normalize(my.spct)
 
   expect_equal(getIdFactor(my.spct), getIdFactor(normalized.spct))
@@ -54,5 +55,19 @@ test_that("normalization of long source_spct", {
   expect_equal(nrow(my.spct), nrow(normalized.spct))
   expect_equal(my.spct$w.length, normalized.spct$w.length)
   expect_equal(class(my.spct), class(normalized.spct))
+
+  expect_true(all(unlist(is_normalized(normalized.spct), use.names = FALSE)))
+  expect_false(anyNA(unlist(getNormalisation(normalized.spct), use.names = FALSE)))
+
+  norm.l <-
+    lapply(list(my1.spct, my2.spct, my3.spct, my4.spct, my5.spct),
+           normalize)
+  norm.mspct <- source_mspct(norm.l)
+  expect_true(all(unlist(is_normalized(norm.mspct), use.names = FALSE)))
+  expect_false(anyNA(unlist(getNormalisation(norm.mspct), use.names = FALSE)))
+
+  norm.spct <- rbindspct(norm.mspct, idfactor = "test.id")
+  expect_true(all(unlist(is_normalized(norm.mspct), use.names = FALSE)))
+  expect_false(anyNA(unlist(getNormalisation(norm.mspct), use.names = FALSE)))
 
 })

@@ -912,8 +912,10 @@ is_normalized <- function(x) {
     spct.attr <- attr(x, "normalized", exact = TRUE)
     # in some versions a logical was used, but later the normalization wavelength
     # in old versions the attribute was set only when normalization was applied
-    stopifnot(is.null(spct.attr) || is.numeric(spct.attr) || is.logical(spct.attr))
-    return(!is.null(spct.attr) && as.logical(spct.attr))
+    # for spectra in long form the attribute value is a named list.
+    stopifnot(is.null(spct.attr) || is.numeric(spct.attr) ||
+                is.logical(spct.attr) || is.list(spct.attr))
+    return(!is.null(spct.attr) && any(as.logical(spct.attr)))
   } else if (is.generic_mspct(x)) {
     return(mslply(x, is_normalized))
   } else if (is.waveband(x)) {
@@ -987,7 +989,7 @@ getNormalized <- function(x,
                           .force.numeric = FALSE) {
   if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     normalized <- attr(x, "normalized", exact = TRUE)
-    if (is.null(normalized) || is.na(normalized)) {
+    if (is.null(normalized) || all(is.na(normalized))) {
       # need to handle objects created with very old versions
       normalized <- FALSE
     }
@@ -1030,7 +1032,8 @@ getNormalization <- function(x) {
       # attribute in use >= 0.10.8
       normalization.list <- attr(x, "normalization", exact = TRUE)
       if (is.list(normalization.list)) {
-        if (!exists("norm.range", normalization.list)) {
+        if (!exists("norm.range", normalization.list) &&
+            exists("norm.type", normalization.list)) {
           # norm.range is missing 0.10.8 and 0.10.9
           normalization.list[["norm.range"]] <- rep(NA_real_, 2)
         }
