@@ -1459,7 +1459,7 @@ getWhatMeasured.generic_mspct <- function(x,
 #'   \code{add_attr2tb()}, \code{when_measured2tb()}, \code{what_measured2tb()},
 #'   etc., compared to attribute query functions, such as \code{spct_metadata},
 #'   \code{when_measured()}, \code{what_measured()}, \code{how_measured()}, etc.
-#'   This is to allow the use of \code{add_attr2tb()} and related functions in 
+#'   This is to allow the use of \code{add_attr2tb()} and related functions in
 #'   'pipes' to add metadata to summaries computed at earlier steps in the pipe.
 #'
 #' @family measurement metadata functions
@@ -1652,12 +1652,16 @@ add_attr2tb <- function(tb = NULL,
   }
   if (unnest) {
     list.cols <- colnames(tb)[sapply(tb, is.list)]
-    # do not expand preexisting list columns
+    # do not expand pre-existing list columns
     list.cols <- setdiff(list.cols, tb.cols)
     # expand metadata fields into columns
     for (col in list.cols) {
-      # handles lists of lists or lists of dataframes
-      tb <- tidyr::unnest_wider(tb, tidyr::all_of(col))
+      # avoid duplicate names
+      tb[[col]] <- lapply(tb[[col]], function(x) x[setdiff(names(x), colnames(tb))])
+      # handles lists of lists or lists of data frames
+      tb <- tidyr::unnest_wider(tb,
+                                tidyr::all_of(col),
+                                names_repair = "check_unique")
     }
   }
   tb

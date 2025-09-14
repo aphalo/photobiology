@@ -333,11 +333,11 @@ test_that("source_spct", {
   ## idfactor
   zz <- rbindspct(sun_evening.mspct, idfactor = FALSE, attrs.simplify = FALSE)
   expect_equal(colnames(zz), c( "w.length", "s.e.irrad"))
-  expect_true(setequal(colnames(where_measured(zz)), c("lat", "lon", "address")))
+  expect_true(setequal(colnames(where_measured(zz)), c("spct.idx", "lat", "lon", "address")))
 
   zz <- rbindspct(sun_evening.mspct, idfactor = TRUE, attrs.simplify = FALSE)
   expect_equal(colnames(zz), c( "w.length", "s.e.irrad", "spct.idx"))
-  expect_true(setequal(colnames(where_measured(zz)), c("lat", "lon", "address", "spct.idx")))
+  expect_true(setequal(colnames(where_measured(zz)), c("spct.idx", "lat", "lon", "address", "spct.idx")))
 
   ## recovered collection
   recovered.mspct <- subset2mspct(long.spct)

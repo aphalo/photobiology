@@ -1,5 +1,6 @@
 library(readxl)
 library(photobiology)
+library(jsonlite)
 
 D65.illuminant.spct <- read.csv(file = "data-raw/CIE/CIE_std_illum_D65.csv", header = FALSE, col.names = c("w.length", "s.e.irrad"))
 D65.illuminant.spct <- as.source_spct(D65.illuminant.spct)

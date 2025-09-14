@@ -66,7 +66,7 @@ The order of the first two arguments is reversed in
   \code{add_attr2tb()}, \code{when_measured2tb()}, \code{what_measured2tb()},
   etc., compared to attribute query functions, such as \code{spct_metadata},
   \code{when_measured()}, \code{what_measured()}, \code{how_measured()}, etc.
-  This is to allow the use of \code{add_attr2tb()} and related functions in 
+  This is to allow the use of \code{add_attr2tb()} and related functions in
   'pipes' to add metadata to summaries computed at earlier steps in the pipe.
 }
 \examples{
