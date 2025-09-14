@@ -3,11 +3,24 @@
 \name{as.response_spct}
 \alias{as.response_spct}
 \alias{as.response_spct.default}
+\alias{as.response_spct.waveband}
 \title{Coerce to a spectrum}
 \usage{
 as.response_spct(x, ...)
 
 \method{as.response_spct}{default}(x, time.unit = "second", ...)
+
+\method{as.response_spct}{waveband}(
+  x,
+  time.unit = "second",
+  w.length = NULL,
+  fill = 0,
+  unit.in = getOption("photobiology.radiation.unit", default = "energy"),
+  unit.out = unit.in,
+  strict.range = getOption("photobiology.strict.range", default = FALSE),
+  na.rm = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{an R object.}
@@ -17,6 +30,20 @@ as.response_spct(x, ...)
 \item{time.unit}{character string indicating the time unit used for spectral
 irradiance or exposure (\code{"second"}, \code{"day"} or \code{"exposure"})
 or an object of class duration as defined in package lubridate.}
+
+\item{w.length}{numeric vector of wavelengths (nm).}
+
+\item{fill}{value to use as response for wavelengths outside the waveband
+range.}
+
+\item{unit.in, unit.out}{the type of unit we assume as reference: "energy" or
+"photon" based for the waveband definition and the implicit matching
+response plotted.}
+
+\item{strict.range}{logical Flag indicating whether off-range values result
+in an error instead of a warning.}
+
+\item{na.rm}{logical.}
 }
 \value{
 A copy of \code{x} converted into a \code{response_spct} object.
@@ -27,6 +54,8 @@ Return a copy of an R object with its class set to a given type of spectrum.
 \section{Methods (by class)}{
 \itemize{
 \item \code{as.response_spct(default)}: 
+
+\item \code{as.response_spct(waveband)}: 
 
 }}
 \seealso{

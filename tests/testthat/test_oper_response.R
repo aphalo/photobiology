@@ -109,6 +109,66 @@ test_that("constructor photon", {
   expect_equal(getTimeUnit(my.dh.spct), duration(1, "hours"))
 })
 
+test_that("constructor waveband", {
+
+  my.wb <- waveband(x = c(400, 700))
+
+  my.spct <- as.response_spct(my.wb)
+  expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_named(my.spct, c("w.length", "s.e.response"))
+  expect_equal(nrow(my.spct), 204L)
+  expect_equal(getTimeUnit(my.spct), "second")
+  expect_equal(sum(my.spct$s.e.response), 200L)
+
+  my.spct <- as.response_spct(my.wb, w.length = 300:800)
+  expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_named(my.spct, c("w.length", "s.e.response"))
+  expect_equal(nrow(my.spct), 503L)
+  expect_equal(getTimeUnit(my.spct), "second")
+  expect_equal(sum(my.spct$s.e.response), 301L)
+
+  my.spct <- as.response_spct(my.wb, unit.in = "energy")
+  expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_named(my.spct, c("w.length", "s.e.response"))
+  expect_equal(nrow(my.spct), 204L)
+  expect_equal(getTimeUnit(my.spct), "second")
+  expect_equal(sum(my.spct$s.e.response), 200L)
+
+  my.spct <- as.response_spct(my.wb,
+                              unit.in = "photon")
+  expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_named(my.spct, c("w.length", "s.q.response"))
+  expect_equal(nrow(my.spct), 204L)
+  expect_equal(getTimeUnit(my.spct), "second")
+  expect_equal(sum(my.spct$s.q.response), 200L)
+
+  my.spct <- as.response_spct(my.wb,
+                              unit.in = "photon",
+                              unit.out = "energy")
+  expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_named(my.spct, c("w.length", "s.e.response"))
+  expect_equal(nrow(my.spct), 204L)
+  expect_equal(getTimeUnit(my.spct), "second")
+  expect_equal(sum(my.spct$s.e.response), 44657348)
+
+  my.spct <- as.response_spct(my.wb,
+                              unit.in = "energy",
+                              unit.out = "photon")
+  expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_named(my.spct, c("w.length", "s.q.response"))
+  expect_equal(nrow(my.spct), 204L)
+  expect_equal(getTimeUnit(my.spct), "second")
+  expect_equal(sum(my.spct$s.q.response), 0.0009195281)
+
+})
+
+
 test_that("oper energy energy", {
 
   my.e.spct <- response_spct(w.length = 400:409, s.e.response = 1)

@@ -520,15 +520,22 @@ chroma_spct <- function(w.length=NULL,
 
 # as methods for spct classes --------------------------------------------
 
-# defined as generics + default as additional methods are defined in other
+# defined as generics + default as additional methods can be defined in other
 # packages of the R for Photobiology suite.
 
 #' Coerce to a spectrum
 #'
-#' Return a copy of an R object with its class set to a given type of spectrum.
+#' Return a copy of an R object with its class set to a given type of spectrum,
+#' or convert an R object of a different class into one of the spectral classes.
 #'
 #' @param x an R object
 #' @param ... other arguments passed to "set" functions
+#'
+#' @details Data frames, tibbles and similar objects are accepted as input if
+#'   the column names are those expected by the matching class setting
+#'   functions. An exception, is that an additional method specialization for
+#'   conversion of \code{waveband} objects into \code{response_spct} objects is
+#'   also defined.
 #'
 #' @return A copy of \code{x} converted into a \code{generic_spct} object.
 #'
@@ -692,6 +699,78 @@ as.response_spct <- function(x, ...) {UseMethod("as.response_spct")}
 as.response_spct.default <- function(x, time.unit = "second", ...) {
   setResponseSpct(x, time.unit = time.unit, ...)
 }
+
+#' @describeIn as.response_spct
+#'
+#' @param w.length numeric vector of wavelengths (nm).
+#' @param fill value to use as response for wavelengths outside the waveband
+#'   range.
+#' @param unit.in,unit.out the type of unit we assume as reference: "energy" or
+#'   "photon" based for the waveband definition and the implicit matching
+#'   response plotted.
+#' @param strict.range logical Flag indicating whether off-range values result
+#'   in an error instead of a warning.
+#' @param na.rm logical.
+#'
+#' @export
+#'
+as.response_spct.waveband <-
+  function(x,
+           time.unit = "second",
+           w.length = NULL,
+           fill = 0,
+           unit.in = getOption("photobiology.radiation.unit",
+                               default = "energy"),
+           unit.out = unit.in,
+           strict.range = getOption("photobiology.strict.range",
+                                    default = FALSE),
+           na.rm = FALSE,
+           ...) {
+    w.band <- x
+
+    if (na.rm) {
+      w.length <- stats::na.omit(w.length)
+    }
+    if (!is.null(w.length)) {
+      if (length(w.length) < 200) {
+        w.length <- seq(min(w.length), max(w.length), length.out = 200)
+      } else {
+        w.length <- unique(sort(w.length, na.last = NA))
+      }
+    } else {
+      w.length <- seq(wl_min(w.band) - 1, wl_max(w.band) + 1, length.out = 200)
+    }
+
+    # add "hinges" to wavelengths vector if within its range
+    if (!is.null(w.band$hinges) & length(w.band$hinges) > 0) {
+      hinges <- with(w.band, hinges[hinges > min(w.length) & hinges < max(w.length)])
+      w.length <- c(w.length, hinges)
+      w.length <- unique(sort(w.length))
+    }
+    comment.txt <- paste("Spectrum created from waveband: \"",
+                         labels(w.band)$name, "\"\n",
+                         comment(w.band))
+    s.response <-
+      calc_multipliers(w.length,
+                       w.band,
+                       unit.in = unit.in,
+                       unit.out = unit.out,
+                       use.cached.mult =
+                         getOption("photobiology.use.cached.mult",
+                                   default = FALSE),
+                       fill = fill)
+    if (unit.out == "energy") {
+      response_spct(w.length = w.length,
+                    s.e.response = s.response,
+                    time.unit = time.unit,
+                    comment = comment.txt)
+    } else if (unit.out %in% c("photon", "quantum")) {
+      response_spct(w.length = w.length,
+                    s.q.response = s.response,
+                    time.unit = time.unit,
+                    comment = comment.txt)
+    }
+  }
 
 #' Coerce to a spectrum
 #'

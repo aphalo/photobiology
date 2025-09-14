@@ -18,7 +18,15 @@ as.generic_spct(x, ...)
 A copy of \code{x} converted into a \code{generic_spct} object.
 }
 \description{
-Return a copy of an R object with its class set to a given type of spectrum.
+Return a copy of an R object with its class set to a given type of spectrum,
+or convert an R object of a different class into one of the spectral classes.
+}
+\details{
+Data frames, tibbles and similar objects are accepted as input if
+  the column names are those expected by the matching class setting
+  functions. An exception, is that an additional method specialization for
+  conversion of \code{waveband} objects into \code{response_spct} objects is
+  also defined.
 }
 \section{Methods (by class)}{
 \itemize{
