@@ -2,7 +2,7 @@ Package: photobiology
 Type: Package
 Title: Photobiological Calculations
 Version: 0.13.3
-Date: 2025-09-14
+Date: 2025-09-20
 Authors@R:
    c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -22,14 +22,14 @@ Description: Definitions of classes, methods, operators and functions for use
 License: GPL (>= 2)
 Depends:
     R (>= 4.1.0),
-    SunCalcMeeus (>= 0.1.2)
+    SunCalcMeeus (> 0.1.2)
 Imports:
     stats,
     grDevices,
     polynom (>= 1.4-1),
     tibble (>= 3.2.0),
     stringr (>= 1.4.0),
-    lubridate (>= 1.9.3),
+    lubridate (>= 1.9.4),
     caTools (>= 1.18.0),
     plyr (>= 1.8.9),
     dplyr (>= 1.1.4),

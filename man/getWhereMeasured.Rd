@@ -16,9 +16,21 @@ where_measured(x, ...)
 
 \method{getWhereMeasured}{default}(x, ...)
 
-\method{getWhereMeasured}{generic_spct}(x, ..., simplify = FALSE)
+\method{getWhereMeasured}{generic_spct}(
+  x,
+  ...,
+  idx = getIdFactor(x),
+  simplify = TRUE,
+  .bind.geocodes = TRUE
+)
 
-\method{getWhereMeasured}{summary_generic_spct}(x, ..., simplify = FALSE)
+\method{getWhereMeasured}{summary_generic_spct}(
+  x,
+  ...,
+  idx = getIdFactor(x),
+  simplify = TRUE,
+  .bind.geocodes = TRUE
+)
 
 \method{getWhereMeasured}{generic_mspct}(
   x,
@@ -35,11 +47,11 @@ where_measured(x, ...)
 
 \item{...}{Allows use of additional arguments in methods for other classes.}
 
-\item{simplify}{logical If all members share the same attribute value return
-one copy instead of a data.frame.}
-
 \item{idx}{character Name of the column with the names of the members of the
 collection of spectra.}
+
+\item{simplify}{logical If all members share the same attribute value return
+one copy instead of a data.frame.}
 
 \item{.bind.geocodes}{logical In the case of collections of spectra if
 \code{.bind.geocodes = TRUE}, the default, the returned value is a single
@@ -73,12 +85,19 @@ If x is not a \code{generic_spct} or an object of a derived class
   \code{NA} is returned.
 }
 \examples{
-my.spct <- sun.spct
-where_measured(my.spct)
-where_measured(my.spct) <- data.frame(lon = 0, lat = -60)
-where_measured(my.spct)
-where_measured(my.spct) <- NULL
-where_measured(my.spct)
+getWhereMeasured(sun.spct)
+getWhereMeasured(sun_evening.spct)
+getWhereMeasured(sun_evening.spct, simplify = TRUE)
+getWhereMeasured(sun_evening.mspct)
+getWhereMeasured(sun_evening.mspct, .bind.geocodes = FALSE)
+getWhereMeasured(sun_evening.mspct, simplify = TRUE)
+getWhereMeasured(sun_evening.mspct, simplify = FALSE)
+
+getWhereMeasured(summary(sun.spct))
+getWhereMeasured(summary(sun_evening.spct))
+getWhereMeasured(summary(sun_evening.mspct, expand = "each")[[1]])
+
+getWhereMeasured(polyester.spct)
 
 }
 \seealso{

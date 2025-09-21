@@ -16,11 +16,38 @@ where_measured(x) <- value
 
 \method{setWhereMeasured}{default}(x, where.measured, lat, lon, address, ...)
 
-\method{setWhereMeasured}{generic_spct}(x, where.measured = NA, lat = NA, lon = NA, address = NA, ...)
+\method{setWhereMeasured}{generic_spct}(
+  x,
+  where.measured = NA,
+  lat = NA,
+  lon = NA,
+  address = NA,
+  idFactor = getIdFactor(x),
+  simplify = TRUE,
+  ...
+)
 
-\method{setWhereMeasured}{summary_generic_spct}(x, where.measured = NA, lat = NA, lon = NA, address = NA, ...)
+\method{setWhereMeasured}{summary_generic_spct}(
+  x,
+  where.measured = NA,
+  lat = NA,
+  lon = NA,
+  address = NA,
+  idFactor = getIdFactor(x),
+  simplify = TRUE,
+  ...
+)
 
-\method{setWhereMeasured}{data.frame}(x, where.measured = NA, lat = NA, lon = NA, address = NA, ...)
+\method{setWhereMeasured}{data.frame}(
+  x,
+  where.measured = NA,
+  lat = NA,
+  lon = NA,
+  address = NA,
+  idFactor = getIdFactor(x),
+  simplify = TRUE,
+  ...
+)
 
 \method{setWhereMeasured}{generic_mspct}(x, where.measured = NA, lat = NA, lon = NA, address = NA, ...)
 }

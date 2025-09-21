@@ -308,6 +308,8 @@ setWhereMeasured.generic_spct <- function(x,
                                           lat = NA,
                                           lon = NA,
                                           address = NA,
+                                          idFactor = getIdFactor(x),
+                                          simplify = TRUE,
                                           ...) {
   name <- substitute(x)
   if (!is.null(where.measured)) {
@@ -325,8 +327,15 @@ setWhereMeasured.generic_spct <- function(x,
       where.measured <- sapply(where.measured, SunCalcMeeus::validate_geocode)
       stopifnot(all(sapply(where.measured, SunCalcMeeus::is_valid_geocode)))
     } else {
-      where.measured <- SunCalcMeeus::validate_geocode(where.measured)
-      stopifnot(SunCalcMeeus::is_valid_geocode(where.measured))
+      where.measured <-
+        SunCalcMeeus::validate_geocode(where.measured)
+#      stopifnot(SunCalcMeeus::is_valid_geocode(where.measured))
+      if (getMultipleWl(x) > 1L && !is.na(idFactor)) {
+        where.measured <-
+          SunCalcMeeus::split_geocodes(geocode = where.measured,
+                                       idx = idFactor,
+                                       simplify = simplify)
+      }
     }
   }
   attr(x, "where.measured") <- where.measured
@@ -424,6 +433,14 @@ setWhereMeasured.generic_mspct <- function(x,
 #'
 #' @param x a generic_spct object
 #' @param ... Allows use of additional arguments in methods for other classes.
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
+#' @param simplify logical If all members share the same attribute value return
+#'   one copy instead of a data.frame.
+#' @param .bind.geocodes logical In the case of collections of spectra if
+#'    \code{.bind.geocodes = TRUE}, the default, the returned value is a single
+#'    geocode with one row for each member spectrum. Otherwise the individual
+#'    geocode data frames are returned in a list column within a tibble.
 #'
 #' @return a data.frame with a single row and at least columns "lon" and "lat",
 #'    unless expand is set to \code{FALSE}.
@@ -432,6 +449,21 @@ setWhereMeasured.generic_mspct <- function(x,
 #'   \code{NA} is returned.
 #'
 #' @export
+#'
+#' @examples
+#' getWhereMeasured(sun.spct)
+#' getWhereMeasured(sun_evening.spct)
+#' getWhereMeasured(sun_evening.spct, simplify = TRUE)
+#' getWhereMeasured(sun_evening.mspct)
+#' getWhereMeasured(sun_evening.mspct, .bind.geocodes = FALSE)
+#' getWhereMeasured(sun_evening.mspct, simplify = TRUE)
+#' getWhereMeasured(sun_evening.mspct, simplify = FALSE)
+#'
+#' getWhereMeasured(summary(sun.spct))
+#' getWhereMeasured(summary(sun_evening.spct))
+#' getWhereMeasured(summary(sun_evening.mspct, expand = "each")[[1]])
+#'
+#' getWhereMeasured(polyester.spct)
 #'
 #' @family measurement metadata functions
 #'
@@ -455,26 +487,32 @@ getWhereMeasured.default <- function(x, ...) {
 #' @describeIn getWhereMeasured generic_spct
 #' @export
 #'
-getWhereMeasured.generic_spct <- function(x, ..., simplify = FALSE) {
+getWhereMeasured.generic_spct <- function(x,
+                                          ...,
+                                          idx = getIdFactor(x),
+                                          simplify = TRUE,
+                                          .bind.geocodes = TRUE) {
   where.measured <- attr(x, "where.measured", exact = TRUE)
+  # attribute not set
   if (is.null(where.measured)) return(SunCalcMeeus::na_geocode())
-
-  if (is.list(where.measured) && !is.data.frame(where.measured)) {
-    where.measured <- dplyr::bind_rows(where.measured)
+  # single spectrum and not returning a list
+  if (getMultipleWl(x) == 1L &&
+      (simplify || .bind.geocodes || is.na(idx))) return(where.measured)
+  if (.bind.geocodes && !is.data.frame(where.measured)) {
+    SunCalcMeeus::bind_geocodes(where.measured,
+                                idx = idx)
+  } else if (!.bind.geocodes && is.data.frame(where.measured)) {
+    if (idx %in% colnames(where.measured)) {
+      SunCalcMeeus::split_geocodes(where.measured,
+                                   idx = idx,
+                                   simplify = FALSE)
+    } else if (simplify && nrow(where.measured) == 1L) {
+      where.measured
+    } else {
+      warning("No 'idx' column \"", idx, "\" found! Returning 'where.measured' unchanged")
+      where.measured
+    }
   }
-  if (!is.data.frame(where.measured)) {
-    # need to handle invalid or missing attribute values
-    where.measured <- SunCalcMeeus::na_geocode()
-  } else if (simplify && nrow(where.measured) > 1L &&
-              sum(!duplicated(where.measured[ , -which(names(where.measured) == getIdFactor(x))]) == 1L)) {
-    # double test below is because of a bug in earlier versions of 'photobiology'
-    # the default "spct.idx" could have persisted in objects with user-renamed idfactor
-    # triggering an error under R 4.5.0 RC
-    where.measured <-
-      where.measured[1, -which(names(where.measured) %in% c(getIdFactor(x), "spct.idx"))]
-  }
-  # needed to clean inconsistent values from previous versions
-  SunCalcMeeus::validate_geocode(where.measured)
 }
 
 #' @describeIn getWhereMeasured summary_generic_spct
@@ -482,14 +520,6 @@ getWhereMeasured.generic_spct <- function(x, ..., simplify = FALSE) {
 getWhereMeasured.summary_generic_spct <- getWhereMeasured.generic_spct
 
 #' @describeIn getWhereMeasured generic_mspct
-#' @param idx character Name of the column with the names of the members of the
-#'   collection of spectra.
-#' @param simplify logical If all members share the same attribute value return
-#'   one copy instead of a data.frame.
-#' @param .bind.geocodes logical In the case of collections of spectra if
-#'    \code{.bind.geocodes = TRUE}, the default, the returned value is a single
-#'    geocode with one row for each member spectrum. Otherwise the individual
-#'    geocode data frames are returned in a list column within a tibble.
 #'
 #' @export
 #'
