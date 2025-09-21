@@ -354,12 +354,13 @@ setWhereMeasured.generic_spct <- function(x,
         SunCalcMeeus::validate_geocode(where.measured)
 #      stopifnot(SunCalcMeeus::is_valid_geocode(where.measured))
       if (getMultipleWl(x) > 1L &&
-#          nrow(where.measured) > 1L &&
           !is.na(idFactor)) {
-        where.measured <-
-          SunCalcMeeus::split_geocodes(geocode = where.measured,
-                                       idx = idFactor,
-                                       simplify = simplify)
+        if (nrow(where.measured) > 1L && idFactor %in% colnames(where.measured)) {
+          where.measured <-
+            SunCalcMeeus::split_geocodes(geocode = where.measured,
+                                         idx = idFactor,
+                                         simplify = simplify)
+        }
       }
     }
   }
