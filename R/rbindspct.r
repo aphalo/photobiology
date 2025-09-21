@@ -267,17 +267,17 @@ rbindspct <- function(l,
     when.measured <- lapply(l[idxs], getWhenMeasured)
     names(when.measured) <- names.spct[idxs]
 
-    where.measured <-
-      dplyr::bind_rows(lapply(l[idxs], getWhereMeasured), .id = idfactor)
+    where.measured <- lapply(l[idxs], getWhereMeasured)
     if (attrs.simplify &&
-          (all(is.na(where.measured$lon)) ||
-             length(unique(where.measured$lon)) == 1) &&
-          (all(is.na(where.measured$lat)) ||
-             length(unique(where.measured$lat)) == 1) &&
-          (all(is.na(where.measured$address)) ||
-             length(unique(where.measured$address)) == 1)) {
-      where.measured <- where.measured[1, ]
-    # do not remove columns by numeric index!!
+        (all(is.na(where.measured$lon)) ||
+         length(unique(where.measured$lon)) == 1) &&
+        (all(is.na(where.measured$lat)) ||
+         length(unique(where.measured$lat)) == 1) &&
+        (all(is.na(where.measured$address)) ||
+         length(unique(where.measured$address)) == 1)) {
+      where.measured <- where.measured[[1]]
+    } else {
+      names(where.measured) <- names.spct[idxs]
     }
 
     what.measured <- lapply(l[idxs], getWhatMeasured)
@@ -416,7 +416,8 @@ rbindspct <- function(l,
     setIdFactor(ans, idfactor)
   }
   setWhenMeasured(ans, when.measured)
-  setWhereMeasured(ans, where.measured)
+  attr(ans, "where.measured") <- where.measured
+ # setWhereMeasured(ans, where.measured, simplify = TRUE)
   setWhatMeasured(ans, what.measured)
   setHowMeasured(ans, how.measured)
   attr(ans, "normalized") <- normalized

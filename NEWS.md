@@ -5,7 +5,7 @@ editor_options:
     wrap: 72
 ---
 
-# photobiology 0.13.3
+# photobiology 0.14.0
 
 * As the bug-fix in interpolation of spectra turned out to be more disruptive
 than expected, the default was changed back to `"approx"`, the previous 
@@ -19,6 +19,14 @@ natural splines can behave badly with noisy input data.
 * Add `as.response_spct()` specialization for conversion of `waveband` objects.
 * **Bug fix:** preserve/restore the `normalize` and `normalization` attributes
 in `rbindspct()` and `subset2mspct()`.
+* **Bug fix:** update how the geocodes are stored in objects containing multiple
+spectra in long form when they differ among the spectra. This is an edge case
+as the usual use case is to store time series of spectra in such objects, with a
+single common geocode value. 
+* To accomodate this change, `setWhenMeasured()` and `getWhenMeasured()` were
+rewritten using the new functions `bind_geocodes()` and `split_geocodes()` from
+package 'SunCalcMeeus' (>= 0.1.3), still by default acepting the same argument 
+values and returning the same values as in earlier versions.
 
 # photobiology 0.13.2
 

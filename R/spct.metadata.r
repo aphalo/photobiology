@@ -344,13 +344,18 @@ setWhereMeasured.generic_spct <- function(x,
                      stringsAsFactors = FALSE))
       stopifnot(SunCalcMeeus::is_valid_geocode(where.measured))
     } else if (is.list(where.measured) && !is.data.frame(where.measured)) {
-      where.measured <- sapply(where.measured, SunCalcMeeus::validate_geocode)
+      where.measured <- lapply(where.measured, SunCalcMeeus::validate_geocode)
       stopifnot(all(sapply(where.measured, SunCalcMeeus::is_valid_geocode)))
+      if (simplify && length(where.measured) == 1L) {
+        where.measured <- where.measured[[1]]
+      }
     } else {
       where.measured <-
         SunCalcMeeus::validate_geocode(where.measured)
 #      stopifnot(SunCalcMeeus::is_valid_geocode(where.measured))
-      if (getMultipleWl(x) > 1L && !is.na(idFactor)) {
+      if (getMultipleWl(x) > 1L &&
+#          nrow(where.measured) > 1L &&
+          !is.na(idFactor)) {
         where.measured <-
           SunCalcMeeus::split_geocodes(geocode = where.measured,
                                        idx = idFactor,
@@ -515,15 +520,18 @@ getWhereMeasured.generic_spct <- function(x,
   where.measured <- attr(x, "where.measured", exact = TRUE)
   # attribute not set
   if (is.null(where.measured)) return(SunCalcMeeus::na_geocode())
-  # single spectrum oand not returning a list
+  # single spectrum and not returning a list
   if ((getMultipleWl(x) == 1L) &&
       (simplify || .bind.geocodes || is.na(idx))) return(where.measured)
   # bind list of geocodes into a single data frame
   if (.bind.geocodes && !is.data.frame(where.measured)) {
+    if (is.na(idx)) {
+      idx <- "spct.idx"
+    }
     SunCalcMeeus::bind_geocodes(where.measured,
                                 idx = idx)
   } else if (!.bind.geocodes && is.data.frame(where.measured)) {
-    # split a multi-row data frame into list of data fraems
+    # split a multi-row data frame into list of data frames
     if (idx %in% colnames(where.measured)) {
       SunCalcMeeus::split_geocodes(where.measured,
                                    idx = idx,
@@ -539,13 +547,21 @@ getWhereMeasured.generic_spct <- function(x,
     # if a simplified geocode has an idx column, remove it
     if (nrow(where.measured) == 1L && idx %in% colnames(where.measured)) {
       where.measured[ , -which(colnames(where.measured) == idx)]
+    } else if (nrow(where.measured) == 1L &&
+               "spct.idx" %in% colnames(where.measured)) {
+      where.measured[ , -which(colnames(where.measured) == "spct.idx")]
     } else {
       where.measured
     }
-  # catch and return malformed values
-  } else {
-    warning("Unexpected 'where.measured' value! Returning it unchanged")
-    where.measured
+  } else if (!.bind.geocodes && is.list(where.measured)) {
+    if (simplify && length(where.measured) == 1L) {
+      where.measured[[1]]
+    } else {
+      if (!all(names(where.measured) %in% unique(x[[idx]]))) {
+        warning("Unexpected 'where.measured' value! Returning it unchanged")
+      }
+      where.measured
+    }
   }
 }
 
@@ -562,7 +578,7 @@ getWhereMeasured.generic_mspct <- function(x,
                                            idx = "spct.idx",
                                            .bind.geocodes = TRUE,
                                            simplify = FALSE) {
-  if (.bind.geocodes || simplify) {
+  if (.bind.geocodes) {
     z <- msdply(mspct = x, .fun = getWhereMeasured, idx = idx, ...)
     if (simplify) {
       unique.rows <- !duplicated(z[ , -which(names(z) == idx)])
@@ -571,13 +587,22 @@ getWhereMeasured.generic_mspct <- function(x,
       }
     }
   } else {
-    l <- mslply(mspct = x, .fun = getWhereMeasured, ...)
-    comment(l) <- NULL
-    z <- list(where.measured = l)
-    z[[idx]] <- factor(names(l), levels = names(l))
-    z <- tibble::as_tibble(z[c(2, 1)])
+    z <- mslply(mspct = x, .fun = getWhereMeasured, ...)
+    comment(z) <- NULL
+    if (simplify) {
+      if (length[z] == 1L) {
+        z <- z[[1]]
+      } else {
+        num.unique <- 1L
+        for (i in 2:length(z)) {
+          num.unique <- num.unique + isFALSE(all.equal(z[[1]], z[[i]]))
+        }
+        if (num.unique == 1L) {
+          z <- z[[1]]
+        }
+      }
+    }
   }
-
   z
 }
 
@@ -1781,8 +1806,9 @@ geocode2tb <- function(mspct,
                        col.names = "geocode",
                        idx = "spct.idx") {
   stopifnot(length(col.names) == 1L)
-  where.tb <- getWhereMeasured(mspct, idx = idx, .bind.geocodes = FALSE)
-  names(where.tb)[2L] <- col.names
+  where.ls <- getWhereMeasured(mspct, idx = idx, .bind.geocodes = FALSE)
+  where.tb <- tibble::tibble(factor(names(where.ls)), where.ls)
+  names(where.tb) <- c(idx, col.names)
   if (is.null(tb)) {
     where.tb
   } else {
@@ -1799,7 +1825,9 @@ lonlat2tb <- function(mspct,
                       col.names = c("lon", "lat"),
                       idx = "spct.idx") {
   stopifnot(length(col.names) == 2L)
-  lonlat.tb <- getWhereMeasured(mspct, idx = idx)[c(idx, "lon", "lat")]
+  lonlat.tb <- getWhereMeasured(mspct,
+                                idx = idx,
+                                .bind.geocodes = TRUE)[c(idx, "lon", "lat")]
   names(lonlat.tb)[2L:3L] <- col.names
   if (is.null(tb)) {
     lonlat.tb
@@ -1817,7 +1845,9 @@ lon2tb <- function(mspct,
                    col.names = "lon",
                    idx = "spct.idx") {
   stopifnot(length(col.names) == 1L)
-  lon.tb <- getWhereMeasured(mspct, idx = idx)[c(idx, "lon")]
+  lon.tb <- getWhereMeasured(mspct,
+                             idx = idx,
+                             .bind.geocodes = TRUE)[c(idx, "lon")]
   names(lon.tb)[2L] <- col.names
   if (is.null(tb)) {
     lon.tb
@@ -1835,7 +1865,9 @@ lat2tb <- function(mspct,
                    col.names = "lat",
                    idx = "spct.idx") {
   stopifnot(length(col.names) == 1L)
-  lat.tb <- getWhereMeasured(mspct, idx = idx)[c(idx, "lat")]
+  lat.tb <- getWhereMeasured(mspct,
+                             idx = idx,
+                             .bind.geocodes = TRUE)[c(idx, "lat")]
   names(lat.tb)[2L] <- col.names
   if (is.null(tb)) {
     lat.tb
@@ -1853,7 +1885,9 @@ address2tb <- function(mspct,
                        col.names = "address",
                        idx = "spct.idx") {
   stopifnot(length(col.names) == 1L)
-  address.tb <- getWhereMeasured(mspct, idx = idx)[c(idx, "address")]
+  address.tb <- getWhereMeasured(mspct,
+                                 idx = idx,
+                                 .bind.geocodes = TRUE)[c(idx, "address")]
   names(address.tb)[2L] <- col.names
   if (is.null(tb)) {
     address.tb
