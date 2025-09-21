@@ -125,7 +125,7 @@ test_that("any_spct", {
   expect_named(getWhenMeasured(my.spct), levels(my.spct$spct.idx))
 
   expect_is(getWhereMeasured(my.spct), "tbl_df")
-  expect_named(getWhereMeasured(my.spct), c("spct.idx", "lat", "lon", "address"))
+  expect_named(getWhereMeasured(my.spct), c("lat", "lon", "address"))
 
   expect_is(getMultipleWl(my.spct), "integer")
 

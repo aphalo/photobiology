@@ -65,13 +65,43 @@ search.}
 \item{address}{character Human readable address.}
 
 \item{...}{Allows use of additional arguments in methods for other classes.}
+
+\item{idFactor}{character Name of the column with IDs of the spectra stored
+in long form or ID column name in bound geocodes to use for IDs of
+collection of spectra members.}
+
+\item{simplify}{logical If all members share the same geocode value set as
+attribute value a one row geocode instead of a named list of data frames.}
 }
 \value{
-x, with the \code{"where.measured"} attribute set.
+x, with the \code{"where.measured"} attribute set or unset.
 }
 \description{
 Method to set by reference the \code{"where.measured"} attribute  of an R
 object.
+}
+\details{
+Code \code{setWhereMeasured()} methods alter \code{x} itself by
+  reference and in addition return \code{x} invisibly. If \code{x} is not an
+  object of a supported class, \code{x} is not modified. If the argument to
+  \code{where.measured} is not a \code{data.frame} or \code{tibble} object or
+  \code{NULL} an error is triggered as a validation test is applied. A
+  geocode describes a geographic location based on longitude (\code{lon}) and
+  latitude (\code{lat}) as \code{numeric} values and can optionally contain
+  an address (\code{address}) as a single \code{character} string. Passing
+  \code{NULL} as argument for parameter \code{where.measured} unsets the
+  attribute. Parameters \code{lon}, \code{lat} and \code{address} provide an
+  alternative to passing a ready constructed geocode data frame as input.
+
+  By default, when setting the geocode attribute for multiple spectra stored
+  in long form, geocodes are stored as named lists of data frames unless they
+  are identical and can be simplified. It is possible to
+  disable simplification and force the use of a named list.
+
+  If the argument passed to parameter \code{geocode} is a data frame with one
+  row per spectrum and the \code{idFactor} name matches, it will be split
+  into a named list and, if possibly, simplified. It is also possible but
+  deprecated to set the attribute to an indexed geocode with multiple rows.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -87,14 +117,6 @@ object.
 
 }}
 \note{
-This method alters \code{x} itself by reference and in addition returns
-  \code{x} invisibly. If \code{x} is not an object of a supported class,
-  \code{x} is not modified. If the argument to \code{where.measured} is not a
-  \code{POSIXct} object or \code{NULL} an error is triggered. A
-  \code{POSIXct} describes an instant in time (date plus time-of-day plus
-  time zone). As with \code{attr()} passing \code{NULL} as argument for
-  parameter \code{where.measured} unsets the attribute.
-
 Method for collections of spectra recycles the location information
   only if it is a one row \code{data.frame}.
 }

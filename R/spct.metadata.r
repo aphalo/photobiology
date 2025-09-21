@@ -256,16 +256,36 @@ getWhenMeasured.generic_mspct <- function(x,
 #' @param lat numeric Latitude in decimal degrees North.
 #' @param lon numeric Longitude in decimal degrees West.
 #' @param address character Human readable address.
+#' @param idFactor character Name of the column with IDs of the spectra stored
+#'   in long form or ID column name in bound geocodes to use for IDs of
+#'   collection of spectra members.
+#' @param simplify logical If all members share the same geocode value set as
+#'   attribute value a one row geocode instead of a named list of data frames.
 #' @param ... Allows use of additional arguments in methods for other classes.
 #'
-#' @return x, with the \code{"where.measured"} attribute set.
-#' @note This method alters \code{x} itself by reference and in addition returns
-#'   \code{x} invisibly. If \code{x} is not an object of a supported class,
-#'   \code{x} is not modified. If the argument to \code{where.measured} is not a
-#'   \code{POSIXct} object or \code{NULL} an error is triggered. A
-#'   \code{POSIXct} describes an instant in time (date plus time-of-day plus
-#'   time zone). As with \code{attr()} passing \code{NULL} as argument for
-#'   parameter \code{where.measured} unsets the attribute.
+#' @details Code \code{setWhereMeasured()} methods alter \code{x} itself by
+#'   reference and in addition return \code{x} invisibly. If \code{x} is not an
+#'   object of a supported class, \code{x} is not modified. If the argument to
+#'   \code{where.measured} is not a \code{data.frame} or \code{tibble} object or
+#'   \code{NULL} an error is triggered as a validation test is applied. A
+#'   geocode describes a geographic location based on longitude (\code{lon}) and
+#'   latitude (\code{lat}) as \code{numeric} values and can optionally contain
+#'   an address (\code{address}) as a single \code{character} string. Passing
+#'   \code{NULL} as argument for parameter \code{where.measured} unsets the
+#'   attribute. Parameters \code{lon}, \code{lat} and \code{address} provide an
+#'   alternative to passing a ready constructed geocode data frame as input.
+#'
+#'   By default, when setting the geocode attribute for multiple spectra stored
+#'   in long form, geocodes are stored as named lists of data frames unless they
+#'   are identical and can be simplified. It is possible to
+#'   disable simplification and force the use of a named list.
+#'
+#'   If the argument passed to parameter \code{geocode} is a data frame with one
+#'   row per spectrum and the \code{idFactor} name matches, it will be split
+#'   into a named list and, if possibly, simplified. It is also possible but
+#'   deprecated to set the attribute to an indexed geocode with multiple rows.
+#'
+#' @return x, with the \code{"where.measured"} attribute set or unset.
 #'
 #' @export
 #'
@@ -495,23 +515,37 @@ getWhereMeasured.generic_spct <- function(x,
   where.measured <- attr(x, "where.measured", exact = TRUE)
   # attribute not set
   if (is.null(where.measured)) return(SunCalcMeeus::na_geocode())
-  # single spectrum and not returning a list
-  if (getMultipleWl(x) == 1L &&
+  # single spectrum oand not returning a list
+  if ((getMultipleWl(x) == 1L) &&
       (simplify || .bind.geocodes || is.na(idx))) return(where.measured)
+  # bind list of geocodes into a single data frame
   if (.bind.geocodes && !is.data.frame(where.measured)) {
     SunCalcMeeus::bind_geocodes(where.measured,
                                 idx = idx)
   } else if (!.bind.geocodes && is.data.frame(where.measured)) {
+    # split a multi-row data frame into list of data fraems
     if (idx %in% colnames(where.measured)) {
       SunCalcMeeus::split_geocodes(where.measured,
                                    idx = idx,
                                    simplify = FALSE)
+    # single row geocode is already simplified
     } else if (simplify && nrow(where.measured) == 1L) {
       where.measured
     } else {
       warning("No 'idx' column \"", idx, "\" found! Returning 'where.measured' unchanged")
       where.measured
     }
+  } else if (.bind.geocodes && is.data.frame(where.measured)) {
+    # if a simplified geocode has an idx column, remove it
+    if (nrow(where.measured) == 1L && idx %in% colnames(where.measured)) {
+      where.measured[ , -which(colnames(where.measured) == idx)]
+    } else {
+      where.measured
+    }
+  # catch and return malformed values
+  } else {
+    warning("Unexpected 'where.measured' value! Returning it unchanged")
+    where.measured
   }
 }
 
