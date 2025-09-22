@@ -1870,7 +1870,7 @@ subset2mspct <- function(x,
     member.constr <- paste("as", member.class, sep = ".")
     collection.constr <- collection.class
     if (is.any_spct(x) && getMultipleWl(x) == 1) {
-      # nothing to subset
+      # one spectrum, nothing to subset
       if (!is.null(idx.var) && !is.na(idx.var) && idx.var %in% names(x)) {
         spct.name <- x[[idx.var]][1]
       } else {
@@ -1880,6 +1880,7 @@ subset2mspct <- function(x,
       margs <- list(l = l, ncol = ncol, byrow = byrow)
       z <- do.call(collection.constr, margs)
     } else {
+      # spectra in long form
       if (is.null(idx.var) || is.na(idx.var)) {
         idx.var <- getIdFactor(x)
         # handle objects created with old versions of 'photobiology'
@@ -1944,9 +1945,6 @@ subset2mspct <- function(x,
       }
       if (is_scaled(x)) {
         z <- msmsply(z, setScaled, scaled = TRUE)
-      }
-      if (is_normalized(x)) {
-        z <- msmsply(z, setNormalized, norm = TRUE)
       }
       if (member.class == "source_spct" && is_effective(x)) {
         bswf.used <- getBSWFUsed(x)

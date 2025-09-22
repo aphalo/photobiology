@@ -705,7 +705,7 @@ normalize_spct <- function(spct,
   stopifnot("Missing columns" = all(col.names %in% colnames(spct)),
             "Multiple spectra in long form" = getMultipleWl(spct) == 1L)
 
-  updating <- is_normalized(spct)
+  updating <- all(unlist(is_normalized(spct), use.names = FALSE))
 
   if (updating) {
     # we retrieve the existing normalization data
@@ -846,17 +846,30 @@ normalize_spct <- function(spct,
 #' @keywords internal
 #'
 denormalize_spct <- function(spct, wipe.away = FALSE) {
-  if (!is_normalized(spct)) {
+  if (!all(unlist(is_normalized(spct), use.names = FALSE))) {
     return(spct)
   }
-
+  # collection of spectra
+  if (is.generic_mspct(spct)) {
+    return(
+      msmsply(mspct = spct, .fun = denormalize_spct, wipe.away = wipe.away)
+    )
+  }
+  # if wiping away single spectrum or long form spectra
   if (wipe.away) {
     message("Removing normalization metadata keeping normalization!")
     attr(spct, "normalized") <- FALSE
     attr(spct, "normalization") <- NULL
     return(spct)
   }
+  # if undoing normalization, done spectrum by spectrum
+  if (is.generic_spct(spct) && getMultipleWl(spct) > 1L) {
+    spct <- subset2mspct(spct)
+    spct <- msmsply(mspct = spct, .fun = denormalize_spct, wipe.away = wipe.away)
+    return(rbindspct(spct))
+  }
 
+  # undo normalization of a single spectrum
   old.normalization.ls <- getNormalization(spct)
   required.fields <-
     c("norm.factors", "norm.cols")
