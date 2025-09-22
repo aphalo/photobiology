@@ -50,22 +50,39 @@ A2T.filter_spct <- function(x, action = "add", byref = FALSE, ...) {
   }
 
   action <- check_action_arg(x, action)
-
-  if (exists("Tfr", x, inherits = FALSE)) {
-    norm.action <- "skip"
-  } else if (exists("A", x, inherits = FALSE)) {
-    if (is_normalised(x)) {
-      old.normalization.ls <- getNormalization(x)
-      x <- denormalize_spct(x) # remove normalization
-      norm.action <- "update"
-    } else {
-      norm.action <- "skip"
-    }
-    x[["Tfr"]] <- 10^-x[["A"]]
+  # nothing to do
+  if (action == "replace" &&
+      "Tfr" %in% colnames(x) && !any(c("A", "Afr") %in% colnames(x))) {
+    return(x)
+  }
+  if (action == "add" && "Tfr" %in% colnames(x)) {
+    return(x)
+  }
+  # we remove normalization
+  ## should skip this when only removing s.e.irrad by removing col from normalization
+  if (is_normalised(x)) {
+    old.normalization.ls <- getNormalization(x)
+    x <- denormalize_spct(x) # remove normalization
+    norm.action <- "update"
   } else {
-    x[["Tfr"]] <- NA_real_
-    action <- "add"
-    warning("'A' not available in 'A2T()', ignoring \"replace\" action.")
+    norm.action <- "skip"
+  }
+
+  if (!exists("Tfr", x, inherits = FALSE)) {
+    if (exists("A", x, inherits = FALSE)) {
+      x[["Tfr"]] <- 10^-x[["A"]]
+    } else {
+      x[["Tfr"]] <- NA_real_
+      action <- "add"
+      warning("'A' missing in 'A2T()', filling 'Tfr' with 'NA'.")
+    }
+  }
+
+  if (action == "replace" && exists("A", x, inherits = FALSE)) {
+    x[["A"]] <- NULL
+  }
+  if (action == "replace" && exists("Afr", x, inherits = FALSE)) {
+    x[["Afr"]] <- NULL
   }
 
   if (norm.action == "update") {
@@ -79,13 +96,6 @@ A2T.filter_spct <- function(x, action = "add", byref = FALSE, ...) {
                    range = old.range,
                    norm = old.norm,
                    keep.scaling = TRUE)
-  }
-
-  if (action == "replace" && exists("A", x, inherits = FALSE)) {
-    x[["A"]] <- NULL
-  }
-  if (action == "replace" && exists("Afr", x, inherits = FALSE)) {
-    x[["Afr"]] <- NULL
   }
 
   if (byref && is.name(name)) { # this is a temporary safe net
@@ -225,36 +235,31 @@ T2A.filter_spct <- function(x,
   }
 
   action <- check_action_arg(x, action)
-
-  if (exists("A", x, inherits = FALSE)) {
-    norm.action <- "skip"
+  # nothing to do
+  if (action == "replace" &&
+      "A" %in% colnames(x) && !any(c("Tfr", "Afr") %in% colnames(x))) {
+    return(x)
+  }
+  if (action == "add" && "A" %in% colnames(x)) {
+    return(x)
+  }
+  # we remove normalization
+  ## should skip this when only removing s.e.irrad by removing col from normalization
+  if (is_normalised(x)) {
+    old.normalization.ls <- getNormalization(x)
+    x <- denormalize_spct(x) # remove normalization
+    norm.action <- "update"
   } else {
-    if (is_normalised(x)) {
-      old.normalization.ls <- getNormalization(x)
-      x <- denormalize_spct(x) # remove normalization
-      norm.action <- "update"
-    } else {
-      norm.action <- "skip"
-    }
+    norm.action <- "skip"
+  }
 
+  if (!exists("A", x, inherits = FALSE)) {
     if (exists("Tfr", x, inherits = FALSE)) {
-      if (clean) {
-        # we need to avoid infinite recursion
-        using_Tfr(x <- clean(x))
-      }
-      if (strict.A && getTfrType(x) == "total") {
-        if (exists("Rfr", x, inherits = FALSE) ||
-              !is.na(getFilterProperties(x)[["Rfr.constant"]])) {
-          x <- convertTfrType(x, Tfr.type = "internal")
-        } else {
-          warning("Attenuance computed from total Tfr.")
-        }
-      }
       x[["A"]] <- -log10(x[["Tfr"]])
     } else {
       x[["A"]] <- NA_real_
-      warning("'Tfr' missing in 'T2A()', filling 'A' with 'NA'.")
       action <- "add"
+      warning("'Tfr' missing in 'T2A()', filling 'A' with 'NA'.")
     }
   }
 
@@ -410,7 +415,7 @@ T2Afr.numeric <- function(x,
     warning("Convertion requires 'Rfr' to be known.")
   }
   if (any(Rfr > 1) || any(Rfr < 0)) {
-    warning("Bad 'Tfr' input valies.")
+    warning("Bad 'Rfr' input valies.")
   }
   if (any(x > 1) || any(x < 0)) {
     warning("Bad 'Tfr' input valies.")
@@ -433,7 +438,16 @@ T2Afr.filter_spct <- function(x,
   }
 
   action <- check_action_arg(x, action)
-
+  # nothing to do
+  if (action == "replace" &&
+      "Afr" %in% colnames(x) && !any(c("A", "Tfr") %in% colnames(x))) {
+    return(x)
+  }
+  if (action == "add" && "Afr" %in% colnames(x)) {
+    return(x)
+  }
+  # we remove normalization
+  ## should skip this when only removing s.e.irrad by removing col from normalization
   if (is_normalised(x)) {
     old.normalization.ls <- getNormalization(x)
     x <- denormalize_spct(x) # remove normalization
@@ -442,23 +456,12 @@ T2Afr.filter_spct <- function(x,
     norm.action <- "skip"
   }
 
-  current.Tfr.type <- getTfrType(x)
-  properties <- getFilterProperties(x)
-
-  if (exists("Afr", x, inherits = FALSE)) {
-    norm.action <- "skip"
-  } else if (exists("Tfr", x, inherits = FALSE)) {
+  if (exists("Tfr", x, inherits = FALSE)) {
     if (clean) {
       x <- using_Tfr(clean(x))
     }
-
-    if (is_normalised(x)) {
-      old.normalization.ls <- getNormalization(x)
-      x <- denormalize_spct(x) # remove normalization
-      norm.action <- "update"
-    } else {
-      norm.action <- "skip"
-    }
+    current.Tfr.type <- getTfrType(x)
+    properties <- getFilterProperties(x)
 
     if (current.Tfr.type == "total") {
       if (exists("Rfr", x, inherits = FALSE)) {
@@ -468,7 +471,7 @@ T2Afr.filter_spct <- function(x,
       } else {
         x[["Afr"]] <- NA_real_
         action <- "add" # avoid loss of information
-        warning("Conversion from internal Tfr to Afr possible only ",
+        warning("Conversion from total Tfr to Afr possible only ",
                 "if Rfr or Rfr.constant are known.")
       }
     } else if (current.Tfr.type == "internal") {
@@ -479,7 +482,7 @@ T2Afr.filter_spct <- function(x,
   } else {
     x[["Afr"]] <- NA_real_
     action <- "add" # avoid loss of information
-    warning("'Tfr' not available in 'T2Afr()'.")
+    warning("'Tfr' missing in 'T2Afr()', filling 'Afr' with 'NA'.")
   }
 
   if (action == "replace" && exists("A", x, inherits = FALSE)) {
@@ -522,50 +525,7 @@ T2Afr.filter_spct <- function(x,
 #'
 #' @export
 #'
-T2Afr.object_spct <- function(x,
-                              action = "add",
-                              byref = FALSE,
-                              clean = FALSE, ...) {
-
-  stopifnot("Unexpected normalized 'object_spct' object" = !is_normalised(x))
-
-  if (byref) {
-    name <- substitute(x)
-  }
-
-  if (exists("Afr", x, inherits = FALSE)) {
-    norm.action <- "skip"
-  } else if (exists("Tfr", x, inherits = FALSE)) {
-    if (clean) {
-      x <- using_Tfr(clean(x))
-    }
-    current.Tfr.type <- getTfrType(x)
-    if (current.Tfr.type == "internal") {
-      # always possible for class object_spct
-      x <- convertTfrType(x, "total")
-    }
-    x[["Afr"]] <- 1 - x[["Tfr"]] - x[["Rfr"]]
-    if (current.Tfr.type == "internal") {
-      x <- convertTfrType(x, Tfr.type = "internal")
-    }
-  } else {
-    x[["Afr"]] <- NA_real_
-    action <- "add"
-    warning("'Tfr' not available in 'T2Afr()', ignoring \"replace\" action.")
-  }
-  if (action == "replace" && exists("Tfr", x, inherits = FALSE)) {
-    x[["Tfr"]] <- NULL
-  }
-  if (action == "replace" && exists("A", x, inherits = FALSE)) {
-    x[["A"]] <- NULL
-  }
-
-  if (byref && is.name(name)) {  # this is a temporary safe net
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
-  }
-  x
-}
+T2Afr.object_spct <- T2Afr.filter_spct
 
 #' @describeIn T2Afr Method for collections of filter spectra
 #'
@@ -663,7 +623,7 @@ Afr2T.numeric <- function(x,
     warning("Convertion requires 'Rfr'.")
   }
   if (any(Rfr > 1) || any(Rfr < 0)) {
-    warning("Bad 'Tfr' input valies.")
+    warning("Bad 'Rfr' input valies.")
   }
   if (any(x > 1) || any(x < 0)) {
     warning("Bad 'Afr' input valies.")
@@ -686,46 +646,62 @@ Afr2T.filter_spct <- function(x,
   }
 
   action <- check_action_arg(x, action)
-
-  if (exists("Tfr", x, inherits = FALSE)) {
+  # nothing to do
+  if (action == "replace" &&
+      "Tfr" %in% colnames(x) && !any(c("A", "Afr") %in% colnames(x))) {
+    return(x)
+  }
+  if (action == "add" && "Tfr" %in% colnames(x)) {
+    return(x)
+  }
+  # we remove normalization
+  ## should skip this when only removing s.e.irrad by removing col from normalization
+  if (is_normalised(x)) {
+    old.normalization.ls <- getNormalization(x)
+    x <- denormalize_spct(x) # remove normalization
+    norm.action <- "update"
+  } else {
     norm.action <- "skip"
-  } else if (exists("Afr", x, inherits = FALSE)) {
-    if (is_normalised(x)) {
-      old.normalization.ls <- getNormalization(x)
-      x <- denormalize_spct(x) # remove normalization
-      norm.action <- "update"
-    } else {
-      norm.action <- "skip"
-    }
+  }
 
+  if (exists("Afr", x, inherits = FALSE)) {
+    if (clean) {
+      x <- using_Afr(clean(x))
+    }
     current.Tfr.type <- getTfrType(x)
-    if (current.Tfr.type == "internal") {
-      # we assume this is what is desired
-      x[["Tfr"]] <- 1 - x[["Afr"]]
-    } else if (current.Tfr.type == "total") {
+    properties <- getFilterProperties(x)
+
+    if (current.Tfr.type == "total") {
       if (exists("Rfr", x, inherits = FALSE)) {
         x[["Tfr"]] <- 1 - x[["Afr"]] - x[["Rfr"]]
-      } else {
+      } else if (!is.na(properties[["Rfr.constant"]])) {
         properties <- getFilterProperties(x, return.null = FALSE)
         x[["Tfr"]] <- 1 - x[["Afr"]] - properties[["Rfr.constant"]]
+      } else {
+        x[["Tfr"]] <- NA_real_
+        action <- "add" # avoid loss of information
+        warning("Conversion from total Afr to Tfr possible only ",
+                "if Rfr or Rfr.constant are known.")
       }
+    } else if (current.Tfr.type == "internal") {
+      x[["Tfr"]] <- 1 - x[["Afr"]]
     } else {
-      stop("Invalid 'Tfr.type' attribute: ", current.Tfr.type)
+      stop("Missing or bad 'Tfr.type' attribute setting.")
     }
   } else {
     x[["Tfr"]] <- NA_real_
-    action <- "add"
-    warning("'Afr' not available in 'Afr2T()', ignoring \"replace\" action.")
+    action <- "add" # avoid loss of information
+    warning("'Afr' missing in 'Afr2T()', filling 'Tfr' with 'NA'.")
   }
 
-  if (action == "replace" && exists("Tfr", x, inherits = FALSE)) {
+  if (action == "replace" && exists("Afr", x, inherits = FALSE)) {
     x[["Afr"]] <- NULL
   }
   if (action == "replace" && exists("A", x, inherits = FALSE)) {
     x[["A"]] <- NULL
   }
 
-  if (norm.action == "update") {
+ if (norm.action == "update") {
     # apply the pre-existing normalization criteria
     old.norm <- old.normalization.ls$norm.type
     if (old.norm[1] == "wavelength") {
@@ -749,45 +725,7 @@ Afr2T.filter_spct <- function(x,
 #'
 #' @export
 #'
-Afr2T.object_spct <- function(x,
-                              action = "add",
-                              byref = FALSE,
-                              clean = FALSE, ...) {
-
-  stopifnot("Unexpected normalized 'object_spct' object" = !is_normalised(x))
-
-  if (byref) {
-    name <- substitute(x)
-  }
-
-  if (exists("Tfr", x, inherits = FALSE)) {
-    NULL
-  } else if (exists("Afr", x, inherits = FALSE)) {
-    current.Tfr.type <- getTfrType(x)
-    if (current.Tfr.type == "internal") {
-      x[["Tfr"]] <- 1 - x[["Afr"]]
-    } else if (current.Tfr.type == "total") {
-      x[["Tfr"]] <- 1 - x[["Afr"]] - x[["Rfr"]]
-    } else {
-      stop("Invalid 'Tfr.type' attribute: ", current.Tfr.type)
-    }
-  } else {
-    stop("Assertion failure: 'Afr' not available in 'T2Afr.object_spct()'.")
-  }
-
-  if (action == "replace" && exists("Tfr", x, inherits = FALSE)) {
-    x[["Afr"]] <- NULL
-  }
-  if (action == "replace" && exists("A", x, inherits = FALSE)) {
-    x[["A"]] <- NULL
-  }
-
-  if (byref && is.name(name)) {  # this is a temporary safe net
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
-  }
-  check_spct(x)
-}
+Afr2T.object_spct <- Afr2T.filter_spct
 
 #' @describeIn Afr2T Method for collections of filter spectra
 #'
@@ -965,22 +903,29 @@ e2q.source_spct <- function(x,
   }
 
   action <- check_action_arg(x, action)
-
-  if (exists("s.q.irrad", x, inherits = FALSE)) {
-    norm.action <- "skip"
-  } else if (exists("s.e.irrad", x, inherits = FALSE)) {
-    if (is_normalised(x)) {
-      old.normalization.ls <- getNormalization(x)
-      x <- denormalize_spct(x) # remove normalization
-      norm.action <- "update"
-    } else {
-      norm.action <- "skip"
-    }
-    x[["s.q.irrad"]] <- x[["s.e.irrad"]] * e2qmol_multipliers(x[["w.length"]])
+  # nothing to do
+  if (action == "add" &&
+      all(c("s.e.irrad", "s.q.irrad") %in% colnames(x))) {
+    return(x)
+  }
+  if (action == "replace" &&
+      "s.q.irrad" %in% colnames(x) && !"s.e.irrad" %in% colnames(x)) {
+    return(x)
+  }
+  # we remove normalization
+  ## should skip this when only removing s.e.irrad by removing col from normalization
+  if (is_normalised(x)) {
+    old.normalization.ls <- getNormalization(x)
+    x <- denormalize_spct(x) # remove normalization
+    norm.action <- "update"
   } else {
-    x[["s.q.irrad"]] <- NA
-    action <- "add"
-    warning("'Afr' not available in 'Afr2T()', ignoring \"replace\" action.")
+    norm.action <- "skip"
+  }
+
+  if (!exists("s.q.irrad", x, inherits = FALSE) &&
+      exists("s.e.irrad", x, inherits = FALSE)) {
+    x[["s.q.irrad"]] <-
+      x[["s.e.irrad"]] * e2qmol_multipliers(x[["w.length"]])
   }
 
   if (action == "replace" &&
@@ -990,9 +935,9 @@ e2q.source_spct <- function(x,
 
   if (norm.action == "update") {
     # apply the pre-existing normalization criteria
-    old.norm <- old.normalization.ls$norm.type
+    old.norm <- unique(old.normalization.ls$norm.type)
     if (old.norm[1] == "wavelength") {
-      old.norm <- old.normalization.ls$norm.wl
+      old.norm <- unique(old.normalization.ls$norm.wl)
     }
     old.range <- old.normalization.ls$norm.range
     x <- normalize(x,
@@ -1021,32 +966,41 @@ e2q.response_spct <- function(x,
   }
 
   action <- check_action_arg(x, action)
-
-  if (exists("s.q.response", x, inherits = FALSE)) {
-    norm.action <- "skip"
-  } else if (exists("s.e.response", x, inherits = FALSE)) {
-    if (is_normalised(x)) {
-      old.normalization.ls <- getNormalization(x)
-      x <- denormalize_spct(x) # remove normalization
-      norm.action <- "update"
-    } else {
-      norm.action <- "skip"
-    }
-
-    x[["s.q.response"]] <- x[["s.e.response"]] / e2qmol_multipliers(x[["w.length"]])
+  # nothing to do
+  if (action == "add" &&
+      all(c("s.e.response", "s.q.response") %in% colnames(x))) {
+    return(x)
+  }
+  if (action == "replace" &&
+      "s.q.response" %in% colnames(x) && !"s.e.response" %in% colnames(x)) {
+    return(x)
+  }
+  # we remove normalization
+  ## should skip this when only removing s.e.irrad by removing col from normalization
+  if (is_normalised(x)) {
+    old.normalization.ls <- getNormalization(x)
+    x <- denormalize_spct(x) # remove normalization
+    norm.action <- "update"
   } else {
-    x[["s.q.response"]] <- NA
+    norm.action <- "skip"
   }
 
-  if (action == "replace" && exists("s.e.response", x, inherits = FALSE)) {
+  if (!exists("s.q.response", x, inherits = FALSE) &&
+      exists("s.e.response", x, inherits = FALSE)) {
+    x[["s.q.response"]] <-
+      x[["s.e.response"]] / e2qmol_multipliers(x[["w.length"]])
+  }
+
+  if (action == "replace" &&
+      exists("s.e.response", x, inherits = FALSE)) {
     x[["s.e.response"]] <- NULL
   }
 
   if (norm.action == "update") {
     # apply the pre-existing normalization criteria
-    old.norm <- old.normalization.ls$norm.type
+    old.norm <- unique(old.normalization.ls$norm.type)
     if (old.norm[1] == "wavelength") {
-      old.norm <- old.normalization.ls$norm.wl
+      old.norm <- unique(old.normalization.ls$norm.wl)
     }
     old.range <- old.normalization.ls$norm.range
     x <- normalize(x,
@@ -1157,33 +1111,41 @@ q2e.source_spct <- function(x,
   }
 
   action <- check_action_arg(x, action)
-
-  if (exists("s.e.irrad", x, inherits = FALSE)) {
-    norm.action <- "skip"
-  } else if (exists("s.q.irrad", x, inherits = FALSE)) {
-    if (is_normalised(x)) {
-      old.normalization.ls <- getNormalization(x)
-      x <- denormalize_spct(x) # remove normalization
-      norm.action <- "update"
-    } else {
-      norm.action <- "skip"
-    }
-    x[["s.e.irrad"]] <- x[["s.q.irrad"]] / e2qmol_multipliers(x[["w.length"]])
+  # nothing to do
+  if (action == "add" &&
+      all(c("s.e.irrad", "s.q.irrad") %in% colnames(x))) {
+    return(x)
+  }
+  if (action == "replace" &&
+      "s.e.irrad" %in% colnames(x) && !"s.q.irrad" %in% colnames(x)) {
+    return(x)
+  }
+  # we remove normalization
+  ## should skip this when only removing s.e.irrad by removing col from normalization
+  if (is_normalised(x)) {
+    old.normalization.ls <- getNormalization(x)
+    x <- denormalize_spct(x) # remove normalization
+    norm.action <- "update"
   } else {
-    x[["s.e.irrad"]] <- NA
-    action <- "add"
-    warning("'s.e.irrad' not available in 'e2q()', ignoring \"replace\" action.")
+    norm.action <- "skip"
   }
 
-  if (action == "replace" && exists("s.q.irrad", x, inherits = FALSE)) {
+  if (!exists("s.e.irrad", x, inherits = FALSE) &&
+      exists("s.q.irrad", x, inherits = FALSE)) {
+    x[["s.e.irrad"]] <-
+      x[["s.q.irrad"]] / e2qmol_multipliers(x[["w.length"]])
+  }
+
+  if (action == "replace" &&
+      exists("s.q.irrad", x, inherits = FALSE)) {
     x[["s.q.irrad"]] <- NULL
   }
 
   if (norm.action == "update") {
     # apply the pre-existing normalization criteria
-    old.norm <- old.normalization.ls$norm.type
+    old.norm <- unique(old.normalization.ls$norm.type)
     if (old.norm[1] == "wavelength") {
-      old.norm <- old.normalization.ls$norm.wl
+      old.norm <- unique(old.normalization.ls$norm.wl)
     }
     old.range <- old.normalization.ls$norm.range
     x <- normalize(x,
@@ -1212,25 +1174,33 @@ q2e.response_spct <- function(x,
   }
 
   action <- check_action_arg(x, action)
-
-  if (exists("s.e.response", x, inherits = FALSE)) {
-    norm.action <- "skip"
-  } else if (exists("s.q.response", x, inherits = FALSE)) {
-    if (is_normalised(x)) {
-      old.normalization.ls <- getNormalization(x)
-      x <- denormalize_spct(x) # remove normalization
-      norm.action <- "update"
-    } else {
-      norm.action <- "skip"
-    }
-    x[["s.e.response"]] <- x[["s.q.response"]] * e2qmol_multipliers(x[["w.length"]])
+  # nothing to do
+  if (action == "add" &&
+      all(c("s.e.response", "s.q.response") %in% colnames(x))) {
+    return(x)
+  }
+  if (action == "replace" &&
+      "s.e.response" %in% colnames(x) && !"s.q.response" %in% colnames(x)) {
+    return(x)
+  }
+  # we remove normalization
+  ## should skip this when only removing s.e.irrad by removing col from normalization
+  if (is_normalised(x)) {
+    old.normalization.ls <- getNormalization(x)
+    x <- denormalize_spct(x) # remove normalization
+    norm.action <- "update"
   } else {
-    x[["s.e.response"]] <- NA
-    action <- "add"
-    warning("'s.q.irrad' not available in 'q2e()', ignoring \"replace\" action.")
+    norm.action <- "skip"
   }
 
-  if (action == "replace" && exists("s.q.response", x, inherits = FALSE)) {
+  if (!exists("s.e.response", x, inherits = FALSE) &&
+      exists("s.q.response", x, inherits = FALSE)) {
+    x[["s.e.response"]] <-
+      x[["s.q.response"]] * e2qmol_multipliers(x[["w.length"]])
+  }
+
+  if (action == "replace" &&
+      exists("s.q.response", x, inherits = FALSE)) {
     x[["s.q.response"]] <- NULL
   }
 

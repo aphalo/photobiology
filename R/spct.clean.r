@@ -172,13 +172,7 @@ clean.object_spct <-
                     range = range,
                     range.s.data = range.s.data,
                     fill = fill,
-                    col.names = "Tfr",
-                    ...)
-    z <- clean_spct(x = z,
-                    range = range,
-                    range.s.data = range.s.data,
-                    fill = fill,
-                    col.names = "Rfr",
+                    col.names = c("Tfr", "Afr", "Rfr"),
                     ...)
 
     # we need to protect from rounding errors
@@ -206,7 +200,7 @@ clean.object_spct <-
     if (any(delta != 0)) {
       # we apply the correction proportionally, which guarantees that
       # we do not male Rfr < 0 or Tfr < 0!!
-      z[["Rfr"]] <- 
+      z[["Rfr"]] <-
         z[["Rfr"]] - (delta * z[["Rfr"]]) / (z[["Rfr"]] + z[["Tfr"]])
       z[["Tfr"]] <-
         z[["Tfr"]] - (delta * z[["Tfr"]]) / (z[["Rfr"]] + z[["Tfr"]])
@@ -616,6 +610,9 @@ clean_spct <-
            col.names,
            col.pattern = NULL,
            ...) {
+    col.names <- intersect(col.names, colnames(x))
+    # nothing to do
+    if (!length(col.names)) return(x)
     stopifnot(length(range) >= 2L &&
                 length(range.s.data) == 2L &&
                 length(fill) <= 2L)
