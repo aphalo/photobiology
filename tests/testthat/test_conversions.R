@@ -1,5 +1,7 @@
 context("conversions")
 
+update_all <- FALSE
+
 test_that("T2A", {
   f.spct <- filter_spct(w.length = 300:320, Tfr = 0.1)
   expect_silent(T2A(f.spct))
@@ -314,7 +316,7 @@ test_that("e2q", {
   expect_silent(e2q(s.spct))
   unset_user_defaults()
 
-  expect_equal_to_reference(e2q(s.spct), "e2q.rds")
+  expect_known_value(e2q(s.spct), "data/e2q-value", update = update_all)
 
   # add "ignore.order = TRUE" if needed!
   expect_named(e2q(s.spct), c("w.length", "s.e.irrad", "s.q.irrad"))
@@ -332,7 +334,7 @@ test_that("q2e", {
   expect_silent(q2e(s.spct))
   unset_user_defaults()
 
-  expect_equal_to_reference(q2e(s.spct), "q2e.rds")
+  expect_known_value(q2e(s.spct), "data/q2e-value", update = update_all)
 
   # add "ignore.order = TRUE" if needed!
   expect_named(q2e(s.spct), c("w.length", "s.q.irrad", "s.e.irrad"))

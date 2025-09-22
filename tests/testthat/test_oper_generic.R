@@ -6,7 +6,7 @@ test_that("constructor", {
   my.spct <- data.frame(w.length = 400:409, x = 1)
   setGenericSpct(my.spct)
   expect_equal(class(my.spct)[1], c("generic_spct") )
-  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 3)
   expect_true(is.any_spct(my.spct))
   expect_true(is.generic_spct(my.spct))
 

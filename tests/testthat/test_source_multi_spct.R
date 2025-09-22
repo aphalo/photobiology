@@ -109,7 +109,7 @@ test_that("source_mspct", {
   expect_equal(paste("spct", seq_len(length(spct.l)), sep = "_"), names(my.mspct))
 
   expect_equal(class(my.mspct)[1:2], c("source_mspct", "generic_mspct") )
-  expect_equal(attr(my.mspct, "mspct.version", exact = TRUE), 2)
+  expect_equal(attr(my.mspct, "mspct.version", exact = TRUE), 3)
   expect_equal(ncol(my.mspct), 1)
   expect_equal(nrow(my.mspct), length(spct.l))
   expect_equal(attr(my.mspct, "mspct.byrow", exact = TRUE), FALSE)
@@ -124,7 +124,7 @@ test_that("source_mspct", {
 
   expect_equal(names(named_spct.l), names(my_named.mspct))
   expect_equal(class(my_named.mspct)[1:2], c("source_mspct", "generic_mspct") )
-  expect_equal(attr(my_named.mspct, "mspct.version", exact = TRUE), 2)
+  expect_equal(attr(my_named.mspct, "mspct.version", exact = TRUE), 3)
   expect_equal(ncol(my_named.mspct), 1)
   expect_equal(nrow(my.mspct), length(named_spct.l))
   expect_equal(attr(my_named.mspct, "mspct.byrow", exact = TRUE), FALSE)
@@ -578,7 +578,7 @@ test_that("source_mspct_attr", {
   expect_equal(paste("spct", seq_len(length(spct.l)), sep = "_"), names(my.mspct))
 
   expect_equal(class(my.mspct)[1:2], c("source_mspct", "generic_mspct") )
-  expect_equal(attr(my.mspct, "mspct.version", exact = TRUE), 2)
+  expect_equal(attr(my.mspct, "mspct.version", exact = TRUE), 3)
   expect_equal(ncol(my.mspct), 1)
   expect_equal(nrow(my.mspct), length(spct.l))
   expect_equal(attr(my.mspct, "mspct.byrow", exact = TRUE), FALSE)
@@ -590,7 +590,7 @@ test_that("source_mspct_attr", {
 
   expect_equal(names(named_spct.l), names(my_named.mspct))
   expect_equal(class(my_named.mspct)[1:2], c("source_mspct", "generic_mspct") )
-  expect_equal(attr(my_named.mspct, "mspct.version", exact = TRUE), 2)
+  expect_equal(attr(my_named.mspct, "mspct.version", exact = TRUE), 3)
   expect_equal(ncol(my_named.mspct), 1)
   expect_equal(nrow(my.mspct), length(named_spct.l))
   expect_equal(attr(my_named.mspct, "mspct.byrow", exact = TRUE), FALSE)

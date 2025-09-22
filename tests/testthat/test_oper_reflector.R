@@ -11,7 +11,7 @@ test_that("constructor fraction", {
 
   my.spct <- reflector_spct(w.length = 400:409, Rfr = 0.1)
   expect_equal(class(my.spct)[1:2], c("reflector_spct", "generic_spct") )
-  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 3)
 
   expect_warning(reflector_spct(w.length = 400:409, Rfr = -0.1))
   expect_warning(reflector_spct(w.length = 400:409, Rfr = 1.1))
@@ -34,7 +34,7 @@ test_that("constructor fraction", {
   my.spct <- as.reflector_spct(my.df)
 
   expect_equal(class(my.spct)[1:2], c("reflector_spct", "generic_spct") )
-  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 3)
   expect_named(my.spct, c("w.length", "Rfr"))
   expect_true(is.reflector_spct(my.spct))
   expect_true(is.any_spct(my.spct))

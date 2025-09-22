@@ -12,7 +12,7 @@ test_that("constructor energy", {
 
   my.spct <- source_spct(w.length = 400:409, s.e.irrad = 1)
   expect_equal(class(my.spct)[1:2], c("source_spct", "generic_spct") )
-  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 3)
   expect_named(my.spct, c("w.length", "s.e.irrad"))
 
   expect_true(is.source_spct(my.spct))
@@ -29,7 +29,7 @@ test_that("constructor energy", {
   my.spct <- as.source_spct(my.df)
 
   expect_equal(class(my.spct)[1:2], c("source_spct", "generic_spct") )
-  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 3)
   expect_equal(my.spct[["s.e.irrad"]], rep(1, length.out = 10))
   expect_named(my.spct, c("w.length", "s.e.irrad"))
   expect_true(is.source_spct(my.spct))

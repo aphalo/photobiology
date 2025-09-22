@@ -41,7 +41,7 @@ test_that("oper", {
   my.2.spct <- calibration_spct(w.length = 400:409, irrad.mult = 2)
 
   expect_equal(class(my.spct)[1:2], c("calibration_spct", "generic_spct") )
-  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 3)
 
   expect_equal(my.spct * 2, my.2.spct)
   expect_equal(my.spct * 2L, my.2.spct)

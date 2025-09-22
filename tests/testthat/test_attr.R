@@ -112,7 +112,7 @@ test_that("any_spct", {
   expect_equal(length(getInstrSettings(my.spct)), 3)
   expect_equal(names(getInstrSettings(my.spct)), setdiff(names(my.settings), "num.scans"))
 
-  expect_equal(getSpctVersion(my.spct), 2L)
+  expect_equal(getSpctVersion(my.spct), 3L)
 })
 
 context("set get long from spct")
@@ -136,7 +136,7 @@ test_that("any_spct", {
   expect_equal(length(getInstrSettings(my.spct)), 16)
   expect_is(getInstrSettings(my.spct), "instr_settings")
 
-  expect_equal(getSpctVersion(my.spct), 2L)
+  expect_equal(getSpctVersion(my.spct), 3L)
 
   expect_is(getIdFactor(my.spct), "character")
   expect_equal(length(getIdFactor(my.spct)), 1L)

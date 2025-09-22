@@ -11,7 +11,7 @@ test_that("constructor T fraction", {
 
   my.spct <- filter_spct(w.length = 400:409, Tfr = 0.1)
   expect_equal(class(my.spct)[1:2], c("filter_spct", "generic_spct") )
-  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 3)
 
   expect_error(filter_spct(w.length = 400:409, Tfr = -0.1, strict.range = TRUE))
   expect_error(filter_spct(w.length = 400:409, Tfr = 1.1, strict.range = TRUE))
@@ -37,7 +37,7 @@ test_that("constructor T fraction", {
   my.spct <- as.filter_spct(my.df)
 
   expect_equal(class(my.spct)[1:2], c("filter_spct", "generic_spct") )
-  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 3)
   expect_named(my.spct, c("w.length", "Tfr"))
   expect_true(is.filter_spct(my.spct))
   expect_true(is.any_spct(my.spct))
