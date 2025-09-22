@@ -12,7 +12,6 @@ badge](https://aphalo.r-universe.dev/badges/photobiology)](https://aphalo.r-univ
 [![R-CMD-check](https://github.com/aphalo/photobiology/workflows/R-CMD-check/badge.svg)](https://github.com/aphalo/photobiology/actions)
 [![Documentation](https://img.shields.io/badge/documentation-photobiology-informational.svg)](https://docs.r4photobiology.info/photobiology/)
 [![doi](https://img.shields.io/badge/doi-10.32614/CRAN.package.photobiology-blue.svg)](https://doi.org/10.32614/CRAN.package.photobiology)
-[![R-CMD-check](https://github.com/aphalo/photobiology/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/aphalo/photobiology/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 Package ‘**photobiology**’ defines a system of classes for storing
@@ -73,9 +72,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::now(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2025-07-12 03:37:54 UTC"
+#> [1] "2025-09-22 05:46:15 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 16.9267
+#> [1] 12.21339
 ```
 
 ## Installation
@@ -95,9 +94,19 @@ install.packages('photobiology',
                            'https://cloud.r-project.org'))
 ```
 
-Once package ‘photobiology’ is installed, installation of the remaining
-or missing packages in the suite from CRAN (or by adding the repository
-information as above, from R-Universe):
+The two approaches above, automatically install dependencies.
+
+Installation of the current unstable version from GitHub:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("aphalo/photobiology")
+```
+
+Installation from GitHub sources does not automatically install
+dependencies. Once package ‘photobiology’ is installed, installation of
+the remaining or missing packages in the suite from CRAN (or by adding
+the repository information as above, also from R-Universe):
 
 ``` r
 intalled_pkgs <- installed.packages()[ , 1]
@@ -107,18 +116,11 @@ if (length(missing_pkgs) > 0) {
 }
 ```
 
-Installation of the current unstable version from GitHub:
-
-``` r
-# install.packages("devtools")
-devtools::install_github("aphalo/photobiology")
-```
-
 ## Documentation
 
 HTML documentation is available at
-(<https://docs.r4photobiology.info/photobiology/>), including three
-*User Guides*.
+(<https://docs.r4photobiology.info/photobiology/>), including two *User
+Guides*.
 
 News on updates to the different packages of the ‘r4photobiology’ suite
 are regularly posted at (<https://www.r4photobiology.info/>).
