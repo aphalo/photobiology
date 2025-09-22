@@ -770,7 +770,7 @@ subset.generic_spct <- function(x, subset, select, drop = FALSE, ...) {
     class(x) <- c(old.class, class(x))
     attr(x, "mspct.dim") <- c(length(x), 1L)
     attr(x, "mspct.byrow") <- old.byrow
-    attr(x, "mspct.version") <- 2
+    attr(x, "mspct.version") <- 3
     x
   }
 
@@ -805,7 +805,7 @@ is.member_class <- function(l, x) {
   class(x) <- c(old.class, class(x))
   attr(x, "mspct.dim") <- old.mspct.dim
   attr(x, "mspct.byrow") <- old.byrow
-  attr(x, "mspct.version") <- 2
+  attr(x, "mspct.version") <- 3
   x
 }
 
@@ -856,7 +856,7 @@ is.member_class <- function(l, x) {
   class(x) <- c(old.class, class(x))
   attr(x, "mspct.dim") <- dimension
   attr(x, "mspct.byrow") <- old.byrow
-  attr(x, "mspct.version") <- 2
+  attr(x, "mspct.version") <- 3
   x
 }
 

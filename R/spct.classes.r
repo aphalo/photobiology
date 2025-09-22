@@ -1153,7 +1153,7 @@ setGenericSpct <-
     }
     x <- check_spct(x)
     attr(x, "idfactor") <- idfactor
-    attr(x, "spct.version") <- 2
+    attr(x, "spct.version") <- 3
     if (is.name(name)) {
       name <- as.character(name)
       assign(name, x, parent.frame(), inherits = TRUE)

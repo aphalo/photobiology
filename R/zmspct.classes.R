@@ -158,7 +158,7 @@ generic_mspct <- function(l = NULL,
   if (length(l) > 0 && is.null(names(l))) {
     attr(l, "names") <- paste("spct", seq_along(l), sep = "_")
   }
-  attr(l, "mspct.version") <- 2
+  attr(l, "mspct.version") <- 3
 
   dim(l) <- dim
   attr(l, "mspct.byrow") <- as.logical(byrow)
