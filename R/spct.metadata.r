@@ -520,7 +520,7 @@ getWhereMeasured.generic_spct <- function(x,
                                           .bind.geocodes = TRUE) {
   where.measured <- attr(x, "where.measured", exact = TRUE)
   # attribute not set or set to NA
-  if (is.null(where.measured) || is.na(where.measured)) {
+  if (is.null(where.measured) || all(is.na(where.measured))) {
     return(SunCalcMeeus::na_geocode())
   }
   # single spectrum and not returning a list
