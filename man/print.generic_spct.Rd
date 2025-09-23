@@ -36,9 +36,10 @@ Print methods for objects of spectral classes, including collections of
 spectra.
 }
 \details{
-This is simply a wrapper on the print method for tibbles, with
+This is a wrapper on the print method for tibbles, with
 additional information in the header. Currently, \code{width} applies only to
-the table of data.
+the table of data. To print only the header and a subset of data rows
+starting from the shortest wavelengths pass a positive integer to \code{n}.
 
 Objects are printed as is, ignoring the current settings of R options
 \code{photobiology.radiation.unit} and \code{photobiology.filter.qty}.
@@ -48,10 +49,21 @@ Objects are printed as is, ignoring the current settings of R options
 \item \code{print(generic_mspct)}: 
 
 }}
+\note{
+Methods \code{\link[utils]{head}()}, \code{tail()} and
+  \code{\link{head_tail}()} give additional flexibility on the selection
+  of rows to print, while preserving the metadata. The information shown
+  for wavelengths is in contrast to when using print that for the displayed
+  rows
+}
 \examples{
 
 print(sun.spct)
 print(sun.spct, n = 5)
+
+print(head(sun.spct, n = 5))
+print(tail(sun.spct, n = 5))
+print(head_tail(sun.spct, n = 5))
 
 print(q2e(sun.spct, action = "replace"))
 print(e2q(sun.spct, action = "replace"))
@@ -62,4 +74,7 @@ print(any2Afr(polyester.spct))
 
 print(two_filters.spct)
 
+}
+\seealso{
+\code{\link[tibble]{formatting}}.
 }
