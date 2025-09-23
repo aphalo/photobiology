@@ -995,6 +995,8 @@ check_spct.chroma_spct <-
 #' a single spectrum.
 #'
 #' @inheritParams peaks
+#' @param min.stepsize numeric The minimum wavelength step size in nanometres
+#'   to use for comparison to the longest one.
 #'
 #' @details As the search for peaks uses a window based on a fixed number of
 #'   observations at neighbouring wavelengths, if the wavelength step between
@@ -1019,12 +1021,13 @@ check_spct.chroma_spct <-
 #' @examples
 #'
 #' check_wl_stepsize(sun.spct)
-#' check_wl_stepsize(1:20, 30)
+#' check_wl_stepsize(c(1:20, 25), span = 30)
+#' check_wl_stepsize(1:20, span = 30, min.stepsize = 4)
 #'
 #' @export
 #'
 check_wl_stepsize <-
-  function(x, span = Inf, na.rm = FALSE) {
+  function(x, span = Inf, na.rm = FALSE, min.stepsize = 1) {
     if (is.generic_spct(x)) {
       stopifnot(getMultipleWl(x) == 1L)
       x <- x[["w.length"]]
@@ -1035,7 +1038,7 @@ check_wl_stepsize <-
     if (length(x) > 2L &&
           (!is.null(span) && span > 5)) {
       step.size.range <- stepsize(x)
-      step.size.range[1] <- max(1, step.size.range[1]) # ignore wl steps < 1 nm
+      step.size.range[1] <- max(min.stepsize, step.size.range[1]) # ignore wl steps < min.step nm
       if ((step.size.range[2] / step.size.range[1]) > 2.5) {
         caller.name <- gsub("\\(.*$|\\..*$", "",
                             deparse(sys.calls()[[if (sys.nframe() <= 1) 1

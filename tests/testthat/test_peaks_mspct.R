@@ -121,8 +121,8 @@ test_that("source_spct single", {
   expect_silent(peaks(my_thn.spct))
   expect_silent(peaks(my_thn.spct, span = 5L))
   expect_silent(peaks(my_thn.spct, span = NULL))
-  expect_message(peaks(my_thn.spct, span = 7L))
-  expect_message(peaks(my_thn.spct, span = 101L))
+  expect_silent(peaks(my_thn.spct, span = 7L))
+  expect_silent(peaks(my_thn.spct, span = 101L))
 })
 
 test_that("long source_spct", {
@@ -305,8 +305,8 @@ test_that("source_spct", {
   expect_silent(valleys(my_thn.spct))
   expect_silent(valleys(my_thn.spct, span = 5L))
   expect_silent(valleys(my_thn.spct, span = NULL))
-  expect_message(valleys(my_thn.spct, span = 7L))
-  expect_message(valleys(my_thn.spct, span = 101L))
+  expect_silent(valleys(my_thn.spct, span = 7L))
+  expect_silent(valleys(my_thn.spct, span = 101L))
 })
 
 test_that("long source_spct", {

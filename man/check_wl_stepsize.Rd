@@ -4,7 +4,7 @@
 \alias{check_wl_stepsize}
 \title{Check consistency of wavelength step size}
 \usage{
-check_wl_stepsize(x, span = Inf, na.rm = FALSE)
+check_wl_stepsize(x, span = Inf, na.rm = FALSE, min.stepsize = 1)
 }
 \arguments{
 \item{x}{numeric vector.}
@@ -17,6 +17,9 @@ extends the span to the whole length of \code{x}.}
 
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before searching for peaks.}
+
+\item{min.stepsize}{numeric The minimum wavelength step size in nanometres
+to use for comparison to the longest one.}
 }
 \value{
 A logical \code{TRUE} is returned invisibly if check is passed and
@@ -48,6 +51,7 @@ As the search for peaks uses a window based on a fixed number of
 \examples{
 
 check_wl_stepsize(sun.spct)
-check_wl_stepsize(1:20, 30)
+check_wl_stepsize(c(1:20, 25), span = 30)
+check_wl_stepsize(1:20, span = 30, min.stepsize = 4)
 
 }
