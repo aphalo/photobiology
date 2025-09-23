@@ -380,7 +380,7 @@ despike.generic_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x)
+    check_wl_stepsize(x, span = 15, min.stepsize = 3)
 
     if (is.null(var.name)) {
       # find target variable
@@ -443,7 +443,7 @@ despike.source_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x)
+    check_wl_stepsize(x, span = 15, min.stepsize = 3)
 
     if (unit.out == "energy") {
       z <- q2e(x, action = "replace", byref = FALSE)
@@ -497,7 +497,7 @@ despike.response_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x)
+    check_wl_stepsize(x, span = 15, min.stepsize = 3)
 
     if (unit.out == "energy") {
       z <- q2e(x, action = "replace", byref = FALSE)
@@ -553,7 +553,7 @@ despike.filter_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x)
+    check_wl_stepsize(x, span = 15, min.stepsize = 3)
 
     if (filter.qty == "transmittance") {
       z <- A2T(x, action = "replace", byref = FALSE)
@@ -606,7 +606,7 @@ despike.reflector_spct <- function(x,
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
-  check_wl_stepsize(x)
+  check_wl_stepsize(x, span = 15, min.stepsize = 3)
 
   col.name <- "Rfr"
   x[[col.name]] <- despike(x[[col.name]],
@@ -650,7 +650,7 @@ despike.solute_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x)
+    check_wl_stepsize(x, span = 15, min.stepsize = 3)
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
     if (length(cols) == 1) {
@@ -698,7 +698,7 @@ despike.cps_spct <- function(x,
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
-  check_wl_stepsize(x)
+  check_wl_stepsize(x, span = 15, min.stepsize = 3)
 
   var.name <- grep("cps", colnames(x), value = TRUE)
   for (col.name in var.name) {
@@ -743,7 +743,7 @@ despike.raw_spct <- function(x,
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
-  check_wl_stepsize(x)
+  check_wl_stepsize(x, span = 15, min.stepsize = 3)
 
   var.name <- grep("counts", colnames(x), value = TRUE)
   for (col.name in var.name) {
@@ -1117,7 +1117,7 @@ spikes.generic_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x)
+    check_wl_stepsize(x, span = 15, min.stepsize = 3)
 
     if (is.null(var.name)) {
       # find target variable
@@ -1169,7 +1169,7 @@ spikes.source_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x)
+    check_wl_stepsize(x, span = 15, min.stepsize = 3)
 
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
@@ -1217,7 +1217,7 @@ spikes.response_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x)
+    check_wl_stepsize(x, span = 15, min.stepsize = 3)
 
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
@@ -1267,7 +1267,7 @@ spikes.filter_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x)
+    check_wl_stepsize(x, span = 15, min.stepsize = 3)
 
     if (filter.qty == "transmittance") {
       z <- A2T(x, "replace", FALSE)
@@ -1311,7 +1311,7 @@ spikes.reflector_spct <- function(x,
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
-  check_wl_stepsize(x)
+  check_wl_stepsize(x, span = 15, min.stepsize = 3)
 
   col.name <- "Rfr"
   spikes.idx <-
@@ -1348,7 +1348,7 @@ spikes.solute_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x)
+    check_wl_stepsize(x, span = 15, min.stepsize = 3)
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
     if (length(cols) == 1) {
@@ -1392,7 +1392,7 @@ spikes.cps_spct <- function(x,
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
-  check_wl_stepsize(x)
+  check_wl_stepsize(x, span = 15, min.stepsize = 3)
 
   spikes.idx <-
     which(find_spikes(x[[var.name]],
@@ -1429,7 +1429,7 @@ spikes.raw_spct <- function(x,
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
-  check_wl_stepsize(x)
+  check_wl_stepsize(x, span = 15, min.stepsize = 3)
 
   spikes.idx <-
     which(find_spikes(x[[var.name]],
