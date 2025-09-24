@@ -170,7 +170,7 @@ make_var_labels.response_spct <- function(x, ...) {
              s.q.response = "Spectral photon response")
     }
   }
-  sub.pattern <- "J-1 m2 nm|mol-1 m nm|J-1 [shd] m2 nm|mol-1 [shd] m2 nm"
+  sub.pattern <- "J-1 m2 nm|mol-1 m nm|J-1 [shd] m2 nm|mol-1 [shd] m2 nm|W-1 m2 nm"
   if (is_normalized(x)) {
     labels <-
       lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")

@@ -182,7 +182,7 @@ print.generic_spct <- function(x,
             normalization[["norm.type"]][1], ")\n", sep = "")
       } else {
         cat("Spectral data in ", paste(normalization[["norm.cols"]], collapse = ", "),
-            " normalized to 1 at ", paste(normalization[["norm.wl"]], collapse = " nm, "), " nm (",
+            " normalized to 1 at ", paste(round(normalization[["norm.wl"]], digits = 1), collapse = " nm, "), " nm (",
             normalization[["norm.type"]][1], " in ",
             paste(round(normalization[["norm.range"]], 2), collapse = "-"),
             " nm)\n", sep = "")

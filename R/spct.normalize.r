@@ -1045,15 +1045,33 @@ getNormalization <- function(x) {
       # attribute in use >= 0.10.8
       normalization.list <- attr(x, "normalization", exact = TRUE)
       if (is.list(normalization.list)) {
-        if (!exists("norm.range", normalization.list) &&
-            exists("norm.type", normalization.list)) {
-          # norm.range is missing 0.10.8 and 0.10.9
-          normalization.list[["norm.range"]] <- rep(NA_real_, 2)
-        }
-        if (!exists("norm.wl", normalization.list) ||
-            !is.numeric(normalization.list[["norm.wl"]])) {
-          # norm.wl missing or corrupted breaks 'ggspectra'
-          normalization.list[["norm.wl"]] <- NA_real_
+        if (getMultipleWl(x) == 1L) {
+          # check validity
+          if (!exists("norm.range", normalization.list) &&
+              exists("norm.type", normalization.list)) {
+            # norm.range is missing 0.10.8 and 0.10.9
+            normalization.list[["norm.range"]] <- rep(NA_real_, 2)
+          }
+          if (!exists("norm.wl", normalization.list) ||
+              !is.numeric(normalization.list[["norm.wl"]])) {
+            # norm.wl missing or corrupted breaks 'ggspectra'
+            normalization.list[["norm.wl"]] <- NA_real_
+          }
+          # when removing columns the normalization data can remain behind
+          # we return normalization only for existing columns
+          selector <- normalization.list[["norm.cols"]] %in% colnames(x)
+          if (!is.null(normalization.list[["norm.cols"]]) &&
+              !any(is.na(normalization.list[["norm.cols"]])) &&
+              !all(selector)) {
+            normalization.list[["norm.type"]] <-
+              normalization.list[["norm.type"]][selector]
+            normalization.list[["norm.wl"]] <-
+              normalization.list[["norm.wl"]][selector]
+            normalization.list[["norm.factors"]] <-
+              normalization.list[["norm.factors"]][selector]
+            normalization.list[["norm.cols"]] <-
+              normalization.list[["norm.cols"]][selector]
+          }
         }
         return(normalization.list)
       } else if (is.numeric(getNormalized(x, .force.numeric = FALSE))) {
