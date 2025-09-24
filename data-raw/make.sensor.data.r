@@ -12,8 +12,10 @@ setWhatMeasured(photodiode.spct, "GaAsP photodiode")
 setHowMeasured(photodiode.spct, "Digitized from plot in menufacturer's data sheet.")
 setWhenMeasured(photodiode.spct, ymd_hms(NA_character_))
 setWhereMeasured(photodiode.spct, na_geocode())
+# photodiode.spct <- normalize(photodiode.spct)
 
-ccd.spct <- read.csv("data-raw/photodiode/hamamatsu_S10420-1.csv", col.names = c("w.length","s.q.response"))
+ccd.spct <- read.csv("data-raw/photodiode/hamamatsu_S10420-1.csv",
+                     col.names = c("w.length","s.q.response"))
 setResponseSpct(ccd.spct, time.unit = "second")
 
 ccd.spct <- trim_wl(ccd.spct, range = c(200, 1100), fill = NULL)
@@ -22,6 +24,7 @@ setWhatMeasured(ccd.spct, "CCD linear image sensor")
 setHowMeasured(ccd.spct, "Digitized from plot in menufacturer's data sheet.")
 setWhenMeasured(ccd.spct, ymd_hms(NA_character_))
 setWhereMeasured(ccd.spct, na_geocode())
+# ccd.spct <- normalize(ccd.spct)
 
 two_sensors.mspct <- response_mspct(list(photodiode = photodiode.spct,
                                          ccd = ccd.spct))

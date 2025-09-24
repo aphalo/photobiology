@@ -177,14 +177,21 @@ print.generic_spct <- function(x,
         !anyNA(normalization[["norm.type"]])) {
       if (normalization[["norm.type"]][1] == "wavelength" ||
           all(is.na(normalization[["norm.range"]]))) {
-        cat("Spectral data in ",  paste(normalization[["norm.cols"]], collapse = ", "),
-            " normalized to 1 at ", paste(normalization[["norm.wl"]], collapse = " nm, "), " nm (",
+        cat("Spectral data in ",
+            paste(normalization[["norm.cols"]], collapse = ", "),
+            " normalized to 1 at ",
+            paste(round(normalization[["norm.wl"]], digits = 1),
+                  collapse = " nm, "), " nm (",
             normalization[["norm.type"]][1], ")\n", sep = "")
       } else {
-        cat("Spectral data in ", paste(normalization[["norm.cols"]], collapse = ", "),
-            " normalized to 1 at ", paste(round(normalization[["norm.wl"]], digits = 1), collapse = " nm, "), " nm (",
+        cat("Spectral data in ",
+            paste(normalization[["norm.cols"]], collapse = ", "),
+            " normalized to 1 at ",
+            paste(round(normalization[["norm.wl"]], digits = 1),
+                  collapse = " nm, "), " nm (",
             normalization[["norm.type"]][1], " in ",
-            paste(round(normalization[["norm.range"]], 2), collapse = "-"),
+            paste(round(normalization[["norm.range"]], 2),
+                  collapse = "-"),
             " nm)\n", sep = "")
       }
     } else {
@@ -574,19 +581,26 @@ print.summary_generic_spct <- function(x, ..., attr.simplify = TRUE) {
         !anyNA(normalization[["norm.type"]])) {
       if (normalization[["norm.type"]][1] == "wavelength" ||
           all(is.na(normalization[["norm.range"]]))) {
-        cat("Spectral data in ",  paste(normalization[["norm.cols"]], collapse = ", "),
-            " normalized to 1 at ", paste(normalization[["norm.wl"]], collapse = " nm, "), " nm (",
+        cat("Spectral data in ",
+            paste(normalization[["norm.cols"]], collapse = ", "),
+            " normalized to 1 at ",
+            paste(round(normalization[["norm.wl"]], digits = 1),
+                  collapse = " nm, "), " nm (",
             normalization[["norm.type"]][1], ")\n", sep = "")
       } else {
-        cat("Spectral data in ", paste(normalization[["norm.cols"]], collapse = ", "),
-            " normalized to 1 at ", paste(normalization[["norm.wl"]], collapse = " nm, "), " nm (",
+        cat("Spectral data in ",
+            paste(normalization[["norm.cols"]], collapse = ", "),
+            " normalized to 1 at ",
+            paste(round(normalization[["norm.wl"]], digits = 1),
+                  collapse = " nm, "), " nm (",
             normalization[["norm.type"]][1], " in ",
             paste(round(normalization[["norm.range"]], 2), collapse = "-"),
             " nm)\n", sep = "")
       }
     } else {
       if (is.numeric(norm)) {
-        cat("Spectral data normalized to 1 at ", norm, " nm \n", sep = "")
+        cat("Spectral data normalized to 1 at ",
+            round(norm, digits = 1), " nm \n", sep = "")
       } else {
         cat("Spectral data normalized to 1\n")
       }

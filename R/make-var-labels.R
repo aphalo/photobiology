@@ -255,7 +255,14 @@ make_var_labels.object_spct <- function(x, ...) {
          Rfr = Rfr.label[Rfr.type],
          Afr = "Spectral absorptance [/1]",
          A = "Spectral absorbance log10 based [a.u.]")
-  # scaling and normalization not supported by class object_spct
+  sub.pattern <- "/1"
+  if (is_normalized(x)) {
+    labels <-
+      lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
+  } else if (is_scaled(x)) {
+    labels <-
+      lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
+  }
 
   labels[intersect(colnames(x), names(labels))]
 
