@@ -10,10 +10,13 @@ editor_options:
 The main change in this update is in how _normalization metadata_ and _geocode
 metadata_ are stored in objects containing multiple spectra in long form. In
 both cases these are fixes for design weaknesses, rather than for coding bugs.
-Objects created with earlier versions should work as earlier, but operations
-with functions and methods from earlier versions can in some cases fail to
-work correctly with objects created with this version. The version tag of
-spectral objects is increased to 3, to help with debugging problems.
+Objects created with earlier versions should work as before, but operations with
+functions and methods from earlier versions can in isolated cases fail to work
+correctly with objects created with this version. Spectral data objects can
+have small differences as the "thinning of wavelengths" has been made less
+aggressive, giving better preservation of features and between 10% and 50%
+increase in storage requirements. The version tag of spectral objects is
+increased to 3, to help with debugging problems.
 
 * As the bug-fix in interpolation of spectra turned out to be more disruptive
 than expected, the default was changed back to `"approx"`, the previous 
