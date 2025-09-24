@@ -1014,7 +1014,12 @@ getNormalized <- function(x,
     normalized <- NA
   }
   if (.force.numeric) {
-    suppressWarnings(as.numeric(normalized))
+    normalized <- suppressWarnings(as.numeric(normalized))
+    if (!length(normalized)) {
+      NA_real_
+    } else {
+      normalized
+    }
   } else {
     normalized
   }
