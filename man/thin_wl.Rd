@@ -23,78 +23,50 @@ thin_wl(x, ...)
 
 \method{thin_wl}{default}(x, ...)
 
-\method{thin_wl}{generic_spct}(
-  x,
-  max.wl.step = 10,
-  max.slope.delta = 0.001,
-  span = 21,
-  col.names,
-  ...
-)
+\method{thin_wl}{generic_spct}(x, max.wl.step = 5, max.slope.delta = 5e-04, span = 15, col.names, ...)
 
 \method{thin_wl}{source_spct}(
   x,
-  max.wl.step = 10,
-  max.slope.delta = 0.001,
-  span = 21,
+  max.wl.step = 5,
+  max.slope.delta = 5e-04,
+  span = 15,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...
 )
 
 \method{thin_wl}{response_spct}(
   x,
-  max.wl.step = 10,
-  max.slope.delta = 0.001,
-  span = 21,
+  max.wl.step = 5,
+  max.slope.delta = 5e-04,
+  span = 15,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...
 )
 
 \method{thin_wl}{filter_spct}(
   x,
-  max.wl.step = 10,
-  max.slope.delta = 0.001,
-  span = 21,
+  max.wl.step = 5,
+  max.slope.delta = 5e-04,
+  span = 15,
   qty.out = getOption("photobiology.filter.qty", default = "transmittance"),
   ...
 )
 
-\method{thin_wl}{reflector_spct}(x, max.wl.step = 10, max.slope.delta = 0.001, span = 21, ...)
+\method{thin_wl}{reflector_spct}(x, max.wl.step = 5, max.slope.delta = 5e-04, span = 15, ...)
 
-\method{thin_wl}{solute_spct}(x, max.wl.step = 10, max.slope.delta = 0.001, span = 21, ...)
+\method{thin_wl}{solute_spct}(x, max.wl.step = 5, max.slope.delta = 5e-04, span = 15, ...)
 
-\method{thin_wl}{raw_spct}(
-  x,
-  max.wl.step = 10,
-  max.slope.delta = 0.001,
-  span = 21,
-  col.names,
-  ...
-)
+\method{thin_wl}{raw_spct}(x, max.wl.step = 5, max.slope.delta = 5e-04, span = 15, col.names, ...)
 
-\method{thin_wl}{cps_spct}(
-  x,
-  max.wl.step = 10,
-  max.slope.delta = 0.001,
-  span = 21,
-  col.names,
-  ...
-)
+\method{thin_wl}{cps_spct}(x, max.wl.step = 5, max.slope.delta = 5e-04, span = 15, col.names, ...)
 
-\method{thin_wl}{object_spct}(
-  x,
-  max.wl.step = 10,
-  max.slope.delta = 0.001,
-  span = 21,
-  col.names,
-  ...
-)
+\method{thin_wl}{object_spct}(x, max.wl.step = 5, max.slope.delta = 5e-04, span = 15, col.names, ...)
 
 \method{thin_wl}{chroma_spct}(x, ...)
 
 \method{thin_wl}{calibration_spct}(x, ...)
 
-\method{thin_wl}{generic_mspct}(x, max.wl.step = 10, max.slope.delta = 0.001, span = 21, ...)
+\method{thin_wl}{generic_mspct}(x, max.wl.step = 5, max.slope.delta = 5e-04, span = 15, ...)
 
 \method{thin_wl}{chroma_mspct}(x, ...)
 

@@ -268,9 +268,9 @@ thin_wl.default <- function(x, ...) {
 #' @export
 #'
 thin_wl.generic_spct <- function(x,
-                                 max.wl.step = 10.0,
-                                 max.slope.delta = 0.001,
-                                 span = 21,
+                                 max.wl.step = 5.0,
+                                 max.slope.delta = 0.0005,
+                                 span = 15,
                                  col.names,
                                  ...) {
   # compute stopping criterion
@@ -329,9 +329,9 @@ thin_wl.generic_spct <- function(x,
 #' @export
 #'
 thin_wl.source_spct <- function(x,
-                                max.wl.step = 10.0,
-                                max.slope.delta = 0.001,
-                                span = 21,
+                                max.wl.step = 5.0,
+                                max.slope.delta = 0.0005,
+                                span = 15,
                                 unit.out = getOption("photobiology.radiation.unit", default = "energy"),
                                 ...) {
   if (unit.out == "energy") {
@@ -358,9 +358,9 @@ thin_wl.source_spct <- function(x,
 #' @export
 #'
 thin_wl.response_spct <- function(x,
-                                  max.wl.step = 10.0,
-                                  max.slope.delta = 0.001,
-                                  span = 21,
+                                  max.wl.step = 5.0,
+                                  max.slope.delta = 0.0005,
+                                  span = 15,
                                   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
                                   ...) {
   if (unit.out == "energy") {
@@ -389,9 +389,9 @@ thin_wl.response_spct <- function(x,
 #' @export
 #'
 thin_wl.filter_spct <- function(x,
-                                max.wl.step = 10.0,
-                                max.slope.delta = 0.001,
-                                span = 21,
+                                max.wl.step = 5.0,
+                                max.slope.delta = 0.0005,
+                                span = 15,
                                 qty.out = getOption("photobiology.filter.qty",
                                                     default = "transmittance"),
                                 ...) {
@@ -426,9 +426,9 @@ thin_wl.filter_spct <- function(x,
 #' @export
 #'
 thin_wl.reflector_spct <- function(x,
-                                   max.wl.step = 10.0,
-                                   max.slope.delta = 0.001,
-                                   span = 21,
+                                   max.wl.step = 5.0,
+                                   max.slope.delta = 0.0005,
+                                   span = 15,
                                    ...) {
   thin_wl.generic_spct(x = x,
                        max.wl.step = max.wl.step,
@@ -443,9 +443,9 @@ thin_wl.reflector_spct <- function(x,
 #' @export
 #'
 thin_wl.solute_spct <- function(x,
-                                max.wl.step = 10.0,
-                                max.slope.delta = 0.001,
-                                span = 21,
+                                max.wl.step = 5.0,
+                                max.slope.delta = 0.0005,
+                                span = 15,
                                 ...) {
   cols <- intersect(c("K.mole", "K.mass"), names(x))
   if (length(cols) == 1) {
@@ -496,9 +496,9 @@ thin_wl.calibration_spct <- thin_wl.default
 #' @export
 #'
 thin_wl.generic_mspct <- function(x,
-                                  max.wl.step = 10.0,
-                                  max.slope.delta = 0.001,
-                                  span = 21,
+                                  max.wl.step = 5.0,
+                                  max.slope.delta = 0.0005,
+                                  span = 15,
                                   ...) {
   msmsply(x,
           thin_wl,

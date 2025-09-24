@@ -35,6 +35,11 @@ single common geocode value.
 rewritten using the new functions `bind_geocodes()` and `split_geocodes()` from
 package 'SunCalcMeeus' (>= 0.1.3), still by default accepting the same argument 
 values and returning the same values as in earlier versions.
+* Change default arguments to `thin_wl()` so make the default action milder and
+more inclined to respect small peaks to better preserve the features of spectra.
+* Make the check for variation the wavelength step size in peak- and
+valley-related functions and methods less strict as the algorithm in `thin_wl()`
+preserves peaks.
 
 # photobiology 0.13.2
 
