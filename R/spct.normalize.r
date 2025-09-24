@@ -1050,6 +1050,11 @@ getNormalization <- function(x) {
           # norm.range is missing 0.10.8 and 0.10.9
           normalization.list[["norm.range"]] <- rep(NA_real_, 2)
         }
+        if (!exists("norm.wl", normalization.list) ||
+            !is.numeric(normalization.list[["norm.wl"]])) {
+          # norm.wl missing or corrupted breaks 'ggspectra'
+          normalization.list[["norm.wl"]] <- NA_real_
+        }
         return(normalization.list)
       } else if (is.numeric(getNormalized(x, .force.numeric = FALSE))) {
         return(list(norm.type = NA_character_,
