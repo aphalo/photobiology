@@ -1995,7 +1995,8 @@ subset2mspct <- function(x,
 
         if (!all(is.na(where.measured))) {
           if (is.list(where.measured) &&
-              length(where.measured) == length(groups)) {
+              length(where.measured) == length(groups) &&
+              !all(c("lon", "lat") %in% names(where.measured))) {
             z[[i]] <- setWhereMeasured(z[[i]], where.measured[[i]])
           } else {
             z[[i]] <- setWhereMeasured(z[[i]], where.measured)
@@ -2073,7 +2074,6 @@ subset2mspct <- function(x,
           z[[i]] <- setSoluteProperties(z[[i]], NULL, verbose = FALSE)
         }
       }
-#      z <- setWhereMeasured(z, where.measured)
     }
 
     z
