@@ -8,7 +8,30 @@ test_that("subset2mspct works with no normalization and IDs", {
   # test shared code only once
   my.spct <- sun_evening.spct
 
-  expect_silent(collection.mspct <- subset2mspct(my.spct, drop.idx = FALSE))
+  expect_silent(
+    subset2mspct(subset(my.spct,
+                        spct.idx == "time.01"),
+                 drop.idx = FALSE)
+    )
+  expect_silent(
+    subset2mspct(subset(my.spct,
+                        spct.idx %in% c("time.01", "time.02")),
+                 drop.idx = FALSE)
+  )
+  expect_silent(
+    subset2mspct(subset(my.spct,
+                        spct.idx %in% c("time.01", "time.02", "time.03")),
+                 drop.idx = FALSE)
+    )
+  expect_silent(
+    subset2mspct(subset(my.spct,
+                        spct.idx %in% c("time.01", "time.02", "time.03", "time.04")),
+                 drop.idx = FALSE)
+  )
+
+  expect_silent(
+    collection.mspct <- subset2mspct(my.spct, drop.idx = FALSE)
+  )
 
   expect_equal(class(my.spct), class(collection.mspct[[1]]))
   expect_equal(class(my.spct), class(collection.mspct[[2]]))

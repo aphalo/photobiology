@@ -1993,13 +1993,26 @@ subset2mspct <- function(x,
           z[[i]] <- setWhenMeasured(z[[i]], NULL)
         }
 
-        if (!all(is.na(where.measured))) {
-          if (is.list(where.measured) &&
-              length(where.measured) == length(groups) &&
-              !all(c("lon", "lat") %in% names(where.measured))) {
-            z[[i]] <- setWhereMeasured(z[[i]], where.measured[[i]])
-          } else {
-            z[[i]] <- setWhereMeasured(z[[i]], where.measured)
+        if (length(where.measured) && !all(is.na(where.measured))) {
+          if (is.data.frame(where.measured)) {
+            # possibly redundant given how geocodes are extracted
+            if (nrow(where.measured) == length(groups)) {
+              z[[i]] <- setWhereMeasured(z[[i]], where.measured[i, ])
+            } else if (nrow(where.measured) == 1L) {
+              z[[i]] <- setWhereMeasured(z[[i]], where.measured)
+            } else {
+              warning("Mismatch between geocode rows and number of spectra.")
+              z[[i]] <- setWhereMeasured(z[[i]], SunCalcMeeus::na_geocode())
+            }
+          } else if (is.list(where.measured)) {
+            if (length(where.measured) == length(groups)) {
+              z[[i]] <- setWhereMeasured(z[[i]], where.measured[[i]])
+            } else if (length(where.measured) == 1L) {
+              z[[i]] <- setWhereMeasured(z[[i]], where.measured[[1]])
+            } else {
+              warning("Mismatch between length of list of geocodes and number of spectra.")
+              z[[i]] <- setWhereMeasured(z[[i]], SunCalcMeeus::na_geocode())
+            }
           }
         } else {
           z[[i]] <- setWhereMeasured(z[[i]], NULL)

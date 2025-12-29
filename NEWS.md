@@ -5,6 +5,11 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.14.1
+
+* Fix bug in `subset2mspct()` failure to handle some geocodes for objects
+containing exactly three spectra.
+
 # photobiology 0.14.0
 
 The main change in this update is in how _normalization metadata_ and _geocode
