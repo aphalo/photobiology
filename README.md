@@ -72,9 +72,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::now(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2025-09-22 05:46:15 UTC"
+#> [1] "2026-01-01 08:24:48 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 12.21339
+#> [1] 7.292169
 ```
 
 ## Installation
@@ -176,6 +176,6 @@ citation("photobiology")
 
 ## License
 
-© 2012-2025 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
+© 2012-2026 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
 the GPL, version 2 or greater. This software carries no warranty of any
 kind.

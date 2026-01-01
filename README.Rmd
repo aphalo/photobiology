@@ -112,4 +112,4 @@ citation("photobiology")
 
 ## License
 
-© 2012-2025 Pedro J. Aphalo ([pedro.aphalo\@helsinki.fi](mailto:pedro.aphalo@helsinki.fi){.email}). Released under the GPL, version 2 or greater. This software carries no warranty of any kind.
+© 2012-2026 Pedro J. Aphalo ([pedro.aphalo\@helsinki.fi](mailto:pedro.aphalo@helsinki.fi){.email}). Released under the GPL, version 2 or greater. This software carries no warranty of any kind.
