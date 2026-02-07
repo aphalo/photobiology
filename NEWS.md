@@ -5,6 +5,10 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.14.2
+
+* Add function `simul_sensor_response()`.
+
 # photobiology 0.14.1
 
 * Fix bug in `subset2mspct()` failure to handle some geocodes for objects
@@ -707,7 +711,7 @@ identical but differ in their structure because of their vintage.
 
 ***Code breaking changes in the tidyverse*** Packages in the tidyverse
 are evolving to use package 'vctrs' for their implementation (see
-[Tidyverse blog](https://www.tidyverse.org/blog/) for news). 'tibble' (3.0.0) seems to
+[Tidyverse blog](https://tidyverse.org/blog/) for news). 'tibble' (3.0.0) seems to
 handle row names differently than previous versions. The 'photobiology'
 code is not affected, but user code might be affected. Contrary to
 earlier versions, 'tibble' (3.0.0) retains member names in vectors,
