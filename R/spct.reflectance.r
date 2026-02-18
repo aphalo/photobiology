@@ -321,7 +321,7 @@ reflectance.reflector_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = reflectance,
+        .fun = reflectance.reflector_spct,
         w.band = w.band,
         quantity = quantity,
         wb.trim = wb.trim,
@@ -362,7 +362,7 @@ reflectance.object_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = reflectance,
+        .fun = reflectance.object_spct,
         w.band = w.band,
         quantity = quantity,
         wb.trim = wb.trim,

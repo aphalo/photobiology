@@ -212,7 +212,7 @@ q_fraction.source_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = q_fraction,
+        .fun = q_fraction.source_spct,
         w.band.num = w.band.num,
         w.band.denom = w.band.denom,
         quantity = quantity,
@@ -447,7 +447,7 @@ e_fraction.source_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = e_fraction,
+        .fun = e_fraction.source_spct,
         w.band.num = w.band.num,
         w.band.denom = w.band.denom,
         quantity = quantity,

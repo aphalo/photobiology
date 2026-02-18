@@ -175,7 +175,7 @@ illuminance.source_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = illuminance,
+        .fun = illuminance.source_spct,
         std = std,
         scale.factor = scale.factor,
         allow.scaled = allow.scaled,

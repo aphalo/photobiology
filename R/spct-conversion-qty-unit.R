@@ -125,7 +125,7 @@ A2T.filter_mspct <- function(x,
                              .paropts = NULL) {
   if (!length(x)) return(x)
   msmsply(x,
-          .fun = A2T,
+          .fun = A2T.filter_spct,
           action = action,
           byref = byref,
           ...,
@@ -316,7 +316,7 @@ T2A.filter_mspct <- function(x,
                              .paropts = NULL) {
   if (!length(x)) return(x)
   msmsply(x,
-          .fun = T2A,
+          .fun = T2A.filter_spct,
           action = action,
           byref = byref,
           clean = clean,
@@ -548,7 +548,7 @@ T2Afr.filter_mspct <- function(x,
                                .paropts = NULL) {
   if (!length(x)) return(x)
   msmsply(x,
-          .fun = T2Afr,
+          .fun = T2Afr.filter_spct,
           action = action,
           byref = byref,
           clean = FALSE,
@@ -748,7 +748,7 @@ Afr2T.filter_mspct <- function(x,
                                .paropts = NULL) {
   if (!length(x)) return(x)
   msmsply(x,
-          .fun = T2Afr,
+          .fun = T2Afr.filter_spct,
           action = action,
           byref = byref,
           clean = FALSE,
@@ -1036,7 +1036,7 @@ e2q.source_mspct <- function(x,
                              .paropts = NULL) {
   if (!length(x)) return(x)
   msmsply(x,
-          .fun = e2q,
+          .fun = e2q.source_spct,
           action = action,
           byref = byref,
           ...,
@@ -1056,7 +1056,7 @@ e2q.response_mspct <- function(x,
                                .paropts = NULL) {
   if (!length(x)) return(x)
   msmsply(x,
-          .fun = e2q,
+          .fun = e2q.response_spct,
           action = action,
           byref = byref,
           ...,
@@ -1244,7 +1244,7 @@ q2e.source_mspct <- function(x,
                              .paropts = NULL) {
   if (!length(x)) return(x)
   msmsply(x,
-          q2e,
+          q2e.source_spct,
           action = action,
           byref = byref,
           ...,
@@ -1265,7 +1265,7 @@ q2e.response_mspct <- function(x,
                                .paropts = NULL) {
   if (!length(x)) return(x)
   msmsply(x,
-          q2e,
+          q2e.response_spct,
           action = action,
           byref = byref,
           ...,

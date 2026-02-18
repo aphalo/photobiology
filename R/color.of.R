@@ -238,7 +238,10 @@ color_of.source_spct <- function(x,
 color_of.source_mspct <- function(x,
                                   ...,
                                   idx = "spct.idx") {
-  msdply(mspct = x, color_of, ..., idx = idx, col.names = "color")
+  msdply(mspct = x,
+         .fun = color_of.source_spct,
+         ...,
+         idx = idx, col.names = "color")
 }
 
 # compatibility -----------------------------------------------------------

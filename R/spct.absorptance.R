@@ -84,7 +84,7 @@ absorptance.default <- function(spct,
 #' @export
 #'
 absorptance.filter_spct <-
-  function(spct, 
+  function(spct,
            w.band = NULL,
            quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
@@ -126,7 +126,7 @@ absorptance.filter_spct <-
 #' @export
 #'
 absorptance.object_spct <-
-  function(spct, 
+  function(spct,
            w.band = NULL,
            quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
@@ -232,7 +232,7 @@ absorptance_spct <- function(spct,
     attr(absorptance, "radiation.unit") <- paste("absorptance", quantity)
     return(absorptance)
   } else {
-    stop("Failed assertion with Tfr.type: ", Tfr.type, 
+    stop("Failed assertion with Tfr.type: ", Tfr.type,
          "and Rfr.type: ", Rfr.type)
   }
   temp.spct <- setGenericSpct(temp.spct)
@@ -361,7 +361,7 @@ absorptance.filter_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = absorptance,
+        .fun = absorptance.filter_spct,
         w.band = w.band,
         quantity = quantity,
         wb.trim = wb.trim,
@@ -408,7 +408,7 @@ absorptance.object_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = absorptance,
+        .fun = absorptance.object_spct,
         w.band = w.band,
         quantity = quantity,
         wb.trim = wb.trim,

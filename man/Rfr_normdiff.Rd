@@ -109,8 +109,8 @@ correct environment set up for computing.}
 In the case of methods for individual spectra, a \code{numeric}
   vector with name attribute set. The name is based on the name of the
   wavebands unless a named list of wavebands is supplied in which case the
-  names of the list elements are used. "[Rfr:Rfr]" is appended if 
-  \code{quantity = "total"} and "[Rfr(wl):Rfr(wl)]" if 
+  names of the list elements are used. "[Rfr:Rfr]" is appended if
+  \code{quantity = "total"} and "[Rfr(wl):Rfr(wl)]" if
   \code{quantity = "mean"} or \code{quantity = "average"}.
 
   A \code{data.frame} is returned in the case of collections of spectra,

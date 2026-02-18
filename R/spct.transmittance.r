@@ -318,7 +318,7 @@ transmittance.filter_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = transmittance,
+        .fun = transmittance.filter_spct,
         w.band = w.band,
         quantity = quantity,
         wb.trim = wb.trim,
@@ -363,7 +363,7 @@ transmittance.object_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = transmittance,
+        .fun = transmittance.object_spct,
         w.band = w.band,
         quantity = quantity,
         wb.trim = wb.trim,

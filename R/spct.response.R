@@ -604,7 +604,7 @@ response.response_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = response,
+        .fun = response.response_spct,
         w.band = w.band,
         unit.out = unit.out,
         quantity = quantity,
@@ -660,7 +660,7 @@ q_response.response_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = q_response,
+        .fun = q_response.response_spct,
         w.band = w.band,
         quantity = quantity,
         time.unit = time.unit,
@@ -715,7 +715,7 @@ e_response.response_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = e_response,
+        .fun = e_response.response_spct,
         w.band = w.band,
         quantity = quantity,
         time.unit = time.unit,

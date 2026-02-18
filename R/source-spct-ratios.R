@@ -221,7 +221,7 @@ q_ratio.source_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = q_ratio,
+        .fun = q_ratio.source_spct,
         w.band.num = w.band.num,
         w.band.denom = w.band.denom,
         quantity = quantity,
@@ -460,7 +460,7 @@ e_ratio.source_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = e_ratio,
+        .fun = e_ratio.source_spct,
         w.band.num = w.band.num,
         w.band.denom = w.band.denom,
         quantity = quantity,
@@ -667,7 +667,7 @@ qe_ratio.source_mspct <-
     z <-
       msdply(
         spct,
-        .fun = qe_ratio,
+        .fun = qe_ratio.source_spct,
         w.band = w.band,
         wb.trim = wb.trim,
         scale.factor = scale.factor,
@@ -880,7 +880,7 @@ eq_ratio.source_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = eq_ratio,
+        .fun = eq_ratio.source_spct,
         w.band = w.band,
         wb.trim = wb.trim,
         scale.factor = scale.factor,

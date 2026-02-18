@@ -333,7 +333,7 @@ absorbance.filter_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = absorbance,
+        .fun = absorbance.filter_spct,
         w.band = w.band,
         quantity = quantity,
         wb.trim = wb.trim,
@@ -380,7 +380,7 @@ absorbance.object_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = absorbance,
+        .fun = absorbance.object_spct,
         w.band = w.band,
         quantity = quantity,
         wb.trim = wb.trim,

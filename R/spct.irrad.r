@@ -1035,7 +1035,7 @@ irrad.source_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = irrad,
+        .fun = irrad.source_spct,
         w.band = w.band,
         quantity = quantity,
         time.unit,
@@ -1094,7 +1094,7 @@ q_irrad.source_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = q_irrad,
+        .fun = q_irrad.source_spct,
         w.band = w.band,
         quantity = quantity,
         time.unit = time.unit,
@@ -1152,7 +1152,7 @@ e_irrad.source_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = e_irrad,
+        .fun = e_irrad.source_spct,
         w.band = w.band,
         quantity = quantity,
         time.unit = time.unit,
@@ -1210,7 +1210,7 @@ fluence.source_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = fluence,
+        .fun = fluence.source_spct,
         w.band = w.band,
         unit.out = unit.out,
         exposure.time = exposure.time,
@@ -1266,7 +1266,7 @@ e_fluence.source_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = e_fluence,
+        .fun = e_fluence.source_spct,
         w.band = w.band,
         exposure.time = exposure.time,
         scale.factor = scale.factor,
@@ -1321,7 +1321,7 @@ q_fluence.source_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = q_fluence,
+        .fun = q_fluence.source_spct,
         w.band = w.band,
         exposure.time = exposure.time,
         scale.factor = scale.factor,

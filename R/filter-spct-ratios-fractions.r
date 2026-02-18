@@ -218,7 +218,7 @@ Tfr_ratio.filter_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = Tfr_ratio,
+        .fun = Tfr_ratio.filter_spct,
         w.band.num = w.band.num,
         w.band.denom = w.band.denom,
         wb.trim = wb.trim,
@@ -460,7 +460,7 @@ Tfr_fraction.filter_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = Tfr_fraction,
+        .fun = Tfr_fraction.filter_spct,
         w.band.num = w.band.num,
         w.band.denom = w.band.denom,
         wb.trim = wb.trim,
@@ -707,7 +707,7 @@ Tfr_normdiff.filter_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = Tfr_normdiff,
+        .fun = Tfr_normdiff.filter_spct,
         w.band.plus = w.band.plus,
         w.band.minus = w.band.minus,
         wb.trim = wb.trim,

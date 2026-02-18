@@ -219,7 +219,7 @@ Rfr_ratio.reflector_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = Rfr_ratio,
+        .fun = Rfr_ratio.reflector_spct,
         w.band.num = w.band.num,
         w.band.denom = w.band.denom,
         wb.trim = wb.trim,
@@ -284,7 +284,7 @@ Rfr_ratio.reflector_mspct <-
 #'   vector with name attribute set. The name is based on the name of the
 #'   wavebands unless a named list of wavebands is supplied in which case the
 #'   names of the list elements are used. "[Rfr:Rfr]" is appended if
-#'   \code{quantity = "total"} and "[Rfr(wl):Rfr(wl)]" if 
+#'   \code{quantity = "total"} and "[Rfr(wl):Rfr(wl)]" if
 #'   \code{quantity = "mean"} or \code{quantity = "average"}.
 #'
 #'   A \code{data.frame} is returned in the case of collections of spectra,
@@ -461,7 +461,7 @@ Rfr_fraction.reflector_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = Rfr_fraction,
+        .fun = Rfr_fraction.reflector_spct,
         w.band.num = w.band.num,
         w.band.denom = w.band.denom,
         wb.trim = wb.trim,
@@ -525,8 +525,8 @@ Rfr_fraction.reflector_mspct <-
 #' @return In the case of methods for individual spectra, a \code{numeric}
 #'   vector with name attribute set. The name is based on the name of the
 #'   wavebands unless a named list of wavebands is supplied in which case the
-#'   names of the list elements are used. "[Rfr:Rfr]" is appended if 
-#'   \code{quantity = "total"} and "[Rfr(wl):Rfr(wl)]" if 
+#'   names of the list elements are used. "[Rfr:Rfr]" is appended if
+#'   \code{quantity = "total"} and "[Rfr(wl):Rfr(wl)]" if
 #'   \code{quantity = "mean"} or \code{quantity = "average"}.
 #'
 #'   A \code{data.frame} is returned in the case of collections of spectra,
@@ -649,7 +649,7 @@ Rfr_normdiff.reflector_spct <-
 
     Rfr.plus <- reflectances[["Rfr.1"]]
     Rfr.minus <- reflectances[["Rfr.2"]]
-    Rfr.normdiff <- 
+    Rfr.normdiff <-
       (Rfr.plus - Rfr.minus) / (Rfr.plus + Rfr.minus) * scale.factor
     names(Rfr.normdiff) <-
       paste("(",
@@ -708,7 +708,7 @@ Rfr_normdiff.reflector_mspct <-
     z <-
       msdply(
         mspct = spct,
-        .fun = Rfr_normdiff,
+        .fun = Rfr_normdiff.reflector_spct,
         w.band.plus = w.band.plus,
         w.band.minus = w.band.minus,
         wb.trim = wb.trim,
@@ -755,7 +755,7 @@ Rfr_normdiff.reflector_mspct <-
 #'
 #' @keywords internal
 #'
-# This function is extremely simple but ensures consistency and avoids 
+# This function is extremely simple but ensures consistency and avoids
 # repetition. It is used to define ratios, fractions and NDIs.
 #
 two_reflectances <- function(spct,
