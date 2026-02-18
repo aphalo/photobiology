@@ -259,7 +259,11 @@ reference:
     desc: Apply functions for collections of spectra.
     contents:
     - msmsply
+  - subtitle: Convolution
+    desc: Convolution of spectra or members of collections of spectra.
+    contents:
     - convolve_each
+    - simul_sensor_response
   - subtitle: Options
     desc: Convenience functions for setting R options recognized by functions in the 'r4photobiology' suite of R packages.
     contents:
