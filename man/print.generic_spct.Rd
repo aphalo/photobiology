@@ -54,7 +54,7 @@ Methods \code{\link[utils]{head}()}, \code{tail()} and
   \code{\link{head_tail}()} give additional flexibility on the selection
   of rows to print, while preserving the metadata. The information shown
   for wavelengths is in contrast to when using print that for the displayed
-  rows
+  rows.
 }
 \examples{
 
