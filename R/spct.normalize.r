@@ -1206,3 +1206,69 @@ setNormalized <- function(x,
 #' @export
 #'
 setNormalised <- setNormalized
+
+#' Restore normalization
+#'
+#' After altering the columns present in a spectrum restore normalization
+#' with the previously used criteria.
+#'
+#' @param x generic_spct A spectrum with no normalization applied.
+#' @param old.normalization.ls list A list describing the normalization
+#'   criteria in the format returned by \code{getNormalization()}.
+#'
+#' @details The normalization criteria are extracted from
+#' \code{old.normalization.ls} and applied. In the case of spectra in
+#' long form, the normalization can be stored as a named list with, with
+#' values stored for each spectrum. If consistent, they are simplified and
+#' applied. Otherwise, they re-normalization is skipped with a warning.
+#'
+#' @keywords internal
+#'
+restore_normalization <- function(x, old.normalization.ls) {
+
+  if (is_normalized(x)) {
+    warning("'x' is already normalized. Skipping!!")
+    return(x)
+  }
+
+  # apply the pre-existing normalization criteria
+  # to columns present in changed x
+  if (getMultipleWl(x) > 1L) {
+    old.norm <- unique(sapply(old.normalization.ls, `[[`, i = "norm.type"))
+    if (length(old.norm) > 1L) {
+      warning("Inconsistent normalization type across ",
+              getMultipleWl(x), " spectra. Skipping!!")
+      return(x)
+    }
+  } else {
+    old.norm <- old.normalization.ls$norm.type
+  }
+
+  if (old.norm[1] == "wavelength") {
+    if (getMultipleWl(x) > 1L) {
+      old.norm <- unique(sapply(old.normalization.ls, `[[`, i = "norm.wl"))
+      if (length(old.norm) > 1L) {
+        warning("Inconsistent normalization wavelength across ",
+                getMultipleWl(x), " spectra. Skipping!!")
+        return(x)
+      }
+    } else {
+      old.norm <- old.normalization.ls$norm.wl
+    }
+  }
+  if (getMultipleWl(x) > 1L) {
+    old.range <- unique(sapply(old.normalization.ls, `[[`, i = "norm.range"))
+    if (length(old.range) > 1L) {
+      warning("Inconsistent normalization range across ",
+              getMultipleWl(x), " spectra. Using wl_range(x)!!")
+      old.range <- wl_range(x)
+    }
+  } else {
+    old.range <- old.normalization.ls$norm.range
+  }
+
+  normalize(x,
+            range = old.range,
+            norm = old.norm,
+            keep.scaling = TRUE)
+}
