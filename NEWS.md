@@ -7,9 +7,12 @@ editor_options:
 
 # photobiology 0.14.2
 
-* Fix bug in `print.generic_spct()` and `print.summary_generic_spct()` affecting
-the printing of _normalization metadata_ stored in objects containing multiple 
-spectra in long form that were created with 'photobiology' (>= 0.14.0).
+* Fix bug: `print.generic_spct()` and `print.summary_generic_spct()` failure 
+when printing _normalization metadata_ stored in objects containing multiple 
+spectra in long form created with 'photobiology' (>= 0.14.0).
+* Fix bug: error when calling conversion functions on normalized objects
+containing multiple spectra in long form created with 'photobiology' 
+(>= 0.14.0).
 * Add function `simul_sensor_response()`.
 
 # photobiology 0.14.1
