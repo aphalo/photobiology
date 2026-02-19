@@ -3659,3 +3659,191 @@ getSoluteProperties.solute_mspct <- function(x,
   z[[idx]] <- factor(names(l), levels = names(l))
   tibble::as_tibble(z[c(2, 1)])
 }
+
+# "sensor.properties" attribute ----------------------------------------------
+
+#' Set the "sensor.properties" attribute
+#'
+#' Function to set by reference the "sensor.properties" attribute  of an
+#' existing response_spct object.
+#'
+#' @param x a response_spct object
+#' @param sensor.properties,value a list with fields named as described in
+#'   \strong{Details}.
+#' @param verbose logical Flag to enable warning when applied to object of
+#'   unsupported class.
+#'
+#' @details Storing sensor properties in an attribute with a well defined
+#' format and minimum of information is intended to help with reproducibility.
+#' Unlike the \code{filter.properties} metadata, the \code{sensor.properties}
+#' metadata are currently not used in any computations.
+#'
+#' \describe{
+#' \item{sensor.name}{\code{character}, \emph{identification code or name used by the supplier}, required}
+#' \item{sensor.type}{\code{character}, \code{"broad.band"}, \code{"spectral"}, \code{"image"} required}
+#' \item{num.channels}{\code{integer}, required}
+#' \item{channels.desc}{\code{data.frame}, optional}
+#' \item{sensor.supplier}{\code{character}, optional}
+#' \item{sensor.io}{\code{character}, \emph{as described in specifications}, optional}
+#' \item{module.name}{\code{character}, optional}
+#' \item{module.supplier}{\code{character}, optional}
+#' \item{module.io}{\code{character}, optional}
+#' }
+#'
+#' @return \code{x}
+#' @note This function alters \code{x} itself by reference and in addition
+#'   returns \code{x} invisibly. If \code{x} is not a \code{source_spct} object,
+#'   \code{x} is not modified.
+#'
+#' @export
+#'
+#' @family measurement metadata functions
+#'
+#' @examples
+#'
+#' my.spct <- ccd.spct
+#' sensor_properties(my.spct)
+#' sensor_properties(my.spct) <- NULL
+#' sensor_properties(my.spct)
+#' sensor_properties(my.spct) <- list(sensor.name = "ccd",
+#'                                    sensor.type = "ABC",
+#'                                    num.channels = 1L)
+#' sensor_properties(my.spct)
+#'
+setSensorProperties <- function(x,
+                                sensor.properties = NULL,
+                                verbose = TRUE) {
+  name <- substitute(x)
+  if (is.response_spct(x) || is.summary_response_spct(x)) {
+    if (!is.null(sensor.properties)) {
+      stopifnot(all(c("sensor.name", "sensor.type", "num.channels") %in%
+                      names(sensor.properties)),
+                is.character(sensor.properties[["sensor.name"]]),
+                is.character(sensor.properties[["sensor.type"]]),
+                is.numeric(sensor.properties[["num.channels"]]))
+      # check for bad names
+      if (!inherits(sensor.properties, what = "sensor_properties")) {
+        class(sensor.properties) <-
+          c("sensor_properties", class(sensor.properties))
+      }
+    } else if (verbose) {
+      message("Unsetting \"sensor_properties\" attribute!")
+    }
+    attr(x, "sensor.properties") <- sensor.properties
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+  } else if (verbose) {
+    warning("'setSensorProperties()' not applicable to objects of class ",
+            class(x)[1], ", skipping.")
+  }
+  invisible(x)
+}
+
+#' @rdname setSensorProperties
+#'
+#' @export
+#'
+`sensor_properties<-` <- function(x,
+                                  value = NULL) {
+  setSensorProperties(x = x,
+                      sensor.properties = value)
+}
+
+#' Get the "sensor.properties" attribute
+#'
+#' Function to read the "sensor.properties" attribute of an existing source_spct
+#' or a source_mspct.
+#'
+#' @param x a source_spct object
+#' @param ... Allows use of additional arguments in methods for other classes.
+#'
+#' @return an object of class \code{sensor_properties} derived from \code{list},
+#'   guaranteed to contain fields named \code{"sensor.name"},
+#'   \code{"sensor.type"} and \code{"num.channels"}. If the
+#'   attribute is not set, these fields are set to \code{NA} in the returned
+#'   object.
+#'
+#' @export
+#' @family measurement metadata functions
+#'
+#' @examples
+#' sensor_properties(ccd.spct)
+#'
+getSensorProperties <-
+  function(x, ...) UseMethod("getSensorProperties")
+
+#' @rdname getSensorProperties
+#'
+#' @export
+#'
+sensor_properties <- getSensorProperties
+
+#' @rdname getSensorProperties
+#' @export
+getSensorProperties.default <- function(x,
+                                        ...) {
+  if (!is.response_spct(x) && !is.summary_response_spct(x)) {
+    warning("Methods 'getSensorProperties()' not implemented for class: ",
+            class(x)[1])
+  }
+  # we return an NA
+  sensor.properties <- list(sensor.name = NA_character_,
+                            sensor.type = NA_character_,
+                            num.channels = NA_integer_)
+  class(sensor.properties) <-
+    c("sensor_properties", class(sensor.properties))
+  sensor.properties
+}
+
+#' @rdname getSensorProperties
+#' @export
+getSensorProperties.response_spct <- function(x,
+                                              ...) {
+  sensor.properties <- attr(x, "sensor.properties", exact = TRUE)
+  if (is.null(sensor.properties)) {
+    # we return an NA
+    sensor.properties <- list(sensor.name = NA_character_,
+                              sensor.type = NA_character_,
+                              num.channels = NA_integer_)
+    class(sensor.properties) <-
+      c("sensor_properties", class(sensor.properties))
+  } else {
+    if (!inherits(sensor.properties, "sensor_properties")) {
+      # handle attributes possibly set by old versions
+      if (all(c("sensor.name", "sensor.type", "num.channels") %in%
+              names(sensor.properties))) {
+        class(sensor.properties) <-
+          c("sensor_properties", class(sensor.properties))
+      } else {
+        stop("Bad value retrieved from attribute.")
+      }
+    }
+  }
+  sensor.properties
+}
+
+#' @rdname getSensorProperties
+#'
+#' @export
+#'
+getSensorProperties.summary_response_spct <- getSensorProperties.response_spct
+
+#' @rdname getSensorProperties
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
+#' @note The method for collections of spectra returns a tibble with a
+#'   column of lists.
+#' @export
+#'
+getSensorProperties.generic_mspct <- function(x,
+                                              ...,
+                                              idx = "spct.idx") {
+  l <- mslply(mspct = x, .fun = getSensorProperties, ...)
+  comment(l) <- NULL
+  z <- list(sensor.properties = l)
+  z[[idx]] <- factor(names(l), levels = names(l))
+  tibble::as_tibble(z[c(2, 1)])
+}
+

@@ -8,6 +8,9 @@ restore_normalization(x, old.normalization.ls)
 }
 \arguments{
 \item{x}{generic_spct A spectrum with no normalization applied.}
+
+\item{old.normalization.ls}{list A list describing the normalization
+criteria in the format returned by \code{getNormalization()}.}
 }
 \description{
 After altering the columns present in a spectrum restore normalization
