@@ -666,242 +666,6 @@ normalize.generic_mspct <- function(x,
           .paropts = .paropts)
 }
 
-# PRIVATE -----------------------------------------------------------------
-
-#' @keywords internal
-#'
-normalize_spct <- function(spct,
-                           range,
-                           norm,
-                           col.names,
-                           na.rm,
-                           keep.scaling,
-                           ...) {
-  stopifnot(is.generic_spct(spct))
-
-  scale.is.dirty <- FALSE
-
-  # if 'norm' is a character vector, we use the first element
-  # thus, all columns always get the same type of normalization
-  if (is.character(norm) && length(norm) > 1) {
-    if (length(unique(norm)) > 1) {
-      warning("Multiple 'norm' values supplied by name. Using the first one: ",
-              norm[1], ".")
-    }
-    norm <- norm[1]
-  }
-
-  # handle "skip" early so that long-form multiple spectra or missing columns
-  # do not trigger errors
-  if (!length(norm) ||
-      any(is.na(norm)) ||
-      norm[1] == "skip" ||
-      (norm[1] == "update" && !is_normalized(spct))) {
-    return(spct)
-  } else {
-    norm <- rep_len(norm, length(col.names))
-  }
-
-  stopifnot("Missing columns" = all(col.names %in% colnames(spct)),
-            "Multiple spectra in long form" = getMultipleWl(spct) == 1L)
-
-  updating <- all(unlist(is_normalized(spct), use.names = FALSE))
-
-  if (updating) {
-    # we retrieve the existing normalization data
-    old.normalization.ls <- getNormalization(spct)
-
-    required.fields <- c("norm.type", "norm.wl", "norm.cols", "norm.range")
-    has.normalization.metadata <-
-      length(old.normalization.ls) >= length(required.fields) &&
-      all(required.fields %in% names(old.normalization.ls)) &&
-      !any(is.na(unlist(old.normalization.ls[required.fields])))
-
-    if (!has.normalization.metadata && norm[1] %in% c("update", "undo")) {
-      warning("Normalization not updated/undone: action not supported for ",
-              "objects lacking normalization metadata.")
-      return(spct)
-    } else if (has.normalization.metadata) {
-      if (norm[1] != "undo") {
-        if (old.normalization.ls$norm.type[1] == "wavelength") {
-          norm <- old.normalization.ls$norm.wl
-        } else {
-          norm <- old.normalization.ls$norm.type
-        }
-        range <- old.normalization.ls$norm.range
-      }
-      # remove the old normalization
-
-      spct <- denormalize_spct(spct,
-                               wipe.away = FALSE)
-      if (norm[1] == "undo") {
-        return(spct)
-      }
-    } else {
-      spct <- denormalize_spct(spct,
-                               wipe.away = TRUE)
-      scale.is.dirty <- TRUE
-    }
-  } else if (norm[1] == "update") {
-    # not normalized, nothing to update
-    return(spct)
-  }
-
-  # we do not remove NA's from the returned object, only for computation
-  if (na.rm) {
-    x <- na.omit(spct)
-  } else {
-    x <- spct
-  }
-  # set or check 'range'
-  if (is.null(range) || all(is.na(range))) {
-    range <- wl_range(x, na.rm = TRUE)
-  } else {
-    x <- trim_wl(x, range)
-    range <- wl_range(x, na.rm = TRUE) # if range was broader x is not expanded
-  }
-  stopifnot("Wavelength 'range' is too narrow" = nrow(x) > 2) # too short a slice
-
-  norm.arg <- norm
-  # normalization will wipe out any existing scaling except for its effect
-  # on the computed factors.
-  if (is_scaled(x) && !keep.scaling) {
-    # Only behaviour in <= 0.10.9
-    # remove scaling metadata and do not save norm.factors
-    scale.is.dirty <- TRUE
-    setScaled(spct, scaled = FALSE)
-  } else {
-    # retain scaling metadata and save norm.factors
-    scale.is.dirty <- scale.is.dirty || FALSE
-  }
-
-  # normalization of one or more columns
-  scale.factors <- numeric(0)
-  norm.wls <- numeric(0)
-  for (i in seq_along(col.names)) {
-    col <- col.names[i]
-    if (is.character(norm[i])) {
-      if (norm[i] %in% c("max", "maximum")) {
-        idx <- which.max(x[[col]])
-      } else if (norm[i] %in% c("min", "minimum")) {
-        idx <- which.min(x[[col]])
-      } else {
-        warning("Invalid 'norm' value: '", norm[i], "'")
-        idx <- NA
-      }
-      scale.factor <- 1 / x[idx, col, drop = TRUE]
-      norm.wl <- x[idx, "w.length", drop = TRUE]
-    } else if (is.numeric(norm)) {
-      if (norm[i] >= range[1] && norm[i] <= range[2]) {
-        norm.wl <- norm[i]
-        tmp.spct <- spct[ , c("w.length", col)]
-        class(tmp.spct) <- class(spct)
-        scale.factor <- 1 /
-          interpolate_spct(spct = tmp.spct, w.length.out = norm.wl)[ , eval(col)]
-      } else {
-        warning("'norm = ", norm[i], "' value(s) outside spectral data range of ",
-                round(min(tmp.spct), 1), " to ", round(max(tmp.spct), 1), " (nm)")
-        scale.factor <- NA
-      }
-    } else {
-      stop("'norm' should be numeric or character")
-    }
-    spct[[col]] <- spct[ , col, drop = TRUE] * scale.factor
-    scale.factors <- c(scale.factors, scale.factor)
-    norm.wls <- c(norm.wls, norm.wl)
-  }
-
-  z <- setNormalized(spct,
-                     norm = norm.wls,
-                     norm.type =
-                       if (is.character(norm.arg)) {
-                         norm.arg
-                       } else if (is.numeric(norm.arg)) {
-                         "wavelength"
-                       },
-                     norm.factors =
-                       if (scale.is.dirty) {
-                         rep(NA_real_, length(col.names))
-                       } else {
-                         scale.factors
-                       },
-                     norm.cols = col.names,
-                     norm.range = range)
-  if (scale.is.dirty) {
-    message("'norm.factors' not stored")
-  }
-  z # setNormalized makes its returned value invisible
-}
-
-#' Remove a previously applied normalization
-#'
-#' @param spct An object of one of the classes derived from \code{geberic_spct}
-#'   containing data for a single spectrum (\code{getMultipleWl(spct) == 1}).
-#' @param wipe.away logical If \code{TRUE} the normalization metadata is removed
-#'   without undoing the effect of the normalization.
-#'
-#' @return A modified copy of \code{spct} if it was previously normalized or
-#' \code{spct} unchanged, otherwise.
-#'
-#' @keywords internal
-#'
-denormalize_spct <- function(spct, wipe.away = FALSE) {
-  if (!all(unlist(is_normalized(spct), use.names = FALSE))) {
-    return(spct)
-  }
-  # collection of spectra
-  if (is.generic_mspct(spct)) {
-    return(
-      msmsply(mspct = spct, .fun = denormalize_spct, wipe.away = wipe.away)
-    )
-  }
-  # if wiping away single spectrum or long form spectra
-  if (wipe.away) {
-    message("Removing normalization metadata keeping normalization!")
-    attr(spct, "normalized") <- FALSE
-    attr(spct, "normalization") <- NULL
-    return(spct)
-  }
-  # if undoing normalization, done spectrum by spectrum
-  if (is.generic_spct(spct) && getMultipleWl(spct) > 1L) {
-    spct <- subset2mspct(spct)
-    spct <- msmsply(mspct = spct, .fun = denormalize_spct, wipe.away = wipe.away)
-    return(rbindspct(spct))
-  }
-
-  # undo normalization of a single spectrum
-  old.normalization.ls <- getNormalization(spct)
-  required.fields <-
-    c("norm.factors", "norm.cols")
-  has.normalization.metadata <-
-    !any(is.na(unlist(old.normalization.ls[required.fields])))
-  norm.ls.idx <- which(old.normalization.ls$norm.cols %in% colnames(spct))
-
-  if (has.normalization.metadata) {
-    stopifnot("Missing columns" = length(norm.ls.idx) > 0L,
-              "Multiple spectra in long form" = getMultipleWl(spct) == 1L)
-    # earlier bug lead to not saving all norm.factors for multiple columns
-    if (length(old.normalization.ls$norm.cols) !=
-        length(old.normalization.ls$norm.factors)) {
-      warning("Normalization metadata incomplete, denormalization not possible.")
-      return(spct)
-    }
-    for (i in seq_along(old.normalization.ls$norm.cols)) {
-      if (!i %in% norm.ls.idx) {
-        next()
-      }
-      col.name.i <- old.normalization.ls$norm.cols[i]
-      norm.factor.i <- old.normalization.ls$norm.factors[i]
-      spct[[col.name.i]] <- spct[[col.name.i]] / norm.factor.i
-    }
-    attr(spct, "normalized") <- FALSE
-    attr(spct, "normalization") <- NULL
-    return(spct)
-  } else {
-    stop("Normalization metadata missing, denormalization not possible.")
-  }
-}
-
 # is_normalized function --------------------------------------------------
 
 #' Query whether a generic spectrum has been normalized.
@@ -1207,6 +971,242 @@ setNormalized <- function(x,
 #'
 setNormalised <- setNormalized
 
+# PRIVATE -----------------------------------------------------------------
+
+#' @keywords internal
+#'
+normalize_spct <- function(spct,
+                           range,
+                           norm,
+                           col.names,
+                           na.rm,
+                           keep.scaling,
+                           ...) {
+  stopifnot(is.generic_spct(spct))
+
+  scale.is.dirty <- FALSE
+
+  # if 'norm' is a character vector, we use the first element
+  # thus, all columns always get the same type of normalization
+  if (is.character(norm) && length(norm) > 1) {
+    if (length(unique(norm)) > 1) {
+      warning("Multiple 'norm' values supplied by name. Using the first one: ",
+              norm[1], ".")
+    }
+    norm <- norm[1]
+  }
+
+  # handle "skip" early so that long-form multiple spectra or missing columns
+  # do not trigger errors
+  if (!length(norm) ||
+      any(is.na(norm)) ||
+      norm[1] == "skip" ||
+      (norm[1] == "update" && !is_normalized(spct))) {
+    return(spct)
+  } else {
+    norm <- rep_len(norm, length(col.names))
+  }
+
+  stopifnot("Missing columns" = all(col.names %in% colnames(spct)),
+            "Multiple spectra in long form" = getMultipleWl(spct) == 1L)
+
+  updating <- all(unlist(is_normalized(spct), use.names = FALSE))
+
+  if (updating) {
+    # we retrieve the existing normalization data
+    old.normalization.ls <- getNormalization(spct)
+
+    required.fields <- c("norm.type", "norm.wl", "norm.cols", "norm.range")
+    has.normalization.metadata <-
+      length(old.normalization.ls) >= length(required.fields) &&
+      all(required.fields %in% names(old.normalization.ls)) &&
+      !any(is.na(unlist(old.normalization.ls[required.fields])))
+
+    if (!has.normalization.metadata && norm[1] %in% c("update", "undo")) {
+      warning("Normalization not updated/undone: action not supported for ",
+              "objects lacking normalization metadata.")
+      return(spct)
+    } else if (has.normalization.metadata) {
+      if (norm[1] != "undo") {
+        if (old.normalization.ls$norm.type[1] == "wavelength") {
+          norm <- old.normalization.ls$norm.wl
+        } else {
+          norm <- old.normalization.ls$norm.type
+        }
+        range <- old.normalization.ls$norm.range
+      }
+      # remove the old normalization
+
+      spct <- denormalize_spct(spct,
+                               wipe.away = FALSE)
+      if (norm[1] == "undo") {
+        return(spct)
+      }
+    } else {
+      spct <- denormalize_spct(spct,
+                               wipe.away = TRUE)
+      scale.is.dirty <- TRUE
+    }
+  } else if (norm[1] == "update") {
+    # not normalized, nothing to update
+    return(spct)
+  }
+
+  # we do not remove NA's from the returned object, only for computation
+  if (na.rm) {
+    x <- na.omit(spct)
+  } else {
+    x <- spct
+  }
+  # set or check 'range'
+  if (is.null(range) || all(is.na(range))) {
+    range <- wl_range(x, na.rm = TRUE)
+  } else {
+    x <- trim_wl(x, range)
+    range <- wl_range(x, na.rm = TRUE) # if range was broader x is not expanded
+  }
+  stopifnot("Wavelength 'range' is too narrow" = nrow(x) > 2) # too short a slice
+
+  norm.arg <- norm
+  # normalization will wipe out any existing scaling except for its effect
+  # on the computed factors.
+  if (is_scaled(x) && !keep.scaling) {
+    # Only behaviour in <= 0.10.9
+    # remove scaling metadata and do not save norm.factors
+    scale.is.dirty <- TRUE
+    setScaled(spct, scaled = FALSE)
+  } else {
+    # retain scaling metadata and save norm.factors
+    scale.is.dirty <- scale.is.dirty || FALSE
+  }
+
+  # normalization of one or more columns
+  scale.factors <- numeric(0)
+  norm.wls <- numeric(0)
+  for (i in seq_along(col.names)) {
+    col <- col.names[i]
+    if (is.character(norm[i])) {
+      if (norm[i] %in% c("max", "maximum")) {
+        idx <- which.max(x[[col]])
+      } else if (norm[i] %in% c("min", "minimum")) {
+        idx <- which.min(x[[col]])
+      } else {
+        warning("Invalid 'norm' value: '", norm[i], "'")
+        idx <- NA
+      }
+      scale.factor <- 1 / x[idx, col, drop = TRUE]
+      norm.wl <- x[idx, "w.length", drop = TRUE]
+    } else if (is.numeric(norm)) {
+      if (norm[i] >= range[1] && norm[i] <= range[2]) {
+        norm.wl <- norm[i]
+        tmp.spct <- spct[ , c("w.length", col)]
+        class(tmp.spct) <- class(spct)
+        scale.factor <- 1 /
+          interpolate_spct(spct = tmp.spct, w.length.out = norm.wl)[ , eval(col)]
+      } else {
+        warning("'norm = ", norm[i], "' value(s) outside spectral data range of ",
+                round(min(tmp.spct), 1), " to ", round(max(tmp.spct), 1), " (nm)")
+        scale.factor <- NA
+      }
+    } else {
+      stop("'norm' should be numeric or character")
+    }
+    spct[[col]] <- spct[ , col, drop = TRUE] * scale.factor
+    scale.factors <- c(scale.factors, scale.factor)
+    norm.wls <- c(norm.wls, norm.wl)
+  }
+
+  z <- setNormalized(spct,
+                     norm = norm.wls,
+                     norm.type =
+                       if (is.character(norm.arg)) {
+                         norm.arg
+                       } else if (is.numeric(norm.arg)) {
+                         "wavelength"
+                       },
+                     norm.factors =
+                       if (scale.is.dirty) {
+                         rep(NA_real_, length(col.names))
+                       } else {
+                         scale.factors
+                       },
+                     norm.cols = col.names,
+                     norm.range = range)
+  if (scale.is.dirty) {
+    message("'norm.factors' not stored")
+  }
+  z # setNormalized makes its returned value invisible
+}
+
+#' Remove a previously applied normalization
+#'
+#' @param spct An object of one of the classes derived from \code{geberic_spct}
+#'   containing data for a single spectrum (\code{getMultipleWl(spct) == 1}).
+#' @param wipe.away logical If \code{TRUE} the normalization metadata is removed
+#'   without undoing the effect of the normalization.
+#'
+#' @return A modified copy of \code{spct} if it was previously normalized or
+#' \code{spct} unchanged, otherwise.
+#'
+#' @keywords internal
+#'
+denormalize_spct <- function(spct, wipe.away = FALSE) {
+  if (!all(unlist(is_normalized(spct), use.names = FALSE))) {
+    return(spct)
+  }
+  # collection of spectra
+  if (is.generic_mspct(spct)) {
+    return(
+      msmsply(mspct = spct, .fun = denormalize_spct, wipe.away = wipe.away)
+    )
+  }
+  # if wiping away single spectrum or long form spectra
+  if (wipe.away) {
+    message("Removing normalization metadata keeping normalization!")
+    attr(spct, "normalized") <- FALSE
+    attr(spct, "normalization") <- NULL
+    return(spct)
+  }
+  # if undoing normalization, done spectrum by spectrum
+  if (is.generic_spct(spct) && getMultipleWl(spct) > 1L) {
+    spct <- subset2mspct(spct)
+    spct <- msmsply(mspct = spct, .fun = denormalize_spct, wipe.away = wipe.away)
+    return(rbindspct(spct))
+  }
+
+  # undo normalization of a single spectrum
+  old.normalization.ls <- getNormalization(spct)
+  required.fields <-
+    c("norm.factors", "norm.cols")
+  has.normalization.metadata <-
+    !any(is.na(unlist(old.normalization.ls[required.fields])))
+  norm.ls.idx <- which(old.normalization.ls$norm.cols %in% colnames(spct))
+
+  if (has.normalization.metadata) {
+    stopifnot("Missing columns" = length(norm.ls.idx) > 0L,
+              "Multiple spectra in long form" = getMultipleWl(spct) == 1L)
+    # earlier bug lead to not saving all norm.factors for multiple columns
+    if (length(old.normalization.ls$norm.cols) !=
+        length(old.normalization.ls$norm.factors)) {
+      warning("Normalization metadata incomplete, denormalization not possible.")
+      return(spct)
+    }
+    for (i in seq_along(old.normalization.ls$norm.cols)) {
+      if (!i %in% norm.ls.idx) {
+        next()
+      }
+      col.name.i <- old.normalization.ls$norm.cols[i]
+      norm.factor.i <- old.normalization.ls$norm.factors[i]
+      spct[[col.name.i]] <- spct[[col.name.i]] / norm.factor.i
+    }
+    attr(spct, "normalized") <- FALSE
+    attr(spct, "normalization") <- NULL
+    return(spct)
+  } else {
+    stop("Normalization metadata missing, denormalization not possible.")
+  }
+}
+
 #' Restore normalization
 #'
 #' After altering the columns present in a spectrum restore normalization
@@ -1234,7 +1234,10 @@ restore_normalization <- function(x, old.normalization.ls) {
   # apply the pre-existing normalization criteria
   # to columns present in changed x
   if (getMultipleWl(x) > 1L) {
-    old.norm <- unique(sapply(old.normalization.ls, `[[`, i = "norm.type"))
+    old.norm <- unique(as.vector(sapply(old.normalization.ls,
+                                        `[[`,
+                                        i = "norm.type",
+                                        USE.NAMES = FALSE)))
     if (length(old.norm) > 1L) {
       warning("Inconsistent normalization type across ",
               getMultipleWl(x), " spectra. Skipping!!")
@@ -1246,7 +1249,10 @@ restore_normalization <- function(x, old.normalization.ls) {
 
   if (old.norm[1] == "wavelength") {
     if (getMultipleWl(x) > 1L) {
-      old.norm <- unique(sapply(old.normalization.ls, `[[`, i = "norm.wl"))
+      old.norm <- unique(as.vector(sapply(old.normalization.ls,
+                                          `[[`,
+                                          i = "norm.wl",
+                                          USE.NAMES = FALSE)))
       if (length(old.norm) > 1L) {
         warning("Inconsistent normalization wavelength across ",
                 getMultipleWl(x), " spectra. Skipping!!")
@@ -1257,7 +1263,10 @@ restore_normalization <- function(x, old.normalization.ls) {
     }
   }
   if (getMultipleWl(x) > 1L) {
-    old.range <- unique(sapply(old.normalization.ls, `[[`, i = "norm.range"))
+    old.range <- unique(as.vector(sapply(old.normalization.ls,
+                                         `[[`,
+                                         i = "norm.range",
+                                         USE.NAMES = FALSE)))
     if (length(old.range) > 1L) {
       warning("Inconsistent normalization range across ",
               getMultipleWl(x), " spectra. Using wl_range(x)!!")
