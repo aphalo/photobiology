@@ -21,11 +21,11 @@ simul_sensor_response(
 \item{sensor.mspct}{response_spct or response_mspct Light sensor
 spectral responsiveness.}
 
-\item{norm}{numeric Normalization wavelength (nm) or character string "max",
-or "min" for normalization at the corresponding wavelength, "update" to
-update the normalization after modifying units of expression, quantity
-or range but respecting the previously used criterion, "undo" to revert
-an existing normalization or "skip" to force return of \code{x} unchanged.}
+\item{norm}{numeric Normalization wavelength (nm) or character string
+\code{"max"}, or \code{"min"} for normalization at the corresponding
+wavelength, \code{"update"} to update the normalization with previous
+criterion, \code{"undo"} to revert an existing normalization or
+\code{"skip"} to force return of \code{x} unchanged. See \strong{Details}.}
 
 \item{range}{numeric vector of length two Range of wavelengths to use
 (nanometres, nm)}

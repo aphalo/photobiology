@@ -11,34 +11,49 @@
 #' @details By default normalization is done based on the maximum of the
 #'   spectral data. It is possible to also do the normalization based on a
 #'   user-supplied wavelength expressed in nanometres or the minimum. An
-#'   existing normalization can be updated for a different unit of expression or
-#'   after a conversion to a related spectral quantity.
+#'   existing normalization can be \emph{updated} for a different unit of
+#'   expression or after a conversion to a related spectral quantity. The
+#'   accepted arguments for parameter \code{norm} are:
 #'
-#'   By default the function is applied to the whole spectrum, but by passing a
-#'   range of wavelengths as input, the search, e.g., for the maximum, can be
-#'   limited to a range of wavelengths of interest instead of the whole
-#'   spectrum.
+#'   \describe{
+#'   \item{\code{"max"}}{Scale all spectral values so that the value at the tallest peak is 1.0.}
+#'   \item{\code{"min"}}{Scale all spectral values so that the value at the deepest valley is 1.0.}
+#'   \item{\code{<number>}}{Scale all spectral values so that the value at \code{w.length == <number>} is 1.0, interpolating nearest wavelengths.}
+#'   \item{\code{"update"}}{Normalise the data reusing the normalization criteria stored as metadata in attribute \code{normalization}.}
+#'   \item{\code{"undo"}}{Reverse the normalisation of \code{x} restoring the original values of the spectral variable using the normalization metadata stored in attribute \code{normalization}.}
+#'   \item{\code{"skip"}}{Return \code{x} unmodified.}
+#'   }
 #'
 #'   In 'photobiology' (>= 0.10.8) detailed information about the normalization
-#'   is stored in an attribute. In 'photobiology' (>= 0.10.10)
-#'   applying a new normalization to an already normalized spectrum recomputes
-#'   the multiplier factors stored in the attributes whenever possible. This
-#'   ensures that the returned object is identical, except for possible
-#'   accumulated loss of precision due to floating-point arithmetic,
-#'   independently of the previous application of a different normalization.
+#'   is stored in attribute \code{normalization}. \strong{In the case objects
+#'   normalized using 'photobiology' (< 0.10.8), \code{norm} actions \code{"update"} and
+#'   \code{"undo"} are not supported.}
+#'
+#'   In 'photobiology' (>= 0.10.10) applying a new normalization to an already
+#'   normalized spectrum recomputes the multiplier factors stored in attribute
+#'   \code{normalization} if it present. This ensures that the data in the
+#'   returned object is the original one when \emph{undoing} multiple previous
+#'   normalizations. Loss of precision due to floating-point arithmetic is
+#'   possible, as well as in the format of attributes.
+#'
+#'   By default \code{max()} or \code{min()} are applied to the whole spectrum,
+#'   but by passing a range of wavelengths as argument to parameter
+#'   \code{tange}, they are applied to within this range of wavelengths.
+#'   However, in all cases the normalization multipliers are applied to the
+#'   whole spectrum.
+#'
+#'   By default the argument passed to \code{x} contains one or more \code{NA}
+#'   values and the normalization is based on a summary quantity, the returned
+#'   spectrum will contain only \code{NA} values. If \code{na.rm == TRUE} then
+#'   the summary quantity will be calculated after striping \code{NA} values,
+#'   and only the values that were \code{NA} in \code{x} will be \code{NA}
+#'   values in the returned spectrum.
 #'
 #'   When the spectrum passed as argument to \code{x} had been previously
 #'   scaled, in 'photobiology' (<= 0.10.9) the scaling attribute was always
 #'   removed and no normalization factors returned. In 'photobiology'
 #'   (>= 0.10.10) scaling information can be preserved by passing
 #'   \code{keep.scaling = TRUE}.
-#'
-#'   By default if \code{x} contains one or more \code{NA} values and the
-#'   normalization is based on a summary quantity, the returned spectrum will
-#'   contain only \code{NA} values. If \code{na.rm == TRUE} then the summary
-#'   quantity will be calculated after striping \code{NA} values, and only the
-#'   values that were \code{NA} in \code{x} will be \code{NA} values in the
-#'   returned spectrum.
 #'
 #'   When a numeric value is passed as argument to keep.scaling, the scaling
 #'   uses \code{f = "total"} or \code{f = "mean"} depending on the class of
@@ -60,16 +75,18 @@
 #'   of the spectral quantity rescaled to 1 at the normalization wavelength. If
 #'   the normalization wavelength is not already present in \code{x}, it is
 #'   added by interpolation---i.e. the returned value may be one row longer than
-#'   \code{x}. Attributes \code{normalized} and \code{normalization} are set to
-#'   keep a log of the computations applied.
+#'   \code{x} for each spectrum. Attributes \code{normalized} and
+#'   \code{normalization} are set to keep a log of the computations applied.
+#'   Other attributes are preserved.
 #'
 #' @examples
+#' norm_sun.spct <- normalize(sun.spct, norm = "max")
+#' str(is_normalized(norm_sun.spct))
+#' str(getNormalization(norm_sun.spct))
 #'
-#' normalize(sun.spct)
-#' normalise(sun.spct) # equivalent
-#'
-#' normalize(sun.spct, norm = "max")
-#' normalize(sun.spct, norm = 400)
+#' norm_sun.spct <- normalize(sun.spct, norm = 500)
+#' str(is_normalized(norm_sun.spct))
+#' str(getNormalization(norm_sun.spct))
 #'
 #' @export
 #'
@@ -79,7 +96,7 @@ normalize <- function(x, ...) UseMethod("normalize")
 
 #' @rdname normalize
 #'
-#' @note \code{normalise()} is a synonym for this \code{normalize()} method.
+#' @note \code{normalise()} is another name for \code{normalize()}.
 #'
 #' @export
 #'
@@ -97,20 +114,19 @@ normalize.default <- function(x, ...) {
 #' @describeIn normalize Normalize a \code{source_spct} object.
 #'
 #' @param range An R object on which \code{range()} returns a numeric vector of
-#'   length 2 with the limits of a range of wavelengths in nm, with min and max
-#'   wavelengths (nm) used to set boundaries for search for normalization.
-#' @param norm numeric Normalization wavelength (nm) or character string "max",
-#'   or "min" for normalization at the corresponding wavelength, "update" to
-#'   update the normalization after modifying units of expression, quantity
-#'   or range but respecting the previously used criterion, "undo" to revert
-#'   an existing normalization or "skip" to force return of \code{x} unchanged.
+#'   length 2 with the limits of a range of wavelengths in nm. See
+#'   \strong{Details}.
+#' @param norm numeric Normalization wavelength (nm) or character string
+#'   \code{"max"}, or \code{"min"} for normalization at the corresponding
+#'   wavelength, \code{"update"} to update the normalization with previous
+#'   criterion, \code{"undo"} to revert an existing normalization or
+#'   \code{"skip"} to force return of \code{x} unchanged. See \strong{Details}.
 #' @param unit.out No longer supported and is ignored with a warning.
 #' @param keep.scaling logical or numeric Flag to indicate if any existing
 #'   scaling should be preserved or not. The default, \code{FALSE}, preserves
-#'   the behaviour of versions (<= 0.10.9). If numeric, the spectrum is scaled
-#'   to this value before normalization and marked as not scaled.
+#'   the behaviour of 'photobiology' (<= 0.10.9). See \strong{Details}.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
-#'   before calculating the summary (e.g. "max") used for normalization.
+#'   before calculating the summary (e.g. \code{max()}) used for normalization.
 #'
 #' @export
 #'
@@ -378,9 +394,8 @@ normalize.cps_spct <- function(x,
 
 #' @describeIn normalize Normalize a raw spectrum.
 #'
-#' @param col.names character vector containing the names of columns or
-#'   variables. Columns in \code{x} matching the names in \code{col.names} are
-#'   normalized, other columns are returned unchanged.
+#' @param col.names character vector containing the names of columns of \code{x}
+#'   to be normalized. Other columns are retained unchanged.
 #'
 #' @export
 #'
@@ -425,15 +440,20 @@ normalize.generic_spct <- function(x,
 
 #' @describeIn normalize Normalize the members of a source_mspct object.
 #'
-#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
-#'   provided by foreach
-#' @param .paropts a list of additional options passed into the foreach function
-#'   when parallel computation is enabled. This is important if (for example)
-#'   your code relies on external data or packages: use the .export and
-#'   .packages arguments to supply them so that all cluster nodes have the
-#'   correct environment set up for computing.
+#' @param .parallel	if \code{TRUE}, apply function in parallel, using parallel
+#'   backend provided by packege 'foreach'.
+#' @param .paropts a list of additional options passed into the \code{foreach}
+#'   function when parallel computation is enabled. This is important if (for
+#'   example) your code relies on external data or packages: use the
+#'   \code{.export} and \code{.packages} arguments to supply them so that all
+#'   cluster nodes have the correct environment set up for computing.
 #'
 #' @export
+#'
+#' @examples
+#' norm_sun_evening.mspct <- normalize(sun_evening.mspct[1:3])
+#' str(is_normalized(norm_sun_evening.mspct))
+#' str(getNormalization(norm_sun_evening.mspct))
 #'
 normalize.source_mspct <- function(x,
                                    ...,
@@ -681,8 +701,21 @@ normalize.generic_mspct <- function(x,
 #'   If \code{x} is not a \code{generic_spct} or \code{generic_mspct} object the
 #'   value returned is \code{NA}.
 #'
+#' @note While method \code{getNormalized()} returns in some cases numeric
+#'   values or possibly even character values if stored in attribute
+#'   \code{normalized}, \code{is_normalized()} always returns a logical value
+#'   and can be safely used in conditional code clauses.
+#'
 #' @export
+#'
 #' @family rescaling functions
+#'
+#' @examples
+#' norm_sun.spct <- normalize(sun.spct)
+#' is_normalized(norm_sun.spct)
+#'
+#' norm_sun_evening.mspct <- normalize(sun_evening.mspct[1:3])
+#' str(is_normalized(norm_sun_evening.mspct))
 #'
 is_normalized <- function(x) {
   if (is.generic_spct(x) || is.summary_generic_spct(x)) {
@@ -698,15 +731,15 @@ is_normalized <- function(x) {
   } else if (is.waveband(x)) {
     return(!is.na(normalization(x)))
   } else {
-    warning("Method 'is_normalized()' not implemented for class: '", class(x)[1], "'.")
+    warning("Method 'is_normalized()' not implemented for class: '",
+            class(x)[1], "'.")
     return(NA)
   }
 }
 
 #' @rdname is_normalized
 #'
-#' @note \code{is_normalised()} is a synonym for this \code{is_normalized()}
-#'   method.
+#' @note \code{is_normalised()} is another name for \code{is_normalized()}.
 #'
 #' @export
 #'
@@ -724,41 +757,70 @@ is_normalised <- is_normalized
 #'   numeric value, with \code{FALSE} encoded as zero, and character values
 #'   as \code{NA}.
 #'
-#' @details Spectral data that has been normalized needs to be used diffferently
-#'   in computations than data expresed in original units. These two functions
-#'   make it possible to query if data stored in an object of class
-#'   \code{generic_spct} or of a derived class contains data expressed in
-#'   physical units or normalized. In the later case, it is possible to also
-#'   query how the normalization was done.
+#' @details In some computations spectral data that have been normalized need to
+#'   be handled differently than data expressed in original units. Method
+#'   \code{getNormalized()} makes it possible to query if a
+#'   \code{generic_spct} or \code{generic_mspct} object or objects of derived
+#'   classes contain data expressed in true physical units or normalized.
 #'
-#' @return \code{getNormalized()} returns numeric or logical (possibly character
-#'   for objects created with earlier versions); for collections of spectra, a
-#'   named list, with one member for each spectrum. If \code{x} is not a
-#'   \code{generic_spct} object, \code{NA} or a list with fields set to NAs is
-#'   returned. Objects created with versions of package 'photobiology' earlier
-#'   than 0.10.8 are lacking the detailed normalization metadata.
+#'   Method \code{getNormalization()} retrieves from objects storing spectral
+#'   data, metadata that trace previously applied normalizations, making it
+#'   possible to revert the effect of earlier normalizations. The metadata are
+#'   also used when printing and plotting the spectra.
+#'
+#' @return For objects containing a single spectrum, \code{getNormalized()}
+#'   returns a logical value, and exceptionally for objects created with
+#'   'photobiology' (< 0.10.8), a numeric value (normalization wavelength
+#'   expressed in nanometres). A character value for objects created with
+#'   'photobiology' (< 0.x.x).  For collections of spectra and multiple spectra
+#'   in long form, a named list, with one logical member for each spectrum is
+#'   returned. If \code{x} is not a \code{generic_spct} object, \code{NA} is
+#'   returned with a warning.
+#'
+#'   For objects containing a single spectrum, \code{getNormalization()} returns
+#'   a list with five fields: \code{norm.type}, \code{norm.wl},
+#'   \code{norm.factors}, \code{norm.cols}, \code{norm.range}. For collections
+#'   of spectra, a named list of lists, with one member list for each member of
+#'   the collection of spectra is returned. Objects created with versions of
+#'   package 'photobiology' (< 0.10.8) are lacking the detailed normalization
+#'   metadata, in which case \code{getNormalized()} must be used to detect
+#'   normalization. See \code{\link{setNormalized}()} for the values stored in
+#'   the fields. If \code{x} is not a \code{generic_spct} object, a named list
+#'   with all fields set to \code{NA} is returned with a warning.
+#'
+#' @note While method \code{getNormalized()} returns in some cases numeric
+#'   values or possibly even character values if stored in attribute
+#'   \code{normalized}, \code{is_normalized()} always returns a logical value
+#'   and can be safely used in conditional code clauses.
 #'
 #' @export
 #'
 #' @examples
 #'
 #' getNormalized(sun.spct)
-#' getNormalization(sun.spct)
+#' str(getNormalization(sun.spct))
 #'
-#' sun_norm.spct <- normalize(sun.spct)
+#' norm_sun.spct <- normalize(sun.spct)
 #'
-#' getNormalized(sun_norm.spct)
-#' getNormalization(sun_norm.spct)
+#' is_normalized(norm_sun.spct)
+#' getNormalized(norm_sun.spct)
+#' str(getNormalization(norm_sun.spct))
 #'
-#' getNormalization(e2q(sun_norm.spct))
+#' str(getNormalization(e2q(norm_sun.spct)))
 #'
-#' gel_norm.spct <- normalize(yellow_gel.spct)
+#' norm_gel.spct <- normalize(yellow_gel.spct)
 #'
-#' getNormalized(gel_norm.spct)
-#' getNormalization(gel_norm.spct)
+#' is_normalized(norm_gel.spct)
+#' getNormalized(norm_gel.spct)
+#' str(getNormalization(norm_gel.spct))
 #'
-#' # getNormalization(T2Afr(gel_norm.spct))
-#' getNormalization(any2A(gel_norm.spct))
+#' getNormalization(T2Afr(norm_gel.spct))
+#' getNormalization(any2A(norm_gel.spct))
+#'
+#' norm_sun_evening.mspct <- normalize(sun_evening.mspct[1:3])
+#' str(is_normalized(norm_sun_evening.mspct))
+#' str(getNormalized(norm_sun_evening.mspct))
+#' str(getNormalization(norm_sun_evening.mspct))
 #'
 #' @family rescaling functions
 #'
@@ -791,20 +853,13 @@ getNormalized <- function(x,
 
 #' @rdname getNormalized
 #'
-#' @note \code{getNormalised()} is a synonym for this \code{getNormalized()}
-#'   method.
+#' @note \code{getNormalised()} is another name for \code{getNormalized()}.
 #'
 #' @export
 #'
 getNormalised <- getNormalized
 
 #' @rdname getNormalized
-#'
-#' @return \code{getNormalization()} returns a list with five fields: norm.type,
-#'   norm.wl, norm.factors, norm.cols, norm.range. For collections of spectra, a
-#'   named list of lists, with one member list for each member of the collection
-#'   of spectra. See \code{\link{setNormalized}()} for the values stored in the
-#'   fields.
 #'
 #' @export
 #'
@@ -868,38 +923,84 @@ getNormalization <- function(x) {
 #' @rdname getNormalized
 #' @export
 #'
+#' @note \code{getNormalisation()} is another name for \code{getNormalization()}.
+#'
 getNormalisation <- getNormalization
 
 #' Set the "normalized" and "normalization" attributes
 #'
-#' Function to write the "normalized" attribute of an existing generic_spct
-#' object.
+#' Function to write the \code{"normalized"} attribute of an existing
+#' \code{generic_spct} object.
 #'
 #' @param x a generic_spct object.
-#' @param norm numeric (or logical) Normalization wavelength (nanometres).
+#' @param norm numeric (or logical) Normalization wavelength (nm, nanometres).
 #' @param norm.type character Type of normalization applied.
-#' @param norm.factors numeric The scaling factor(s) so that dividing the spectral
-#'   values by this factor reverts the normalization.
-#' @param norm.cols character The name(s) of the data columns normalized.
+#' @param norm.factors numeric The scaling factor(s) so that dividing the
+#'   spectral values by this factor reverts the normalization.
+#' @param norm.cols character The name(s) of the columns in \code{x} that have
+#'   been normalized.
 #' @param norm.range numeric The wavelength range used for normalization (nm).
 #' @param verbose logical Flag enabling or silencing informative warnings.
 #'
 #' @details This function \strong{is used internally}, although occasionally
 #'   users may want to use it to "pretend" that spectral data have not been
 #'   normalized. Use \code{\link{normalize}()} methods to apply a normalization
-#'   and set the attributes accordingly. Function \code{setNormalized()} only
-#'   sets the attributes that store the metadata corresponding to an already
-#'   applied normalization. Thus a trace of the transformations applied to
-#'   spectral data is kept, which currently is used to renormalize the spectra
-#'   when the quantity used for expression is changed with a conversion
-#'   function. It is also used in other packages like 'ggspectra' when
-#'   generating automatically axis labels. If \code{x} is not a
-#'   \code{generic_spct} object, \code{x} is not modified.
+#'   and simultaneously set the metadata attributes. Function
+#'   \code{setNormalized()} only saves to the attributes the metadata
+#'   corresponding to an already applied normalization. The metadata provides a
+#'   \emph{trace} of the transformations applied to spectral data that makes it
+#'   possible to \emph{undo} the normalization. The metadata is also used in
+#'   other by functions in package 'ggspectra' when automatically generating
+#'   axis labels.
 #'
-#' @note Passing a \code{logical} as argument to \code{norm} is deprecated
-#'   but accepted silently for backwards compatibility.
+#'   If \code{norm = FALSE} is passed in the call any normalization metadata
+#'   present in \code{x} are reset and, thus, \code{x} marked as not normalized,
+#'   without undoing the effect of the normalization.
+#'
+#'   If \code{x} is not a \code{generic_spct} object, \code{x} is not modified.
+#'
+#' @return The object passed as argument to \code{x} is modified by reference by
+#'   adding attributes \code{normalized} and \code{normalization}, unless the
+#'   argument passed to \code{x} is an anonymous expression. A copy of the
+#'   modified \code{x} is always returned invisibly, even when setting by
+#'   reference fails.
+#'
+#'   With a single spectrum in \code{x}, attribute \code{normalization} is set
+#'   to a named list, and in the case of multiple spectra in long form, it is
+#'   set a named list or named lists, unless \code{norm = FALSE} is passed, in
+#'   which case the \code{normalization} attribute is deleted if already
+#'   present. The named list for each spectrum contains the fields:
+#'
+#'   \describe{
+#'   \item{\code{norm.type}}{\code{character} vector of length one, one of "max", "min", "wavelength".}
+#'   \item{\code{norm.wl}}{\code{numeric}, normalization wavelength in nanometres.}
+#'   \item{\code{norm.factors}}{\code{numeric}, multiplier constans used to scale the normalized spectral data.}
+#'   \item{\code{norm.cols}}{\code{character}, the name of the columns of \code{x} that have been normalized.}
+#'   \item{\code{norm.range}}{\code{numeric} vector of length 2, with min and maximum \code{w.length} values used to constrain the normalization.}
+#'   }
+#'
+#'   Spectral objects, to allow choice in the trade-off between storage space
+#'   and computation effort, can contain multiple columns of spectral data
+#'   (e.g., \code{s.e.irrad} and \code{s.q.irard}), each one with its own
+#'   normalization. Only one value is allowed for \code{norm.type}, but
+#'   \code{norm.wl} and \code{norm.factors} are vectors of the same length as
+#'   \code{norm.cols} as their numeric values depend on the unit/base of
+#'   expression.
+#'
+#'   Attribute \code{normalized} is set to \code{TRUE} unless \code{norm = FALSE} is passed.
+#'
+#' @note Passing a \code{logical} as argument to \code{norm} is deprecated but
+#'   accepted silently for backwards compatibility.
 #'
 #' @export
+#'
+#' @examples
+#' norm_sun.spct <- normalize(sun.spct, norm = "max")
+#' is_normalized(norm_sun.spct)
+#' # rarely useful: pretend that the spectrum has not been normalized
+#' pretended_sun.spct <- setNormalized(norm_sun.spct, norm = FALSE)
+#' is_normalized(pretended_sun.spct)
+#'
 #' @family rescaling functions
 #'
 setNormalized <- function(x,
@@ -964,8 +1065,7 @@ setNormalized <- function(x,
 
 #' @rdname setNormalized
 #'
-#' @note \code{setNormalised()} is a synonym for this \code{setNormalized()}
-#'   method.
+#' @note \code{setNormalised()} is another name for \code{setNormalized()}.
 #'
 #' @export
 #'
@@ -1138,12 +1238,12 @@ normalize_spct <- function(spct,
   z # setNormalized makes its returned value invisible
 }
 
-#' Remove a previously applied normalization
+#' Undo previously applied normalization
 #'
-#' @param spct An object of one of the classes derived from \code{geberic_spct}
-#'   containing data for a single spectrum (\code{getMultipleWl(spct) == 1}).
+#' @param spct A \code{generic_spct} object or a \code{generic_mspct} object,
+#'   or objects of derived classes.
 #' @param wipe.away logical If \code{TRUE} the normalization metadata is removed
-#'   without undoing the effect of the normalization.
+#'   after undoing the effect of the normalization.
 #'
 #' @return A modified copy of \code{spct} if it was previously normalized or
 #' \code{spct} unchanged, otherwise.
@@ -1169,7 +1269,7 @@ denormalize_spct <- function(spct, wipe.away = FALSE) {
   }
   # if undoing normalization, done spectrum by spectrum
   if (is.generic_spct(spct) && getMultipleWl(spct) > 1L) {
-    mspct <- subset2mspct(spct, drop.idx = FALSE)
+    mspct <- subset2mspct(spct)
     mspct <- msmsply(mspct = mspct,
                     .fun = denormalize_spct,
                     wipe.away = wipe.away)
@@ -1214,15 +1314,24 @@ denormalize_spct <- function(spct, wipe.away = FALSE) {
 #' After altering the columns present in a spectrum restore normalization
 #' with the previously used criteria.
 #'
-#' @param x generic_spct A spectrum with no normalization applied.
-#' @param old.normalization.ls list A list describing the normalization
-#'   criteria in the format returned by \code{getNormalization()}.
+#' @param x generic_spct One or more spectra stored in long form, with no
+#'   normalization applied.
+#' @param old.normalization.ls list A list describing the normalization criteria
+#'   in the format returned by \code{getNormalization()}.
 #'
 #' @details The normalization criteria are extracted from
 #' \code{old.normalization.ls} and applied. In the case of spectra in
-#' long form, the normalization can be stored as a named list with, with
-#' values stored for each spectrum. If consistent, they are simplified and
-#' applied. Otherwise, they re-normalization is skipped with a warning.
+#' long form, the normalization can be stored as a named list with
+#' values for each spectrum as members.
+#'
+#' If \code{x} contains multiple spectra in long form, the same normalization
+#' criterion is applied to all of them based on \code{old.normalization.ls}.
+#' If \code{getNormalization()} is a named list and stored values of
+#' \code{norm.type} are equal, it is used. If \code{norm.type == "wavelength"},
+#' \code{norm.wl} is used if consistent. \code{norm.range} is used as is if
+#' consistent, and otherwise expanded to the joint range.
+#' If metadata are no consistent across multiple spectra stored in long form
+#' re-normalization is skipped with a warning.
 #'
 #' @keywords internal
 #'
@@ -1265,14 +1374,21 @@ restore_normalization <- function(x, old.normalization.ls) {
     }
   }
   if (getMultipleWl(x) > 1L) {
-    old.range <- unique(as.vector(sapply(old.normalization.ls,
-                                         `[[`,
-                                         i = "norm.range",
-                                         USE.NAMES = FALSE)))
-    if (length(old.range) > 1L) {
+    old.mins <-
+      as.vector(sapply(old.normalization.ls,
+                       function(x) { x[["norm.range"]][1L] },
+                       USE.NAMES = FALSE))
+    old.maxs <-
+      as.vector(sapply(old.normalization.ls,
+                       function(x) { x[["norm.range"]][2L] },
+                       USE.NAMES = FALSE))
+    # use tolerance of 1 nm
+    if (diff(range(old.mins)) > 1 || diff(range(old.maxs)) > 1) {
       warning("Inconsistent normalization range across ",
-              getMultipleWl(x), " spectra. Using wl_range(x)!!")
+              getMultipleWl(x), " spectra. Using joint range!!")
       old.range <- wl_range(x)
+    } else {
+      old.range <- c(min(old.mins), max(old.maxs))
     }
   } else {
     old.range <- old.normalization.ls$norm.range

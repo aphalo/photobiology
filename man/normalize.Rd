@@ -206,47 +206,46 @@ normalise(x, ...)
 \item{...}{not used in current version}
 
 \item{range}{An R object on which \code{range()} returns a numeric vector of
-length 2 with the limits of a range of wavelengths in nm, with min and max
-wavelengths (nm) used to set boundaries for search for normalization.}
+length 2 with the limits of a range of wavelengths in nm. See
+\strong{Details}.}
 
-\item{norm}{numeric Normalization wavelength (nm) or character string "max",
-or "min" for normalization at the corresponding wavelength, "update" to
-update the normalization after modifying units of expression, quantity
-or range but respecting the previously used criterion, "undo" to revert
-an existing normalization or "skip" to force return of \code{x} unchanged.}
+\item{norm}{numeric Normalization wavelength (nm) or character string
+\code{"max"}, or \code{"min"} for normalization at the corresponding
+wavelength, \code{"update"} to update the normalization with previous
+criterion, \code{"undo"} to revert an existing normalization or
+\code{"skip"} to force return of \code{x} unchanged. See \strong{Details}.}
 
 \item{unit.out}{No longer supported and is ignored with a warning.}
 
 \item{keep.scaling}{logical or numeric Flag to indicate if any existing
 scaling should be preserved or not. The default, \code{FALSE}, preserves
-the behaviour of versions (<= 0.10.9). If numeric, the spectrum is scaled
-to this value before normalization and marked as not scaled.}
+the behaviour of 'photobiology' (<= 0.10.9). See \strong{Details}.}
 
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
-before calculating the summary (e.g. "max") used for normalization.}
+before calculating the summary (e.g. \code{max()}) used for normalization.}
 
 \item{qty.out}{No longer supported and is ignored with a warning..}
 
-\item{col.names}{character vector containing the names of columns or
-variables. Columns in \code{x} matching the names in \code{col.names} are
-normalized, other columns are returned unchanged.}
+\item{col.names}{character vector containing the names of columns of \code{x}
+to be normalized. Other columns are retained unchanged.}
 
-\item{.parallel}{if TRUE, apply function in parallel, using parallel backend
-provided by foreach}
+\item{.parallel}{if \code{TRUE}, apply function in parallel, using parallel
+backend provided by packege 'foreach'.}
 
-\item{.paropts}{a list of additional options passed into the foreach function
-when parallel computation is enabled. This is important if (for example)
-your code relies on external data or packages: use the .export and
-.packages arguments to supply them so that all cluster nodes have the
-correct environment set up for computing.}
+\item{.paropts}{a list of additional options passed into the \code{foreach}
+function when parallel computation is enabled. This is important if (for
+example) your code relies on external data or packages: use the
+\code{.export} and \code{.packages} arguments to supply them so that all
+cluster nodes have the correct environment set up for computing.}
 }
 \value{
 A copy of the object passed as argument to \code{x} with the values
   of the spectral quantity rescaled to 1 at the normalization wavelength. If
   the normalization wavelength is not already present in \code{x}, it is
   added by interpolation---i.e. the returned value may be one row longer than
-  \code{x}. Attributes \code{normalized} and \code{normalization} are set to
-  keep a log of the computations applied.
+  \code{x} for each spectrum. Attributes \code{normalized} and
+  \code{normalization} are set to keep a log of the computations applied.
+  Other attributes are preserved.
 }
 \description{
 This method returns a spectral object of the same class as the one supplied
@@ -258,34 +257,49 @@ applied to each spectrum individually.
 By default normalization is done based on the maximum of the
   spectral data. It is possible to also do the normalization based on a
   user-supplied wavelength expressed in nanometres or the minimum. An
-  existing normalization can be updated for a different unit of expression or
-  after a conversion to a related spectral quantity.
+  existing normalization can be \emph{updated} for a different unit of
+  expression or after a conversion to a related spectral quantity. The
+  accepted arguments for parameter \code{norm} are:
 
-  By default the function is applied to the whole spectrum, but by passing a
-  range of wavelengths as input, the search, e.g., for the maximum, can be
-  limited to a range of wavelengths of interest instead of the whole
-  spectrum.
+  \describe{
+  \item{\code{"max"}}{Scale all spectral values so that the value at the tallest peak is 1.0.}
+  \item{\code{"min"}}{Scale all spectral values so that the value at the deepest valley is 1.0.}
+  \item{\code{<number>}}{Scale all spectral values so that the value at \code{w.length == <number>} is 1.0, interpolating nearest wavelengths.}
+  \item{\code{"update"}}{Normalise the data reusing the normalization criteria stored as metadata in attribute \code{normalization}.}
+  \item{\code{"undo"}}{Reverse the normalisation of \code{x} restoring the original values of the spectral variable using the normalization metadata stored in attribute \code{normalization}.}
+  \item{\code{"skip"}}{Return \code{x} unmodified.}
+  }
 
   In 'photobiology' (>= 0.10.8) detailed information about the normalization
-  is stored in an attribute. In 'photobiology' (>= 0.10.10)
-  applying a new normalization to an already normalized spectrum recomputes
-  the multiplier factors stored in the attributes whenever possible. This
-  ensures that the returned object is identical, except for possible
-  accumulated loss of precision due to floating-point arithmetic,
-  independently of the previous application of a different normalization.
+  is stored in attribute \code{normalization}. \strong{In the case objects
+  normalized using 'photobiology' (< 0.10.8), \code{norm} actions \code{"update"} and
+  \code{"undo"} are not supported.}
+
+  In 'photobiology' (>= 0.10.10) applying a new normalization to an already
+  normalized spectrum recomputes the multiplier factors stored in attribute
+  \code{normalization} if it present. This ensures that the data in the
+  returned object is the original one when \emph{undoing} multiple previous
+  normalizations. Loss of precision due to floating-point arithmetic is
+  possible, as well as in the format of attributes.
+
+  By default \code{max()} or \code{min()} are applied to the whole spectrum,
+  but by passing a range of wavelengths as argument to parameter
+  \code{tange}, they are applied to within this range of wavelengths.
+  However, in all cases the normalization multipliers are applied to the
+  whole spectrum.
+
+  By default the argument passed to \code{x} contains one or more \code{NA}
+  values and the normalization is based on a summary quantity, the returned
+  spectrum will contain only \code{NA} values. If \code{na.rm == TRUE} then
+  the summary quantity will be calculated after striping \code{NA} values,
+  and only the values that were \code{NA} in \code{x} will be \code{NA}
+  values in the returned spectrum.
 
   When the spectrum passed as argument to \code{x} had been previously
   scaled, in 'photobiology' (<= 0.10.9) the scaling attribute was always
   removed and no normalization factors returned. In 'photobiology'
   (>= 0.10.10) scaling information can be preserved by passing
   \code{keep.scaling = TRUE}.
-
-  By default if \code{x} contains one or more \code{NA} values and the
-  normalization is based on a summary quantity, the returned spectrum will
-  contain only \code{NA} values. If \code{na.rm == TRUE} then the summary
-  quantity will be calculated after striping \code{NA} values, and only the
-  values that were \code{NA} in \code{x} will be \code{NA} values in the
-  returned spectrum.
 
   When a numeric value is passed as argument to keep.scaling, the scaling
   uses \code{f = "total"} or \code{f = "mean"} depending on the class of
@@ -338,15 +352,20 @@ By default normalization is done based on the maximum of the
 The second formal argument is ellipsis, thus all parameters except
   \code{x} have to be always passed by name.
 
-\code{normalise()} is a synonym for this \code{normalize()} method.
+\code{normalise()} is another name for \code{normalize()}.
 }
 \examples{
+norm_sun.spct <- normalize(sun.spct, norm = "max")
+str(is_normalized(norm_sun.spct))
+str(getNormalization(norm_sun.spct))
 
-normalize(sun.spct)
-normalise(sun.spct) # equivalent
+norm_sun.spct <- normalize(sun.spct, norm = 500)
+str(is_normalized(norm_sun.spct))
+str(getNormalization(norm_sun.spct))
 
-normalize(sun.spct, norm = "max")
-normalize(sun.spct, norm = 400)
+norm_sun_evening.mspct <- normalize(sun_evening.mspct[1:3])
+str(is_normalized(norm_sun_evening.mspct))
+str(getNormalization(norm_sun_evening.mspct))
 
 }
 \seealso{

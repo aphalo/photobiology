@@ -28,42 +28,86 @@ setNormalised(
 \arguments{
 \item{x}{a generic_spct object.}
 
-\item{norm}{numeric (or logical) Normalization wavelength (nanometres).}
+\item{norm}{numeric (or logical) Normalization wavelength (nm, nanometres).}
 
 \item{norm.type}{character Type of normalization applied.}
 
-\item{norm.factors}{numeric The scaling factor(s) so that dividing the spectral
-values by this factor reverts the normalization.}
+\item{norm.factors}{numeric The scaling factor(s) so that dividing the
+spectral values by this factor reverts the normalization.}
 
-\item{norm.cols}{character The name(s) of the data columns normalized.}
+\item{norm.cols}{character The name(s) of the columns in \code{x} that have
+been normalized.}
 
 \item{norm.range}{numeric The wavelength range used for normalization (nm).}
 
 \item{verbose}{logical Flag enabling or silencing informative warnings.}
 }
+\value{
+The object passed as argument to \code{x} is modified by reference by
+  adding attributes \code{normalized} and \code{normalization}, unless the
+  argument passed to \code{x} is an anonymous expression. A copy of the
+  modified \code{x} is always returned invisibly, even when setting by
+  reference fails.
+
+  With a single spectrum in \code{x}, attribute \code{normalization} is set
+  to a named list, and in the case of multiple spectra in long form, it is
+  set a named list or named lists, unless \code{norm = FALSE} is passed, in
+  which case the \code{normalization} attribute is deleted if already
+  present. The named list for each spectrum contains the fields:
+
+  \describe{
+  \item{\code{norm.type}}{\code{character} vector of length one, one of "max", "min", "wavelength".}
+  \item{\code{norm.wl}}{\code{numeric}, normalization wavelength in nanometres.}
+  \item{\code{norm.factors}}{\code{numeric}, multiplier constans used to scale the normalized spectral data.}
+  \item{\code{norm.cols}}{\code{character}, the name of the columns of \code{x} that have been normalized.}
+  \item{\code{norm.range}}{\code{numeric} vector of length 2, with min and maximum \code{w.length} values used to constrain the normalization.}
+  }
+
+  Spectral objects, to allow choice in the trade-off between storage space
+  and computation effort, can contain multiple columns of spectral data
+  (e.g., \code{s.e.irrad} and \code{s.q.irard}), each one with its own
+  normalization. Only one value is allowed for \code{norm.type}, but
+  \code{norm.wl} and \code{norm.factors} are vectors of the same length as
+  \code{norm.cols} as their numeric values depend on the unit/base of
+  expression.
+
+  Attribute \code{normalized} is set to \code{TRUE} unless \code{norm = FALSE} is passed.
+}
 \description{
-Function to write the "normalized" attribute of an existing generic_spct
-object.
+Function to write the \code{"normalized"} attribute of an existing
+\code{generic_spct} object.
 }
 \details{
 This function \strong{is used internally}, although occasionally
   users may want to use it to "pretend" that spectral data have not been
   normalized. Use \code{\link{normalize}()} methods to apply a normalization
-  and set the attributes accordingly. Function \code{setNormalized()} only
-  sets the attributes that store the metadata corresponding to an already
-  applied normalization. Thus a trace of the transformations applied to
-  spectral data is kept, which currently is used to renormalize the spectra
-  when the quantity used for expression is changed with a conversion
-  function. It is also used in other packages like 'ggspectra' when
-  generating automatically axis labels. If \code{x} is not a
-  \code{generic_spct} object, \code{x} is not modified.
+  and simultaneously set the metadata attributes. Function
+  \code{setNormalized()} only saves to the attributes the metadata
+  corresponding to an already applied normalization. The metadata provides a
+  \emph{trace} of the transformations applied to spectral data that makes it
+  possible to \emph{undo} the normalization. The metadata is also used in
+  other by functions in package 'ggspectra' when automatically generating
+  axis labels.
+
+  If \code{norm = FALSE} is passed in the call any normalization metadata
+  present in \code{x} are reset and, thus, \code{x} marked as not normalized,
+  without undoing the effect of the normalization.
+
+  If \code{x} is not a \code{generic_spct} object, \code{x} is not modified.
 }
 \note{
-Passing a \code{logical} as argument to \code{norm} is deprecated
-  but accepted silently for backwards compatibility.
+Passing a \code{logical} as argument to \code{norm} is deprecated but
+  accepted silently for backwards compatibility.
 
-\code{setNormalised()} is a synonym for this \code{setNormalized()}
-  method.
+\code{setNormalised()} is another name for \code{setNormalized()}.
+}
+\examples{
+norm_sun.spct <- normalize(sun.spct, norm = "max")
+is_normalized(norm_sun.spct)
+# rarely useful: pretend that the spectrum has not been normalized
+pretended_sun.spct <- setNormalized(norm_sun.spct, norm = FALSE)
+is_normalized(pretended_sun.spct)
+
 }
 \seealso{
 Other rescaling functions: 

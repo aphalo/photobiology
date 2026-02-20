@@ -24,8 +24,20 @@ signals whether the spectral data has been normalized or not after the object
 was created.
 }
 \note{
-\code{is_normalised()} is a synonym for this \code{is_normalized()}
-  method.
+While method \code{getNormalized()} returns in some cases numeric
+  values or possibly even character values if stored in attribute
+  \code{normalized}, \code{is_normalized()} always returns a logical value
+  and can be safely used in conditional code clauses.
+
+\code{is_normalised()} is another name for \code{is_normalized()}.
+}
+\examples{
+norm_sun.spct <- normalize(sun.spct)
+is_normalized(norm_sun.spct)
+
+norm_sun_evening.mspct <- normalize(sun_evening.mspct[1:3])
+str(is_normalized(norm_sun_evening.mspct))
+
 }
 \seealso{
 Other rescaling functions: 
