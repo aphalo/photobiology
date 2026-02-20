@@ -23,54 +23,78 @@ numeric value, with \code{FALSE} encoded as zero, and character values
 as \code{NA}.}
 }
 \value{
-\code{getNormalized()} returns numeric or logical (possibly character
-  for objects created with earlier versions); for collections of spectra, a
-  named list, with one member for each spectrum. If \code{x} is not a
-  \code{generic_spct} object, \code{NA} or a list with fields set to NAs is
-  returned. Objects created with versions of package 'photobiology' earlier
-  than 0.10.8 are lacking the detailed normalization metadata.
+For objects containing a single spectrum, \code{getNormalized()}
+  returns a logical value, and exceptionally for objects created with
+  'photobiology' (< 0.10.8), a numeric value (normalization wavelength
+  expressed in nanometres). A character value for objects created with
+  'photobiology' (< 0.x.x).  For collections of spectra and multiple spectra
+  in long form, a named list, with one logical member for each spectrum is
+  returned. If \code{x} is not a \code{generic_spct} object, \code{NA} is
+  returned with a warning.
 
-\code{getNormalization()} returns a list with five fields: norm.type,
-  norm.wl, norm.factors, norm.cols, norm.range. For collections of spectra, a
-  named list of lists, with one member list for each member of the collection
-  of spectra. See \code{\link{setNormalized}()} for the values stored in the
-  fields.
+  For objects containing a single spectrum, \code{getNormalization()} returns
+  a list with five fields: \code{norm.type}, \code{norm.wl},
+  \code{norm.factors}, \code{norm.cols}, \code{norm.range}. For collections
+  of spectra, a named list of lists, with one member list for each member of
+  the collection of spectra is returned. Objects created with versions of
+  package 'photobiology' (< 0.10.8) are lacking the detailed normalization
+  metadata, in which case \code{getNormalized()} must be used to detect
+  normalization. See \code{\link{setNormalized}()} for the values stored in
+  the fields. If \code{x} is not a \code{generic_spct} object, a named list
+  with all fields set to \code{NA} is returned with a warning.
 }
 \description{
 Functions to read the "normalized" and "normalization" attributes of an
 existing generic_spct object.
 }
 \details{
-Spectral data that has been normalized needs to be used diffferently
-  in computations than data expresed in original units. These two functions
-  make it possible to query if data stored in an object of class
-  \code{generic_spct} or of a derived class contains data expressed in
-  physical units or normalized. In the later case, it is possible to also
-  query how the normalization was done.
+In some computations spectral data that have been normalized need to
+  be handled differently than data expressed in original units. Method
+  \code{getNormalized()} makes it possible to query if a
+  \code{generic_spct} or \code{generic_mspct} object or objects of derived
+  classes contain data expressed in true physical units or normalized.
+
+  Method \code{getNormalization()} retrieves from objects storing spectral
+  data, metadata that trace previously applied normalizations, making it
+  possible to revert the effect of earlier normalizations. The metadata are
+  also used when printing and plotting the spectra.
 }
 \note{
-\code{getNormalised()} is a synonym for this \code{getNormalized()}
-  method.
+While method \code{getNormalized()} returns in some cases numeric
+  values or possibly even character values if stored in attribute
+  \code{normalized}, \code{is_normalized()} always returns a logical value
+  and can be safely used in conditional code clauses.
+
+\code{getNormalised()} is another name for \code{getNormalized()}.
+
+\code{getNormalisation()} is another name for \code{getNormalization()}.
 }
 \examples{
 
 getNormalized(sun.spct)
-getNormalization(sun.spct)
+str(getNormalization(sun.spct))
 
-sun_norm.spct <- normalize(sun.spct)
+norm_sun.spct <- normalize(sun.spct)
 
-getNormalized(sun_norm.spct)
-getNormalization(sun_norm.spct)
+is_normalized(norm_sun.spct)
+getNormalized(norm_sun.spct)
+str(getNormalization(norm_sun.spct))
 
-getNormalization(e2q(sun_norm.spct))
+str(getNormalization(e2q(norm_sun.spct)))
 
-gel_norm.spct <- normalize(yellow_gel.spct)
+norm_gel.spct <- normalize(yellow_gel.spct)
 
-getNormalized(gel_norm.spct)
-getNormalization(gel_norm.spct)
+is_normalized(norm_gel.spct)
+getNormalized(norm_gel.spct)
+str(getNormalization(norm_gel.spct))
 
-# getNormalization(T2Afr(gel_norm.spct))
-getNormalization(any2A(gel_norm.spct))
+getNormalization(T2Afr(norm_gel.spct))
+getNormalization(any2A(norm_gel.spct))
+
+norm_sun_evening.mspct <- normalize(sun_evening.mspct[1:3])
+str(is_normalized(norm_sun_evening.mspct))
+str(getNormalized(norm_sun_evening.mspct))
+str(getNormalization(norm_sun_evening.mspct))
 
 }
 \seealso{

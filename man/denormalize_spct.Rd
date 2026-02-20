@@ -2,22 +2,22 @@
 % Please edit documentation in R/spct.normalize.r
 \name{denormalize_spct}
 \alias{denormalize_spct}
-\title{Remove a previously applied normalization}
+\title{Undo previously applied normalization}
 \usage{
 denormalize_spct(spct, wipe.away = FALSE)
 }
 \arguments{
-\item{spct}{An object of one of the classes derived from \code{geberic_spct}
-containing data for a single spectrum (\code{getMultipleWl(spct) == 1}).}
+\item{spct}{A \code{generic_spct} object or a \code{generic_mspct} object,
+or objects of derived classes.}
 
 \item{wipe.away}{logical If \code{TRUE} the normalization metadata is removed
-without undoing the effect of the normalization.}
+after undoing the effect of the normalization.}
 }
 \value{
 A modified copy of \code{spct} if it was previously normalized or
 \code{spct} unchanged, otherwise.
 }
 \description{
-Remove a previously applied normalization
+Undo previously applied normalization
 }
 \keyword{internal}

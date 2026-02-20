@@ -323,6 +323,18 @@ test_that("e2q", {
   expect_named(e2q(s.spct, action = "add"), c("w.length", "s.e.irrad", "s.q.irrad"))
   expect_named(e2q(s.spct, action = "replace"), c("w.length", "s.q.irrad"))
 
+  norm_s.spct <- normalize(s.spct)
+  expect_true(is_normalized(norm_s.spct))
+  expect_true(is_normalized(e2q(norm_s.spct)))
+
+  slong.spct <- rbindspct(list(a = s.spct, b = s.spct * 2), idfactor = "my_factor")
+  expect_equal(getIdFactor(slong.spct),
+               getIdFactor(e2q(slong.spct, action = "replace")))
+
+  slong.mspct <- subset2mspct(slong.spct)
+  norm_slong.mspct <- normalize(slong.mspct)
+  expect_true(all(unlist(is_normalized(norm_slong.mspct))))
+  expect_true(all(unlist(is_normalized(e2q(norm_slong.mspct)))))
 })
 
 test_that("q2e", {
@@ -340,6 +352,19 @@ test_that("q2e", {
   expect_named(q2e(s.spct), c("w.length", "s.q.irrad", "s.e.irrad"))
   expect_named(q2e(s.spct, action = "add"), c("w.length", "s.q.irrad", "s.e.irrad"))
   expect_named(q2e(s.spct, action = "replace"), c("w.length", "s.e.irrad"))
+
+  norm_s.spct <- normalize(s.spct)
+  expect_true(is_normalized(norm_s.spct))
+  expect_true(is_normalized(q2e(norm_s.spct)))
+
+  slong.spct <- rbindspct(list(a = s.spct, b = s.spct * 2), idfactor = "my_factor")
+  expect_equal(getIdFactor(slong.spct),
+               getIdFactor(q2e(slong.spct, action = "replace")))
+
+  slong.mspct <- subset2mspct(slong.spct)
+  norm_slong.mspct <- normalize(slong.mspct)
+  expect_true(all(unlist(is_normalized(norm_slong.mspct))))
+  expect_true(all(unlist(is_normalized(q2e(norm_slong.mspct)))))
 
 })
 

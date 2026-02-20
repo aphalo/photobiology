@@ -2206,8 +2206,8 @@ $$Q_\mathrm{norm}(\lambda) = \frac{Q(\lambda)}{{Q(\lambda = 300)}}$$
 Function `normalize` permits normalizing a spectrum to a value of one at
 an arbitrary wavelength (nm) or to the wavelength of either the maximum
 or the minimum spectral value. It supports all the different spectral
-classes. In the example we use a `source_spct` object. (Equivalent
-functions with names spelled with "s" instead of "z" are available.)
+classes. In the example we use a `source_spct` object. (The
+functions called with names spelled with "s" or "z".)
 
 ```{r, manip-6}
 normalize(sun.spct)

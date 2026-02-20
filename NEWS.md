@@ -17,6 +17,7 @@ containing multiple spectra in long form created with 'photobiology'
 most cases silent, because attribute `idfactor` remained consistent with column
 name.
 * Add function `simul_sensor_response()`.
+* Update documentation about normalization.
 
 # photobiology 0.14.1
 

@@ -7,10 +7,11 @@
 restore_normalization(x, old.normalization.ls)
 }
 \arguments{
-\item{x}{generic_spct A spectrum with no normalization applied.}
+\item{x}{generic_spct One or more spectra stored in long form, with no
+normalization applied.}
 
-\item{old.normalization.ls}{list A list describing the normalization
-criteria in the format returned by \code{getNormalization()}.}
+\item{old.normalization.ls}{list A list describing the normalization criteria
+in the format returned by \code{getNormalization()}.}
 }
 \description{
 After altering the columns present in a spectrum restore normalization
@@ -19,8 +20,16 @@ with the previously used criteria.
 \details{
 The normalization criteria are extracted from
 \code{old.normalization.ls} and applied. In the case of spectra in
-long form, the normalization can be stored as a named list with, with
-values stored for each spectrum. If consistent, they are simplified and
-applied. Otherwise, they re-normalization is skipped with a warning.
+long form, the normalization can be stored as a named list with
+values for each spectrum as members.
+
+If \code{x} contains multiple spectra in long form, the same normalization
+criterion is applied to all of them based on \code{old.normalization.ls}.
+If \code{getNormalization()} is a named list and stored values of
+\code{norm.type} are equal, it is used. If \code{norm.type == "wavelength"},
+\code{norm.wl} is used if consistent. \code{norm.range} is used as is if
+consistent, and otherwise expanded to the joint range.
+If metadata are no consistent across multiple spectra stored in long form
+re-normalization is skipped with a warning.
 }
 \keyword{internal}
