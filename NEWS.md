@@ -13,6 +13,9 @@ spectra in long form created with 'photobiology' (>= 0.14.0).
 * Fix bug: error when calling conversion functions on normalized objects
 containing multiple spectra in long form created with 'photobiology' 
 (>= 0.14.0).
+* Fix bug: `idfactor` column accidental renaming in `denormalize_spct()`. In
+most cases silently as attribute `idfactor` remained consistent will column
+name.
 * Add function `simul_sensor_response()`.
 
 # photobiology 0.14.1
