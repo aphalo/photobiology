@@ -1169,9 +1169,11 @@ denormalize_spct <- function(spct, wipe.away = FALSE) {
   }
   # if undoing normalization, done spectrum by spectrum
   if (is.generic_spct(spct) && getMultipleWl(spct) > 1L) {
-    spct <- subset2mspct(spct)
-    spct <- msmsply(mspct = spct, .fun = denormalize_spct, wipe.away = wipe.away)
-    return(rbindspct(spct))
+    mspct <- subset2mspct(spct, drop.idx = FALSE)
+    mspct <- msmsply(mspct = mspct,
+                    .fun = denormalize_spct,
+                    wipe.away = wipe.away)
+    return(rbindspct(mspct, idfactor = getIdFactor(spct)))
   }
 
   # undo normalization of a single spectrum
