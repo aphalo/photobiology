@@ -1169,7 +1169,7 @@ denormalize_spct <- function(spct, wipe.away = FALSE) {
   }
   # if undoing normalization, done spectrum by spectrum
   if (is.generic_spct(spct) && getMultipleWl(spct) > 1L) {
-    mspct <- subset2mspct(spct, drop.idx = FALSE)
+    mspct <- subset2mspct(spct)
     mspct <- msmsply(mspct = mspct,
                     .fun = denormalize_spct,
                     wipe.away = wipe.away)
@@ -1265,14 +1265,21 @@ restore_normalization <- function(x, old.normalization.ls) {
     }
   }
   if (getMultipleWl(x) > 1L) {
-    old.range <- unique(as.vector(sapply(old.normalization.ls,
-                                         `[[`,
-                                         i = "norm.range",
-                                         USE.NAMES = FALSE)))
-    if (length(old.range) > 1L) {
+    old.mins <-
+      as.vector(sapply(old.normalization.ls,
+                       function(x) { x[["norm.range"]][1L] },
+                       USE.NAMES = FALSE))
+    old.maxs <-
+      as.vector(sapply(old.normalization.ls,
+                       function(x) { x[["norm.range"]][2L] },
+                       USE.NAMES = FALSE))
+    # use tolerance of 1 nm
+    if (diff(range(old.mins)) > 1 || diff(range(old.maxs)) > 1) {
       warning("Inconsistent normalization range across ",
-              getMultipleWl(x), " spectra. Using wl_range(x)!!")
+              getMultipleWl(x), " spectra. Using joint range!!")
       old.range <- wl_range(x)
+    } else {
+      old.range <- c(min(old.mins), max(old.maxs))
     }
   } else {
     old.range <- old.normalization.ls$norm.range
