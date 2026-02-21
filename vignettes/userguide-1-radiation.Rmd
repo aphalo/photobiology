@@ -2167,8 +2167,7 @@ e2q(sun.spct, "add")
 e2q(sun.spct, "replace")
 ```
 
-When a normalized spectrum is converted, the normalization is reapplied to
-the converted data.
+When a normalized spectrum is converted, the normalization _criteria_ are applied to the converted data after reversing the pre-existing normalization.
 
 ### Conversions among transmission quantities
 
@@ -2190,12 +2189,11 @@ any2Afr(polyester.spct, "add")
 any2Afr(polyester.spct, "replace")
 ```
 
-When a normalized spectrum is converted, the normalization is not reapplied to
-the converted data. _This will change in the future._
+When a normalized spectrum is converted, the normalization _criteria_ are applied to the converted data after reversing the pre-existing normalization.
 
 ### Normalizing a spectrum
 
-Normalization is a way rescaling a spectrum so that the spectral
+Normalization is an approach to rescaling a spectrum so that the spectral
 quantity takes a fixed value, in most cases exactly 1, at a specific
 wavelength. Frequently this wavelength corresponds to the maximum value
 of the spectral quantity.
@@ -2203,11 +2201,11 @@ of the spectral quantity.
 $$Q_\mathrm{norm}(\lambda) = \frac{Q(\lambda)}{\max{Q(\lambda)}}$$ When
 normalizing to a specific wavelength, say 300 nm, the equation becomes
 $$Q_\mathrm{norm}(\lambda) = \frac{Q(\lambda)}{{Q(\lambda = 300)}}$$
-Function `normalize` permits normalizing a spectrum to a value of one at
+Function `normalize` allows normalizing a spectrum to a value of one at
 an arbitrary wavelength (nm) or to the wavelength of either the maximum
 or the minimum spectral value. It supports all the different spectral
 classes. In the example we use a `source_spct` object. (The
-functions called with names spelled with "s" or "z".)
+functions can be called with names spelled with "s" or "z".)
 
 ```{r, manip-6}
 normalize(sun.spct)
@@ -2231,12 +2229,19 @@ normalize(sun.spct, norm = 600.3)
 
 The normalization status of a spectral object can be tested with method
 `is_normalized()` and the normalization used can be recalled with method
-`getNormalized()`.
+`getNormalized()`. Function `str()` is used for an output more compact than
+with the default `print()`.
 
 ```{r}
-my.spct <- normalize(sun.spct)
-is_normalized(my.spct)
-getNormalized(my.spct)
+norm_sun.spct <- normalize(sun.spct)
+is_normalized(norm_sun.spct)
+str(getNormalization(norm_sun.spct))
+```
+
+A normalized spectrum can be restored to its original scaling.
+
+```{r}
+restored_sun.spct <- normalize(norm_sun.spct, norm = "undo")
 ```
 
 Once a spectrum is normalized, summary methods that return values in

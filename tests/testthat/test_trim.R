@@ -55,7 +55,8 @@ test_that("source_spct", {
   expect_equal(getBSWFUsed(my_z.spct), getBSWFUsed(my.spct))
   expect_equal(is_effective(my_z.spct), is_effective(my.spct))
   expect_equal(is_normalized(my_z.spct), TRUE)
-  expect_equal(getNormalized(my_z.spct), 400)
+  expect_equal(getNormalized(my_z.spct), 400) # backwards compatibility
+  expect_equal(getNormalization(my_z.spct)$norm.wl, 400)
   expect_equal(is_scaled(my_z.spct), FALSE)
   expect_equal(getScaled(my_z.spct), FALSE)
 

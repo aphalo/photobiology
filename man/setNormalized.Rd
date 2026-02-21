@@ -28,7 +28,10 @@ setNormalised(
 \arguments{
 \item{x}{a generic_spct object.}
 
-\item{norm}{numeric (or logical) Normalization wavelength (nm, nanometres).}
+\item{norm}{logical or numeric If \code{FALSE} or \code{0} existing
+normalization metadata is is deleted from \code{x}. Otherwise, a positive
+numeric value is interpreted as the normalization wavelength (nm,
+nanometres).}
 
 \item{norm.type}{character Type of normalization applied.}
 
@@ -71,7 +74,8 @@ The object passed as argument to \code{x} is modified by reference by
   \code{norm.cols} as their numeric values depend on the unit/base of
   expression.
 
-  Attribute \code{normalized} is set to \code{TRUE} unless \code{norm = FALSE} is passed.
+  Attribute \code{normalized} is set to \code{TRUE} unless
+  \code{norm = FALSE} is passed.
 }
 \description{
 Function to write the \code{"normalized"} attribute of an existing
