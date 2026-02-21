@@ -13,6 +13,11 @@ test_that("setNormalized source_spct", {
   my_defaultset_norm.spct <- my_norm.spct
   setNormalized(my_defaultset_norm.spct)
 
+  expect_error(setNormalised(my.spct, norm = Inf))
+  expect_error(setNormalised(my.spct, norm = -1))
+  expect_error(setNormalised(my.spct, norm = "max"))
+  expect_silent(setNormalised(my.spct, norm = FALSE))
+
   expect_false(is_normalized(my.spct))
   expect_true(is_normalized(my_norm.spct))
   expect_false(is_normalized(my_unset_norm.spct))
@@ -98,7 +103,26 @@ test_that("normalize source_spct", {
 
   my.spct <- q2e(sun.spct, action = "replace")
 
+  expect_error(normalize(my.spct, norm = "bad.norm"))
+  expect_warning(normalize(my.spct, norm = wl_max(my.spct) + 1))
+  expect_warning(normalize(my.spct, norm = 700, range = c(300, 699)))
+  expect_error(normalize(my.spct, norm = -1))
+  expect_silent(normalize(my.spct, norm = "skip"))
+  expect_silent(normalize(my.spct, norm = "update"))
+  expect_silent(normalize(my.spct, norm = "undo"))
+  expect_silent(normalize(my.spct, norm = "wipe.attrs"))
+  expect_silent(normalize(my.spct, norm = NA))
+  expect_silent(normalize(my.spct, norm = NULL))
+
   my_norm.spct <- normalize(my.spct)
+
+  expect_silent(normalize(my_norm.spct, norm = "skip"))
+  expect_silent(normalize(my_norm.spct, norm = "update"))
+  expect_silent(normalize(my_norm.spct, norm = "undo"))
+  expect_message(normalize(my_norm.spct, norm = "wipe.attrs"))
+  expect_silent(normalize(my_norm.spct, norm = NA))
+  expect_silent(normalize(my_norm.spct, norm = NULL))
+
   expect_equal(max(my_norm.spct$s.e.irrad), 1)
 
   my_norm.spct <- normalize(my.spct, norm = "max")
@@ -153,6 +177,8 @@ test_that("normalize source_spct", {
   my_norm.spct <- normalize(my.spct)
 
   my_old_style_norm.spct <- my_norm.spct
+  attr(my_old_style_norm.spct, "normalized") <-
+    getNormalization(my_old_style_norm.spct)$norm.wl
   attr(my_old_style_norm.spct, "normalization") <- NULL
   expect_true(is_normalised(my_old_style_norm.spct))
   expect_no_warning(normalization(my_old_style_norm.spct))
@@ -244,6 +270,45 @@ test_that("normalize source_spct", {
   expect_equal(getNormalized(my_norm_max.spct), 451)
 })
 
+test_that("normalize source_mspct", {
+  energy_as_default()
+
+  my.mspct <- q2e(sun_evening.mspct[1:2], action = "replace")
+
+  expect_error(normalize(my.mspct, norm = "bad.norm"))
+  expect_warning(normalize(my.mspct, norm = wl_max(my.mspct[[1]]) + 1))
+  expect_warning(normalize(my.mspct, norm = 700, range = c(300, 699)))
+  expect_error(normalize(my.mspct, norm = -1))
+  expect_silent(normalize(my.mspct, norm = "skip"))
+  expect_silent(normalize(my.mspct, norm = "update"))
+  expect_silent(normalize(my.mspct, norm = "undo"))
+  expect_silent(normalize(my.mspct, norm = "wipe.attrs"))
+  expect_silent(normalize(my.mspct, norm = NA))
+  expect_silent(normalize(my.mspct, norm = NULL))
+
+  my_norm.mspct <- normalize(my.mspct)
+
+  expect_silent(normalize(my_norm.mspct, norm = "skip"))
+  expect_silent(normalize(my_norm.mspct, norm = "update"))
+  expect_silent(normalize(my_norm.mspct, norm = "undo"))
+  expect_message(normalize(my_norm.mspct, norm = "wipe.attrs"))
+  expect_silent(normalize(my_norm.mspct, norm = NA))
+  expect_silent(normalize(my_norm.mspct, norm = NULL))
+
+  expect_named(is_normalized(my_norm.mspct), names(my_norm.mspct))
+  expect_true(is_normalized(my_norm.mspct)[[1]])
+  expect_true(is_normalized(my_norm.mspct)[[2]])
+  expect_named(getNormalized(my_norm.mspct), names(my_norm.mspct))
+  expect_equal(getNormalized(my_norm.mspct)[[1]], 450.53)
+  expect_equal(getNormalized(my_norm.mspct)[[2]], 450.53)
+  expect_named(getNormalization(my_norm.mspct), names(my_norm.mspct))
+  expect_named(getNormalization(my_norm.mspct)[[1]],
+               c("norm.type", "norm.wl", "norm.factors", "norm.cols", "norm.range"))
+  expect_named(getNormalization(my_norm.mspct)[[2]],
+               c("norm.type", "norm.wl", "norm.factors", "norm.cols", "norm.range"))
+
+})
+
 test_that("normalize response_spct", {
 
   my.spct <- q2e(ccd.spct, action = "replace")
@@ -284,6 +349,8 @@ test_that("normalize response_spct", {
                getNormalization(my_norm_qmax.spct)[["norm.wl"]])
   expect_equal(getNormalized(my_norm_qmax.spct),
                getNormalized(my_norm_qumax.spct))
+  # expect_equal(getNormalization(my_norm_qmax.spct),
+  #              getNormalization(my_norm_qumax.spct))
   expect_true(all(is.na(unlist(getNormalization(my.spct)))))
   expect_false(all(is.na(unlist(getNormalization(my_norm_max.spct)))))
   expect_equal(getNormalization(my_norm_max.spct)[["norm.type"]], "max")
@@ -305,6 +372,9 @@ test_that("normalize response_spct", {
   expect_equal(is.filter_spct(my_norm_max.spct), is.filter_spct(my.spct))
   expect_equal(getTimeUnit(my_norm_max.spct), getTimeUnit(my.spct))
   expect_equal(comment(my_norm_max.spct), comment(my.spct))
+  expect_equal(getNormalization(normalize(my.spct, norm = 400))$norm.wl, 400)
+  expect_equal(getNormalization(normalize(my.spct, norm = 400.2))$norm.wl, 400.2)
+  expect_equal(getNormalization(my_norm_max.spct)$norm.wl, 742.6704, tolerance = 1e-4)
   expect_equal(getNormalized(normalize(my.spct, norm = 400)), 400)
   expect_equal(getNormalized(normalize(my.spct, norm = 400.2)), 400.2)
   expect_equal(getNormalized(my_norm_max.spct), 742.6704, tolerance = 1e-4)

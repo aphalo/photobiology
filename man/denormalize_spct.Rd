@@ -11,7 +11,8 @@ denormalize_spct(spct, wipe.away = FALSE)
 or objects of derived classes.}
 
 \item{wipe.away}{logical If \code{TRUE} the normalization metadata is removed
-after undoing the effect of the normalization.}
+without undoing the effect of the normalization, and otherwise after
+restoring the spectral data to its original scaling.}
 }
 \value{
 A modified copy of \code{spct} if it was previously normalized or

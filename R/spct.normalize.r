@@ -839,6 +839,16 @@ getNormalized <- function(x,
             class(x)[1])
     normalized <- NA
   }
+  if (is.logical(normalized) && all(normalized)) {
+    # backwards compatibility
+    normalization.attr <- attr(x, "normalization")
+    if (length(normalization.attr)) {
+      norm.wl <- normalization.attr[["norm.wl"]]
+      if (length(norm.wl) == 1L && is.numeric(norm.wl) && is.finite(norm.wl)) {
+        normalized <- norm.wl
+      }
+    }
+  }
   if (.force.numeric) {
     normalized <- suppressWarnings(as.numeric(normalized))
     if (!length(normalized)) {
@@ -933,7 +943,10 @@ getNormalisation <- getNormalization
 #' \code{generic_spct} object.
 #'
 #' @param x a generic_spct object.
-#' @param norm numeric (or logical) Normalization wavelength (nm, nanometres).
+#' @param norm logical or numeric If \code{FALSE} or \code{0} existing
+#'   normalization metadata is is deleted from \code{x}. Otherwise, a positive
+#'   numeric value is interpreted as the normalization wavelength (nm,
+#'   nanometres).
 #' @param norm.type character Type of normalization applied.
 #' @param norm.factors numeric The scaling factor(s) so that dividing the
 #'   spectral values by this factor reverts the normalization.
@@ -987,7 +1000,8 @@ getNormalisation <- getNormalization
 #'   \code{norm.cols} as their numeric values depend on the unit/base of
 #'   expression.
 #'
-#'   Attribute \code{normalized} is set to \code{TRUE} unless \code{norm = FALSE} is passed.
+#'   Attribute \code{normalized} is set to \code{TRUE} unless
+#'   \code{norm = FALSE} is passed.
 #'
 #' @note Passing a \code{logical} as argument to \code{norm} is deprecated but
 #'   accepted silently for backwards compatibility.
@@ -1013,10 +1027,21 @@ setNormalized <- function(x,
   name <- substitute(x)
 
   if (is.generic_mspct(x)) {
-    warning("To apply 'setNormalized()' to members of a collection call it with 'msmsply'")
+    warning("To apply 'setNormalized()' to members of a collection ",
+            "apply it with 'msmsply()'")
   }
-  stopifnot("'norm' must be numeric or logical, but it is not" =
-              is.numeric(norm) || is.logical(norm))
+  selector <- which(!is.na(norm))
+  if (length(selector)) {
+    if (!(is.numeric(norm) || is.logical(norm))) {
+      stop("'norm' must be numeric or logical, but it is '", mode(norm), "'",
+           call. = FALSE)
+    }
+    if (is.numeric(norm) && any(!is.finite(norm[selector]) | norm[selector] < 1)) {
+      stop("If numeric, 'norm' must be finite and positive, not: '",
+           paste(norm[selector], collapse = "', '"), "'",
+           call. = FALSE)
+    }
+  }
 
   if (!length(norm.cols)) {
     norm.cols = NA_character_
@@ -1032,12 +1057,7 @@ setNormalized <- function(x,
     attr(x, "normalization") <- NULL
   } else if ((is.generic_spct(x) || is.summary_generic_spct(x)) &&
              (all(is.na(norm)) || all(is.numeric(norm)) || all(is.logical(norm)))) {
-    attr(x, "normalized") <-
-      if (length(norm) == 1L) {
-        norm
-      } else {
-        TRUE
-      }
+    attr(x, "normalized") <- TRUE
     normalization.ls <- list(norm.type = norm.type,
                              norm.wl = if(is.numeric(norm)) norm else NA_real_,
                              norm.factors = norm.factors,
@@ -1083,6 +1103,31 @@ normalize_spct <- function(spct,
                            keep.scaling,
                            ...) {
   stopifnot(is.generic_spct(spct))
+  if (is.null(norm) || all(is.na(norm))) {
+    norm <- "skip"
+  }
+  norm <- unique(na.omit(norm))
+  if (length(norm) != 1L) {
+    warning("'norm' is not unique! Using '", norm[1], "' instead of '",
+            paste(norm, collapse = "', '"), "'")
+    norm <- norm[1]
+  }
+  if (!(is.numeric(norm) || is.character(norm))) {
+    stop("'norm' must be numeric or character, not: '", mode(norm), "'",
+         call. = FALSE)
+  }
+  if (is.numeric(norm) && any(!is.finite(norm) | norm < 1)) {
+    stop("If numeric, 'norm' must be finite and positive, not: '", norm, "'",
+         call. = FALSE)
+  }
+  valid.norm.values <-
+    c("skip", "undo", "update", "max", "maximum", "min", "minimum", "wipe.attrs")
+  if (is.character(norm) && !norm  %in% valid.norm.values) {
+    stop("If character, 'norm' must be one of '",
+         paste(valid.norm.values, collapse = "', '"),
+         "', not: '", norm, "'",
+         call. = FALSE)
+  }
 
   scale.is.dirty <- FALSE
 
@@ -1127,7 +1172,8 @@ normalize_spct <- function(spct,
               "objects lacking normalization metadata.")
       return(spct)
     } else if (has.normalization.metadata) {
-      if (norm[1] != "undo") {
+      if (norm[1] == "update") {
+        # extract old normalization criteria
         if (old.normalization.ls$norm.type[1] == "wavelength") {
           norm <- old.normalization.ls$norm.wl
         } else {
@@ -1135,24 +1181,34 @@ normalize_spct <- function(spct,
         }
         range <- old.normalization.ls$norm.range
       }
-      # remove the old normalization
 
-      spct <- denormalize_spct(spct,
-                               wipe.away = FALSE)
-      if (norm[1] == "undo") {
+      # remove the old normalization
+      if (norm[1] == "wipe.attrs") {
+        # remove attributes
+        spct <- denormalize_spct(spct,
+                                 wipe.away = TRUE)
         return(spct)
+      } else {
+        # restore to original scale and remove attributes
+        spct <- denormalize_spct(spct,
+                                 wipe.away = FALSE)
+        if (norm[1] == "undo") {
+          return(spct)
+        }
       }
     } else {
       spct <- denormalize_spct(spct,
                                wipe.away = TRUE)
-      scale.is.dirty <- TRUE
+      scale.is.dirty <- TRUE # no normalization factors stored in attribute
     }
-  } else if (norm[1] == "update") {
+  } else if (norm[1] %in% c("update", "undo", "wipe.attrs")) {
     # not normalized, nothing to update
     return(spct)
   }
 
-  # we do not remove NA's from the returned object, only for computation
+  # Here spct contains spectral data reverted to original scaling
+
+  # we do not remove NA's from the returned object, only from working copy x
   if (na.rm) {
     x <- na.omit(spct)
   } else {
@@ -1167,11 +1223,12 @@ normalize_spct <- function(spct,
   }
   stopifnot("Wavelength 'range' is too narrow" = nrow(x) > 2) # too short a slice
 
-  norm.arg <- norm
+  norm.arg <- norm # for later use
+
   # normalization will wipe out any existing scaling except for its effect
   # on the computed factors.
   if (is_scaled(x) && !keep.scaling) {
-    # Only behaviour in <= 0.10.9
+    # The behaviour in <= 0.10.9
     # remove scaling metadata and do not save norm.factors
     scale.is.dirty <- TRUE
     setScaled(spct, scaled = FALSE)
@@ -1198,15 +1255,17 @@ normalize_spct <- function(spct,
       norm.wl <- x[idx, "w.length", drop = TRUE]
     } else if (is.numeric(norm)) {
       if (norm[i] >= range[1] && norm[i] <= range[2]) {
+        # target normalization wavelength is within range
         norm.wl <- norm[i]
         tmp.spct <- spct[ , c("w.length", col)]
         class(tmp.spct) <- class(spct)
         scale.factor <- 1 /
           interpolate_spct(spct = tmp.spct, w.length.out = norm.wl)[ , eval(col)]
       } else {
-        warning("'norm = ", norm[i], "' value(s) outside spectral data range of ",
-                round(min(tmp.spct), 1), " to ", round(max(tmp.spct), 1), " (nm)")
-        scale.factor <- NA
+        warning("'norm = ", norm[i], "' value(s) outside range of ",
+                round(range[1], 1), " to ", round(range[2], 1), " (nm)")
+        scale.factor <- NA_real_
+        norm.wl <- NA_real_
       }
     } else {
       stop("'norm' should be numeric or character")
@@ -1243,7 +1302,8 @@ normalize_spct <- function(spct,
 #' @param spct A \code{generic_spct} object or a \code{generic_mspct} object,
 #'   or objects of derived classes.
 #' @param wipe.away logical If \code{TRUE} the normalization metadata is removed
-#'   after undoing the effect of the normalization.
+#'   without undoing the effect of the normalization, and otherwise after
+#'   restoring the spectral data to its original scaling.
 #'
 #' @return A modified copy of \code{spct} if it was previously normalized or
 #' \code{spct} unchanged, otherwise.
