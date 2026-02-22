@@ -516,9 +516,12 @@ normalize(sun.spct, range = PAR.wb, norm = "max")
 normalize(sun.spct, norm = 600.3)
 
 ## -----------------------------------------------------------------------------
-my.spct <- normalize(sun.spct)
-is_normalized(my.spct)
-getNormalized(my.spct)
+norm_sun.spct <- normalize(sun.spct)
+is_normalized(norm_sun.spct)
+str(getNormalization(norm_sun.spct))
+
+## -----------------------------------------------------------------------------
+restored_sun.spct <- normalize(norm_sun.spct, norm = "undo")
 
 ## ----manip-9------------------------------------------------------------------
 fscale(sun.spct)
