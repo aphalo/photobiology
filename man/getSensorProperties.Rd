@@ -19,7 +19,7 @@ sensor_properties(x, ...)
 
 \method{getSensorProperties}{summary_response_spct}(x, ...)
 
-\method{getSensorProperties}{generic_mspct}(x, ..., idx = "spct.idx")
+\method{getSensorProperties}{generic_mspct}(x, ..., idx = getIdFactor(x))
 }
 \arguments{
 \item{x}{a source_spct object}

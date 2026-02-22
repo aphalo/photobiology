@@ -5,7 +5,7 @@
 \alias{sensor_properties<-}
 \title{Set the "sensor.properties" attribute}
 \usage{
-setSensorProperties(x, sensor.properties = NULL, verbose = TRUE)
+setSensorProperties(x, sensor.properties = NULL, verbose = FALSE)
 
 sensor_properties(x) <- value
 }
@@ -29,18 +29,21 @@ existing response_spct object.
 Storing sensor properties in an attribute with a well defined
 format and minimum of information is intended to help with reproducibility.
 Unlike the \code{filter.properties} metadata, the \code{sensor.properties}
-metadata are currently not used in any computations.
+metadata are currently not used in any computations. The attribute is
+intended to be used with photoelectric sensors, broadband and image, i.e.,
+not for biological photoreceptors or photobiological responses.
 
 \describe{
-\item{sensor.name}{\code{character}, \emph{identification code or name used by the supplier}, required}
-\item{sensor.type}{\code{character}, \code{"broad.band"}, \code{"spectral"}, \code{"image"} required}
-\item{num.channels}{\code{integer}, required}
-\item{channels.desc}{\code{data.frame}, optional}
-\item{sensor.supplier}{\code{character}, optional}
-\item{sensor.io}{\code{character}, \emph{as described in specifications}, optional}
+\item{model}{\code{character}, \emph{identification code or name used by the supplier}, required}
+\item{type}{\code{character}, \code{"broadband"}, \code{"spectral"}, \code{"image"} required}
+\item{supplier}{\code{character}, required}
+\item{channels}{\code{character vector}, names of the channels, required}
+\item{entrance.optics}{\code{character}, \code{"cosine"}, \code{"dome"}, \code{"sphere"}, \code{"narrow"} required}
+\item{signal.interface}{\code{character}, \code{"analog"}, \code{"digital"}, and possibly others.}
 \item{module.name}{\code{character}, optional}
 \item{module.supplier}{\code{character}, optional}
-\item{module.io}{\code{character}, optional}
+\item{module.interface}{\code{character}, optional}
+\item{note}{\code{character}, optional}
 }
 }
 \note{
@@ -54,9 +57,10 @@ my.spct <- ccd.spct
 sensor_properties(my.spct)
 sensor_properties(my.spct) <- NULL
 sensor_properties(my.spct)
-sensor_properties(my.spct) <- list(sensor.name = "ccd",
-                                   sensor.type = "ABC",
-                                   num.channels = 1L)
+sensor_properties(my.spct) <- list(model = "ccd",
+                                   type = "ABC",
+                                   channels = "single",
+                                   supplier = "unknown")
 sensor_properties(my.spct)
 
 }

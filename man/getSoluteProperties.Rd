@@ -19,7 +19,7 @@ solute_properties(x, return.null, ...)
 
 \method{getSoluteProperties}{summary_solute_spct}(x, return.null = FALSE, ...)
 
-\method{getSoluteProperties}{solute_mspct}(x, return.null = FALSE, ..., idx = "spct.idx")
+\method{getSoluteProperties}{solute_mspct}(x, return.null = FALSE, ..., idx = getIdFactor(x))
 }
 \arguments{
 \item{x}{solute_spct A spectrum of coefficients of attenuation.}

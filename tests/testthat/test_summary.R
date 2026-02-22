@@ -38,19 +38,19 @@ test_that("source_spct", {
   expect_known_value(summary(my.spct, expand = "collection", which.metadata = "what.measured"),
                      "./data/summary-eve-what-e-xcoll", update = update_all)
 
-  # photon_as_default()
-  #
-  # my.spct <- sun.spct
-  # expect_known_value(summary(my.spct), "./data/summary-sun-default-q", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "none"), "./data/summary-sun-none-q", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "collection"), "./data/summary-sun-collection-q", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "each"), "./data/summary-sun-each-q", update = update_all)
-  #
-  # my.spct <- sun_evening.spct
-  # expect_known_value(summary(my.spct), "./data/summary-eve-default-q", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "none"), "./data/summary-eve-none-q", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "collection"), "./data/summary-eve-collection-q", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "each"), "./data/summary-eve-each-q", update = update_all)
+  photon_as_default()
+
+  my.spct <- sun.spct
+  expect_known_value(summary(my.spct), "./data/summary-sun-default-q", update = update_all)
+  expect_known_value(summary(my.spct, expand = "none"), "./data/summary-sun-none-q", update = update_all)
+  expect_known_value(summary(my.spct, expand = "collection"), "./data/summary-sun-collection-q", update = update_all)
+  expect_known_value(summary(my.spct, expand = "each"), "./data/summary-sun-each-q", update = update_all)
+
+  my.spct <- sun_evening.spct
+  expect_known_value(summary(my.spct), "./data/summary-eve-default-q", update = update_all)
+  expect_known_value(summary(my.spct, expand = "none"), "./data/summary-eve-none-q", update = update_all)
+  expect_known_value(summary(my.spct, expand = "collection"), "./data/summary-eve-collection-q", update = update_all)
+  expect_known_value(summary(my.spct, expand = "each"), "./data/summary-eve-each-q", update = update_all)
 
   unset_radiation_unit_default()
 })
@@ -65,11 +65,11 @@ test_that("response_spct", {
   expect_known_value(summary(my.spct, expand = "collection"), "./data/summary-collection-re", update = update_all)
   expect_known_value(summary(my.spct, expand = "each"), "./data/summary-each-re", update = update_all)
 
-  # photon_as_default()
-  # expect_known_value(summary(my.spct), "./data/summary-default-rq", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "none"), "./data/summary-default-none-rq", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "collection"), "./data/summary-collection-rq", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "each"), "./data/summary-each-rq", update = update_all)
+  photon_as_default()
+  expect_known_value(summary(my.spct), "./data/summary-default-rq", update = update_all)
+  expect_known_value(summary(my.spct, expand = "none"), "./data/summary-default-none-rq", update = update_all)
+  expect_known_value(summary(my.spct, expand = "collection"), "./data/summary-collection-rq", update = update_all)
+  expect_known_value(summary(my.spct, expand = "each"), "./data/summary-each-rq", update = update_all)
 
   unset_radiation_unit_default()
 })
@@ -84,18 +84,18 @@ test_that("filter_spct", {
   expect_known_value(summary(my.spct, expand = "collection"), "./data/summary-y-collection-tfr", update = update_all)
   expect_known_value(summary(my.spct, expand = "each"), "./data/summary-y-each-tfr", update = update_all)
 
-  # Afr_as_default()
-  # expect_known_value(summary(my.spct), "./data/summary-y-default-afr", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "none"), "./data/summary-y-sun-none-afr", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "collection"), "./data/summary-y-collection-afr", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "each"), "./data/summary-y-each-afr", update = update_all)
-  #
-  # A_as_default()
-  # expect_known_value(summary(my.spct), "./data/summary-y-default-a", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "none"), "./data/summary-y-sun-none-a", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "collection"), "./data/summary-y-collection-a", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "each"), "./data/summary-y-each-a", update = update_all)
-  #
+  Afr_as_default()
+  expect_known_value(summary(my.spct), "./data/summary-y-default-afr", update = update_all)
+  expect_known_value(summary(my.spct, expand = "none"), "./data/summary-y-sun-none-afr", update = update_all)
+  expect_known_value(summary(my.spct, expand = "collection"), "./data/summary-y-collection-afr", update = update_all)
+  expect_known_value(summary(my.spct, expand = "each"), "./data/summary-y-each-afr", update = update_all)
+
+  A_as_default()
+  expect_known_value(summary(my.spct), "./data/summary-y-default-a", update = update_all)
+  expect_known_value(summary(my.spct, expand = "none"), "./data/summary-y-sun-none-a", update = update_all)
+  expect_known_value(summary(my.spct, expand = "collection"), "./data/summary-y-collection-a", update = update_all)
+  expect_known_value(summary(my.spct, expand = "each"), "./data/summary-y-each-a", update = update_all)
+
   unset_filter_qty_default()
 
   my.spct <- two_filters.spct
@@ -116,18 +116,18 @@ test_that("filter_spct", {
   expect_known_value(summary(my.spct, expand = "each", which.metadtata = "what.measured"),
                      "./data/summary-2f-each-what-tfr", update = update_all)
 
-  # Afr_as_default()
-  # expect_known_value(summary(my.spct), "./data/summary-2f-default-afr", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "none"), "./data/summary-2f-sun-none-afr", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "collection"), "./data/summary-2f-collection-afr", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "each"), "./data/summary-2f-each-afr", update = update_all)
-  #
-  # A_as_default()
-  # expect_known_value(summary(my.spct), "./data/summary-2f-default-a", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "none"), "./data/summary-2f-sun-none-a", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "collection"), "./data/summary-2f-collection-a", update = update_all)
-  # expect_known_value(summary(my.spct, expand = "each"), "./data/summary-2f-each-a", update = update_all)
-  #
+  Afr_as_default()
+  expect_known_value(summary(my.spct), "./data/summary-2f-default-afr", update = update_all)
+  expect_known_value(summary(my.spct, expand = "none"), "./data/summary-2f-sun-none-afr", update = update_all)
+  expect_known_value(summary(my.spct, expand = "collection"), "./data/summary-2f-collection-afr", update = update_all)
+  expect_known_value(summary(my.spct, expand = "each"), "./data/summary-2f-each-afr", update = update_all)
+
+  A_as_default()
+  expect_known_value(summary(my.spct), "./data/summary-2f-default-a", update = update_all)
+  expect_known_value(summary(my.spct, expand = "none"), "./data/summary-2f-sun-none-a", update = update_all)
+  expect_known_value(summary(my.spct, expand = "collection"), "./data/summary-2f-collection-a", update = update_all)
+  expect_known_value(summary(my.spct, expand = "each"), "./data/summary-2f-each-a", update = update_all)
+
   unset_filter_qty_default()
 
  })

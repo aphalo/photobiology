@@ -19,7 +19,7 @@ filter_properties(x, return.null, ...)
 
 \method{getFilterProperties}{summary_filter_spct}(x, return.null = FALSE, ...)
 
-\method{getFilterProperties}{generic_mspct}(x, return.null = FALSE, ..., idx = "spct.idx")
+\method{getFilterProperties}{generic_mspct}(x, return.null = FALSE, ..., idx = getIdFactor(x))
 }
 \arguments{
 \item{x}{a filter_spct object}
