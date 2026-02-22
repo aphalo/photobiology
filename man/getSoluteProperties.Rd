@@ -19,7 +19,7 @@ solute_properties(x, return.null, ...)
 
 \method{getSoluteProperties}{summary_solute_spct}(x, return.null = FALSE, ...)
 
-\method{getSoluteProperties}{solute_mspct}(x, return.null = FALSE, ..., idx = "spct.idx")
+\method{getSoluteProperties}{solute_mspct}(x, return.null = FALSE, ..., idx = getIdFactor(x))
 }
 \arguments{
 \item{x}{solute_spct A spectrum of coefficients of attenuation.}
@@ -69,6 +69,7 @@ Other measurement metadata functions:
 \code{\link{getHowMeasured}()},
 \code{\link{getInstrDesc}()},
 \code{\link{getInstrSettings}()},
+\code{\link{getSensorProperties}()},
 \code{\link{getWhatMeasured}()},
 \code{\link{getWhenMeasured}()},
 \code{\link{getWhereMeasured}()},
@@ -80,6 +81,7 @@ Other measurement metadata functions:
 \code{\link{setHowMeasured}()},
 \code{\link{setInstrDesc}()},
 \code{\link{setInstrSettings}()},
+\code{\link{setSensorProperties}()},
 \code{\link{setSoluteProperties}()},
 \code{\link{setWhatMeasured}()},
 \code{\link{setWhenMeasured}()},

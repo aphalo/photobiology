@@ -18,6 +18,9 @@ most cases silent, because attribute `idfactor` remained consistent with column
 name.
 * Add function `simul_sensor_response()`.
 * Update documentation about normalization.
+* [Unstable] Implement support for storage of metadata about electronic light
+and image sensors in attribute `"sensor.descriptor"` using objects of class
+`sensor_descriptor` derived from `list`.
 
 # photobiology 0.14.1
 

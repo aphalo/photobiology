@@ -151,6 +151,13 @@ print.generic_spct <- function(x,
       cat("\n")
     }
   }
+  if (class_spct(x)[1] == "response_spct") {
+    properties <- sensor_properties(x, return.null = TRUE)
+    if (!is.null(properties)) {
+      print(properties)
+      cat("\n")
+    }
+  }
   if (class_spct(x)[1] == "solute_spct") {
     properties <- solute_properties(x, return.null = TRUE)
     if (!is.null(properties)) {
@@ -865,6 +872,23 @@ print.solute_properties <- function(x, ...) {
       "Formula: ", x[["formula"]][1], ".",
       sep = "",
       ...
+    )
+  }
+  invisible(x)
+}
+
+#' @rdname print.metadata
+#'
+#' @export
+#'
+print.sensor_properties <- function(x, ...) {
+  if (!length(x) || !is.list(x)) {
+    warning("'x' is not a sensor properties record")
+  } else {
+    cat("Sensor: ", x[["model"]][1], " from ",
+        x[["supplier"]][1], ".",
+        sep = "",
+        ...
     )
   }
   invisible(x)

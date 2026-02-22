@@ -19,7 +19,7 @@ filter_properties(x, return.null, ...)
 
 \method{getFilterProperties}{summary_filter_spct}(x, return.null = FALSE, ...)
 
-\method{getFilterProperties}{generic_mspct}(x, return.null = FALSE, ..., idx = "spct.idx")
+\method{getFilterProperties}{generic_mspct}(x, return.null = FALSE, ..., idx = getIdFactor(x))
 }
 \arguments{
 \item{x}{a filter_spct object}
@@ -68,6 +68,7 @@ Other measurement metadata functions:
 \code{\link{getHowMeasured}()},
 \code{\link{getInstrDesc}()},
 \code{\link{getInstrSettings}()},
+\code{\link{getSensorProperties}()},
 \code{\link{getSoluteProperties}()},
 \code{\link{getWhatMeasured}()},
 \code{\link{getWhenMeasured}()},
@@ -80,6 +81,7 @@ Other measurement metadata functions:
 \code{\link{setHowMeasured}()},
 \code{\link{setInstrDesc}()},
 \code{\link{setInstrSettings}()},
+\code{\link{setSensorProperties}()},
 \code{\link{setSoluteProperties}()},
 \code{\link{setWhatMeasured}()},
 \code{\link{setWhenMeasured}()},
