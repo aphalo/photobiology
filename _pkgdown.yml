@@ -167,6 +167,8 @@ reference:
     - getKType
     - setKType
     - is_mole_based
+    - getSensorProperties
+    - setSensorProperties
     - getTimeUnit
     - setTimeUnit
     - setResponseType
