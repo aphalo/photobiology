@@ -7,6 +7,7 @@ editor_options:
 
 # photobiology 0.14.2
 
+* Add function `simul_sensor_response()`.
 * Fix bug: `print.generic_spct()` and `print.summary_generic_spct()` failure 
 when printing _normalization metadata_ stored in objects containing multiple 
 spectra in long form created with 'photobiology' (>= 0.14.0).
@@ -16,11 +17,11 @@ containing multiple spectra in long form created with 'photobiology'
 * Fix bug: `idfactor` column accidental renaming in `denormalize_spct()`. In
 most cases silent, because attribute `idfactor` remained consistent with column
 name.
-* Add function `simul_sensor_response()`.
-* Update documentation about normalization.
+* Improve support for `solute.properties` and for `filter.properties`.
 * [Unstable] Implement support for storage of metadata about electronic light
-and image sensors in attribute `"sensor.descriptor"` using objects of class
-`sensor_descriptor` derived from `list`.
+and image sensors in attribute `sensor.properties` using objects of class
+`sensor_properties` derived from `list`.
+* Update documentation about normalization.
 
 # photobiology 0.14.1
 

@@ -347,7 +347,7 @@ rbindspct <- function(l,
     if (length(filter.descriptor) == 1L) {
       setFilterProperties(ans, filter.descriptor[[1]])
     } else if (length(filter.descriptor) != 0L) {
-      warning("Discarding heterogeous filter.descriptor!!")
+      message("Discarding heterogeous 'filter.descriptor' attributes!!")
     }
     if (!TA.consistent.based) {
       T2A(ans, action = "add", byref = TRUE)
@@ -367,7 +367,7 @@ rbindspct <- function(l,
     # if (length(filter.descriptor) == 1L) {
     #   setFilterProperties(ans, filter.descriptor[[1]])
     # } else if (length(filter.descriptor) != 0L) {
-    #   warning("Discarding heterogeous filter.descriptor!!")
+    #   message("Discarding heterogeous 'filter.descriptor' attributes!!")
     # }
   } else if (l.class == "object_spct") {
     Tfr.type <- sapply(l, FUN = getTfrType)
@@ -394,7 +394,7 @@ rbindspct <- function(l,
     if (length(filter.descriptor) == 1L) {
       setFilterProperties(ans, filter.descriptor[[1]])
     } else if (length(filter.descriptor) != 0L) {
-      warning("Discarding heterogeous filter.descriptor!!")
+      message("Discarding heterogeous 'filter.descriptor' attributes!!")
     }
   } else if (l.class == "solute_spct") {
     K.type <- sapply(l, FUN = getKType)
@@ -402,9 +402,17 @@ rbindspct <- function(l,
     K.type <- unique(K.type)
     if (length(K.type) > 1L) {
       warning("Inconsistent 'K.type' among solute spectra in rbindspct")
-      return(reflector_spct())
+      return(solute_spct())
     }
     setSoluteSpct(ans, K.type = K.type, multiple.wl = mltpl.wl)
+    solute.descriptor <-
+      lapply(l, FUN = getSoluteProperties, return.null = TRUE)
+    solute.descriptor <- unique(solute.descriptor)
+    if (length(solute.descriptor) == 1L) {
+      setSoluteProperties(ans, solute.descriptor[[1]])
+    } else if (length(solute.descriptor) != 0L) {
+      message("Discarding heterogeous 'solute.descriptor' attributes!!")
+    }
   } else if (l.class == "response_spct") {
     time.unit <- sapply(l, FUN = getTimeUnit)
     names(time.unit) <- NULL
@@ -423,7 +431,7 @@ rbindspct <- function(l,
     if (length(sensor.descriptor) == 1L) {
       setSensorProperties(ans, sensor.descriptor[[1]])
     } else if (length(sensor.descriptor) != 0L) {
-      warning("Discarding heterogeous heterogeneous.descriptor!!")
+      message("Discarding heterogeous 'sensor.descriptor' attributes!!")
     }
   } else if (l.class == "chroma_spct") {
     setChromaSpct(ans, multiple.wl = mltpl.wl)

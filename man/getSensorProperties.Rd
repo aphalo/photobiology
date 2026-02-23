@@ -13,7 +13,7 @@ getSensorProperties(x, ...)
 
 sensor_properties(x, ...)
 
-\method{getSensorProperties}{default}(x, ...)
+\method{getSensorProperties}{default}(x, return.null = FALSE, ...)
 
 \method{getSensorProperties}{response_spct}(x, return.null = FALSE, ...)
 

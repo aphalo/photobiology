@@ -1980,6 +1980,10 @@ subset2mspct <- function(x,
       if (is.null(solute.properties)) {
         solute.properties <- list()
       }
+      sensor.properties <- getSensorProperties(x, return.null = TRUE)
+      if (is.null(sensor.properties)) {
+        sensor.properties <- list()
+      }
       for (i in seq(along.with = z)) {
 
         if (!all(is.na(when.measured))) {
@@ -2063,6 +2067,7 @@ subset2mspct <- function(x,
         } else {
           z[[i]] <- setInstrSettings(z[[i]], NULL)
         }
+
         if (length(filter.properties) > 0) {
           if (is.list(filter.properties) &&
               !inherits(filter.properties, "filter_properties") &&
@@ -2086,6 +2091,19 @@ subset2mspct <- function(x,
         } else {
           z[[i]] <- setSoluteProperties(z[[i]], NULL, verbose = FALSE)
         }
+
+        if (length(sensor.properties) > 0) {
+          if (is.list(sensor.properties) &&
+              !inherits(sensor.properties, "sensor_properties") &&
+              length(sensor.properties) == length(groups)) {
+            z[[i]] <- setSensorProperties(z[[i]], sensor.properties[[i]])
+          } else {
+            z[[i]] <- setSensorProperties(z[[i]], sensor.properties)
+          }
+        } else {
+          z[[i]] <- setSensorProperties(z[[i]], NULL, verbose = FALSE)
+        }
+
       }
     }
 

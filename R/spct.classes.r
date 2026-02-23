@@ -3798,15 +3798,21 @@ sensor_properties <- getSensorProperties
 #' @rdname getSensorProperties
 #' @export
 getSensorProperties.default <- function(x,
+                                        return.null = FALSE,
                                         ...) {
-  warning("Methods 'getSensorProperties()' not implemented for class: ",
+  if (!is.any_spct(x) && !is.any_summary_spct(x)) {
+    warning("Methods 'getSensorProperties()' not implemented for class: ",
             class(x)[1])
-  # we return an NA
-  sensor.properties <- list(model = NA_character_,
-                            type = NA_character_,
-                            supplier = NA_character_)
-  class(sensor.properties) <- c("sensor_properties", class(sensor.properties))
-  sensor.properties
+  }
+  if (return.null) {
+    NULL
+  } else {
+    sensor.properties <- list(model = NA_character_,
+                              type = NA_character_,
+                              supplier = NA_character_)
+    class(sensor.properties) <- c("sensor_properties", class(sensor.properties))
+    sensor.properties
+  }
 }
 
 #' @rdname getSensorProperties
