@@ -3581,7 +3581,9 @@ getSoluteProperties <- function(x,
 solute_properties <- getSoluteProperties
 
 #' @describeIn getSoluteProperties default
+#'
 #' @export
+#'
 getSoluteProperties.default <- function(x,
                                         return.null = FALSE,
                                         ...) {
@@ -3607,7 +3609,9 @@ getSoluteProperties.default <- function(x,
 }
 
 #' @describeIn getSoluteProperties solute_spct
+#'
 #' @export
+#'
 getSoluteProperties.solute_spct <- function(x,
                                             return.null = FALSE,
                                             ...) {
@@ -3765,6 +3769,9 @@ setSensorProperties <- function(x,
 #' or a source_mspct.
 #'
 #' @param x a source_spct object
+#' @param return.null logical If true, \code{NULL} is returned if the attribute
+#'   is not set, otherwise the expected list is returned with all fields set to
+#'   \code{NA}.
 #' @param ... Allows use of additional arguments in methods for other classes.
 #'
 #' @return an object of class \code{sensor_properties} derived from \code{list},
@@ -3803,16 +3810,21 @@ getSensorProperties.default <- function(x,
 }
 
 #' @rdname getSensorProperties
+#'
 #' @export
+#'
 getSensorProperties.response_spct <- function(x,
+                                              return.null = FALSE,
                                               ...) {
   sensor.properties <- attr(x, "sensor.properties", exact = TRUE)
   if (is.null(sensor.properties)) {
-    # we return a record filled with NAs
-    sensor.properties <- list(model = NA_character_,
-                              type = NA_character_,
-                              supplier = NA_character_)
-    class(sensor.properties) <- c("sensor_properties", class(sensor.properties))
+    if (!return.null) {
+      # we return a record filled with NAs
+      sensor.properties <- list(model = NA_character_,
+                                type = NA_character_,
+                                supplier = NA_character_)
+      class(sensor.properties) <- c("sensor_properties", class(sensor.properties))
+    }
   } else {
     if (!inherits(sensor.properties, "sensor_properties")) {
         stop("Bad \"sensor_properties\" attribute value.")

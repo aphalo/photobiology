@@ -15,9 +15,9 @@ sensor_properties(x, ...)
 
 \method{getSensorProperties}{default}(x, ...)
 
-\method{getSensorProperties}{response_spct}(x, ...)
+\method{getSensorProperties}{response_spct}(x, return.null = FALSE, ...)
 
-\method{getSensorProperties}{summary_response_spct}(x, ...)
+\method{getSensorProperties}{summary_response_spct}(x, return.null = FALSE, ...)
 
 \method{getSensorProperties}{generic_mspct}(x, ..., idx = getIdFactor(x))
 }
@@ -25,6 +25,10 @@ sensor_properties(x, ...)
 \item{x}{a source_spct object}
 
 \item{...}{Allows use of additional arguments in methods for other classes.}
+
+\item{return.null}{logical If true, \code{NULL} is returned if the attribute
+is not set, otherwise the expected list is returned with all fields set to
+\code{NA}.}
 
 \item{idx}{character Name of the column with the names of the members of the
 collection of spectra.}

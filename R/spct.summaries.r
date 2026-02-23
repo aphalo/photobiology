@@ -144,7 +144,8 @@ print.generic_spct <- function(x,
       cat("\n")
     }
   }
-  if (class_spct(x)[1] == "filter_spct") {
+  if (class_spct(x)[1] %in%
+      c("filter_spct", "reflector_spct", "object_spct")) {
     properties <- filter_properties(x, return.null = TRUE)
     if (!is.null(properties)) {
       print(properties)
@@ -847,6 +848,7 @@ print.filter_properties <- function(x, ...) {
   if (!length(x) || !is.list(x)) {
     warning("'x' is not a filter properties record")
   } else {
+    # we print NAs as metadata is required
     cat("Rfr (/1): ",
         paste(sprintf("%#.3f", x[["Rfr.constant"]]), collapse = " + "), ", ",
         "thickness (mm): ",
@@ -867,6 +869,7 @@ print.solute_properties <- function(x, ...) {
   if (!length(x) || !is.list(x)) {
     warning("'x' is not a solute properties record")
   } else {
+    # we print NAs as metadata is required
     cat("Name: ", x[["name"]][1], ", ",
       "Molar mass (Da): ", round(x[["mass"]], digits = 2), ", ",
       "Formula: ", x[["formula"]][1], ".",
@@ -882,9 +885,8 @@ print.solute_properties <- function(x, ...) {
 #' @export
 #'
 print.sensor_properties <- function(x, ...) {
-  if (!length(x) || !is.list(x)) {
-    warning("'x' is not a sensor properties record")
-  } else {
+  # we silently skip printing as these metadata are optional
+  if (length(x) && !all(is.na(x))) {
     cat("Sensor: ", x[["model"]][1], " from ",
         x[["supplier"]][1], ".",
         sep = "",

@@ -40,7 +40,7 @@ not for biological photoreceptors or photobiological responses.
 \item{entrance.optics}{\code{character}, \code{"cosine"}, \code{"dome"}, \code{"sphere"}, \code{"narrow"} required}
 \item{channels}{\code{data.frame}, description of the channels, one channel per row, optional}
 \item{signal.interface}{\code{character}, \code{"analog"}, \code{"digital"}, and possibly others.}
-\item{module.name}{\code{character}, optional}
+\item{module.model}{\code{character}, optional}
 \item{module.supplier}{\code{character}, optional}
 \item{module.interface}{\code{character}, optional}
 \item{note}{\code{character}, optional}
