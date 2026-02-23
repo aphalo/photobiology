@@ -3724,7 +3724,7 @@ setSensorProperties <- function(x,
     c("model", "type", "supplier")
   accepted.names <-
     c(required.names, "entrance.optics", "signal.interface", "note",
-      "module.model", "module.interface", "module.supplier",
+      "module.model", "module.type", "module.supplier", "module.interface",
       "channels")
   if (is.response_spct(x) || is.summary_response_spct(x)) {
     name <- substitute(x)
@@ -3827,7 +3827,7 @@ getSensorProperties.response_spct <- function(x,
     }
   } else {
     if (!inherits(sensor.properties, "sensor_properties")) {
-        stop("Bad \"sensor_properties\" attribute value.")
+        stop("Bad \"sensor.properties\" attribute value.")
      }
   }
   sensor.properties
