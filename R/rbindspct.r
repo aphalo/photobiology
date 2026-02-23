@@ -340,11 +340,15 @@ rbindspct <- function(l,
               "passed to rbindspct")
       return(filter_spct())
     }
-    filter.descriptor <-
-      sapply(l, FUN = getFilterProperties, return.null = TRUE)
-    # TODO merge it if possible
-    # and then set
     setFilterSpct(ans, Tfr.type = Tfr.type[1], multiple.wl = mltpl.wl)
+    filter.descriptor <-
+      lapply(l, FUN = getFilterProperties, return.null = TRUE)
+    filter.descriptor <- unique(filter.descriptor)
+    if (length(filter.descriptor) == 1L) {
+      setFilterProperties(ans, filter.descriptor[[1]])
+    } else if (length(filter.descriptor) != 0L) {
+      warning("Discarding heterogeous filter.descriptor!!")
+    }
     if (!TA.consistent.based) {
       T2A(ans, action = "add", byref = TRUE)
     }
@@ -357,6 +361,14 @@ rbindspct <- function(l,
       return(reflector_spct())
     }
     setReflectorSpct(ans, Rfr.type = Rfr.type[1], multiple.wl = mltpl.wl)
+    # filter.descriptor <-
+    #   lapply(l, FUN = getFilterProperties, return.null = TRUE)
+    # filter.descriptor <- unique(filter.descriptor)
+    # if (length(filter.descriptor) == 1L) {
+    #   setFilterProperties(ans, filter.descriptor[[1]])
+    # } else if (length(filter.descriptor) != 0L) {
+    #   warning("Discarding heterogeous filter.descriptor!!")
+    # }
   } else if (l.class == "object_spct") {
     Tfr.type <- sapply(l, FUN = getTfrType)
     names(Tfr.type) <- NULL
@@ -365,17 +377,25 @@ rbindspct <- function(l,
     names(Rfr.type) <- NULL
     Rfr.type <- unique(Rfr.type)
     if (length(Tfr.type) > 1L) {
-      warning("Inconsistent 'Tfr.type' among filter spectra ",
+      warning("Inconsistent 'Tfr.type' among object spectra ",
               "passed to rbindspct")
       return(filter_spct())
     }
     if (length(Rfr.type) > 1L) {
-      warning("Inconsistent 'Rfr.type' among reflector spectra ",
+      warning("Inconsistent 'Rfr.type' among object spectra ",
               "passed to rbindspct")
       return(reflector_spct())
     }
     setObjectSpct(ans, Tfr.type = Tfr.type[1], Rfr.type = Rfr.type[1],
                   multiple.wl = mltpl.wl)
+    filter.descriptor <-
+      lapply(l, FUN = getFilterProperties, return.null = TRUE)
+    filter.descriptor <- unique(filter.descriptor)
+    if (length(filter.descriptor) == 1L) {
+      setFilterProperties(ans, filter.descriptor[[1]])
+    } else if (length(filter.descriptor) != 0L) {
+      warning("Discarding heterogeous filter.descriptor!!")
+    }
   } else if (l.class == "solute_spct") {
     K.type <- sapply(l, FUN = getKType)
     names(K.type) <- NULL
@@ -396,6 +416,14 @@ rbindspct <- function(l,
     setResponseSpct(ans, time.unit = time.unit[1], multiple.wl = mltpl.wl)
     if (!qe.consistent.based) {
       e2q(ans, action = "add", byref = TRUE)
+    }
+    sensor.descriptor <-
+      lapply(l, FUN = getSensorProperties, return.null = TRUE)
+    sensor.descriptor <- unique(sensor.descriptor)
+    if (length(sensor.descriptor) == 1L) {
+      setSensorProperties(ans, sensor.descriptor[[1]])
+    } else if (length(sensor.descriptor) != 0L) {
+      warning("Discarding heterogeous heterogeneous.descriptor!!")
     }
   } else if (l.class == "chroma_spct") {
     setChromaSpct(ans, multiple.wl = mltpl.wl)
