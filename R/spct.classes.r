@@ -3684,10 +3684,10 @@ getSoluteProperties.solute_mspct <- function(x,
 #' \item{model}{\code{character}, \emph{identification code or name used by the supplier}, required}
 #' \item{type}{\code{character}, \code{"broadband"}, \code{"spectral"}, \code{"image"} required}
 #' \item{supplier}{\code{character}, required}
-#' \item{channels}{\code{character vector}, names of the channels, required}
 #' \item{entrance.optics}{\code{character}, \code{"cosine"}, \code{"dome"}, \code{"sphere"}, \code{"narrow"} required}
+#' \item{channels}{\code{data.frame}, description of the channels, one channel per row, optional}
 #' \item{signal.interface}{\code{character}, \code{"analog"}, \code{"digital"}, and possibly others.}
-#' \item{module.name}{\code{character}, optional}
+#' \item{module.model}{\code{character}, optional}
 #' \item{module.supplier}{\code{character}, optional}
 #' \item{module.interface}{\code{character}, optional}
 #' \item{note}{\code{character}, optional}
@@ -3710,7 +3710,6 @@ getSoluteProperties.solute_mspct <- function(x,
 #' sensor_properties(my.spct)
 #' sensor_properties(my.spct) <- list(model = "ccd",
 #'                                    type = "ABC",
-#'                                    channels = "single",
 #'                                    supplier = "unknown")
 #' sensor_properties(my.spct)
 #'
@@ -3718,15 +3717,17 @@ setSensorProperties <- function(x,
                                 sensor.properties = NULL,
                                 verbose = FALSE) {
   required.names <-
-    c("model", "type", "supplier", "channels")
+    c("model", "type", "supplier")
   accepted.names <-
     c(required.names, "entrance.optics", "signal.interface", "note",
-      "module.name", "module.interface", "module.supplier")
+      "module.model", "module.interface", "module.supplier",
+      "channels")
   if (is.response_spct(x) || is.summary_response_spct(x)) {
     name <- substitute(x)
     if (length(sensor.properties)) {
       stopifnot(is.list(sensor.properties))
-      stopifnot(all(sapply(X = sensor.properties, FUN = is.character)))
+      stopifnot(all(sapply(X = sensor.properties,
+                           FUN = function(x) {is.list(x) || is.character(x)})))
       stopifnot(all(required.names %in% names(sensor.properties)))
       stopifnot(all(names(sensor.properties) %in% accepted.names))
       if (!inherits(sensor.properties, what = "sensor_properties")) {
@@ -3794,9 +3795,9 @@ getSensorProperties.default <- function(x,
   warning("Methods 'getSensorProperties()' not implemented for class: ",
             class(x)[1])
   # we return an NA
-  sensor.properties <- list(name = NA_character_,
+  sensor.properties <- list(model = NA_character_,
                             type = NA_character_,
-                            channels = NA_character_)
+                            supplier = NA_character_)
   class(sensor.properties) <- c("sensor_properties", class(sensor.properties))
   sensor.properties
 }
@@ -3808,9 +3809,9 @@ getSensorProperties.response_spct <- function(x,
   sensor.properties <- attr(x, "sensor.properties", exact = TRUE)
   if (is.null(sensor.properties)) {
     # we return a record filled with NAs
-    sensor.properties <- list(name = NA_character_,
+    sensor.properties <- list(model = NA_character_,
                               type = NA_character_,
-                              channels = NA_character_)
+                              supplier = NA_character_)
     class(sensor.properties) <- c("sensor_properties", class(sensor.properties))
   } else {
     if (!inherits(sensor.properties, "sensor_properties")) {

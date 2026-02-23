@@ -150,6 +150,7 @@ test_that("response_spct", {
   expect_equal(getWhenMeasured(ccd.spct), getWhenMeasured(smooth_spct(ccd.spct)))
   expect_equal(getWhatMeasured(ccd.spct), getWhatMeasured(smooth_spct(ccd.spct)))
   expect_equal(getWhereMeasured(ccd.spct), getWhereMeasured(smooth_spct(ccd.spct)))
+  expect_equal(getSensorProperties(ccd.spct), getSensorProperties(smooth_spct(ccd.spct)))
 
   expect_known_value(comment(smooth_spct(ccd.spct)), "./data/smooth-rsp-comment-value", update = update_all)
 

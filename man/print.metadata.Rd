@@ -6,6 +6,7 @@
 \alias{print.instr_settings}
 \alias{print.filter_properties}
 \alias{print.solute_properties}
+\alias{print.sensor_properties}
 \title{Print methods for metadata records}
 \usage{
 \method{print}{instr_desc}(x, ...)
@@ -15,6 +16,8 @@
 \method{print}{filter_properties}(x, ...)
 
 \method{print}{solute_properties}(x, ...)
+
+\method{print}{sensor_properties}(x, ...)
 }
 \arguments{
 \item{x}{An object of one of the summary classes for spectra.}

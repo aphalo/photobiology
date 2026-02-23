@@ -37,8 +37,8 @@ not for biological photoreceptors or photobiological responses.
 \item{model}{\code{character}, \emph{identification code or name used by the supplier}, required}
 \item{type}{\code{character}, \code{"broadband"}, \code{"spectral"}, \code{"image"} required}
 \item{supplier}{\code{character}, required}
-\item{channels}{\code{character vector}, names of the channels, required}
 \item{entrance.optics}{\code{character}, \code{"cosine"}, \code{"dome"}, \code{"sphere"}, \code{"narrow"} required}
+\item{channels}{\code{data.frame}, description of the channels, one channel per row, optional}
 \item{signal.interface}{\code{character}, \code{"analog"}, \code{"digital"}, and possibly others.}
 \item{module.name}{\code{character}, optional}
 \item{module.supplier}{\code{character}, optional}
@@ -59,7 +59,6 @@ sensor_properties(my.spct) <- NULL
 sensor_properties(my.spct)
 sensor_properties(my.spct) <- list(model = "ccd",
                                    type = "ABC",
-                                   channels = "single",
                                    supplier = "unknown")
 sensor_properties(my.spct)
 

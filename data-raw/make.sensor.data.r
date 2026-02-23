@@ -15,7 +15,7 @@ setWhereMeasured(photodiode.spct, na_geocode())
 setSensorProperties(photodiode.spct,
                     list(model = "G6262",
                          type = "GaAsP photodiode",
-                         channels = "Single UV/blue 280 to 580 nm",
+                         entrance.optics = "wide",
                          supplier = "Hamamatsu")
 )
 # photodiode.spct <- normalize(photodiode.spct)
@@ -33,8 +33,8 @@ setWhereMeasured(ccd.spct, na_geocode())
 setSensorProperties(ccd.spct,
                     list(model = "S10420-1",
                          type = "Back-thinned CCD image sensor (\"linear\")",
-                         channels = "Single 200 to 1100 nm",
                          supplier = "Hamamatsu",
+                         entrance.optics = "wide",
                          note = "designed for spectrometers")
                     )
 # ccd.spct <- normalize(ccd.spct)
