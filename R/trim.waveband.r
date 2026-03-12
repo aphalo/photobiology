@@ -69,7 +69,7 @@ trim_waveband <-
     input.was.waveband <- is.waveband(w.band)
     if (input.was.waveband) {
       w.band <- list(w.band)
-      w.band.names <- list("")
+      w.band.names <- list()
     } else {
       w.band.names <- as.list(names(w.band))
     }

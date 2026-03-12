@@ -2,7 +2,7 @@ library("photobiology")
 
 context("trim_wl")
 
-test_that("waveband", {
+test_that("trimming works with wavebands", {
 
   my.spct <- source_spct(w.length = 400:450, s.e.irrad = 0.5, time.unit = "second")
   my.wb <- waveband(c(300,500))
@@ -59,3 +59,30 @@ test_that("waveband", {
 
 })
 
+test_that("trimming works with list of wavebands", {
+
+  my.spct <- source_spct(w.length = 400:450, s.e.irrad = 0.5, time.unit = "second")
+  my.partnamed.wbs.ls <- my.named.wbs.ls <- my.wbs.ls <-
+    list(waveband(c(300,500)), waveband(c(400,600)), waveband(c(300,1000)))
+  names(my.named.wbs.ls) <- c("first", "second", "third")
+  names(my.partnamed.wbs.ls)[c(1,3)] <- c("first", "third")
+
+  expect_equal(unique(sapply(X = trim_wl(my.wbs.ls, my.spct), FUN = expanse)),
+               expanse(my.spct))
+  expect_equal(range(sapply(X = trim_wl(my.wbs.ls, my.spct), FUN = wl_range)),
+               wl_range(my.spct))
+
+  expect_equal(unique(sapply(X = trim_wl(my.named.wbs.ls, my.spct), FUN = expanse)),
+               expanse(my.spct))
+  expect_equal(range(sapply(X = trim_wl(my.named.wbs.ls, my.spct), FUN = wl_range)),
+               wl_range(my.spct))
+
+  expect_equal(unique(sapply(X = trim_wl(my.partnamed.wbs.ls, my.spct), FUN = expanse)),
+               expanse(my.spct))
+  expect_equal(range(sapply(X = trim_wl(my.partnamed.wbs.ls, my.spct), FUN = wl_range)),
+               wl_range(my.spct))
+
+  expect_named(trim_wl(my.wbs.ls, my.spct), NULL)
+  expect_named(trim_wl(my.named.wbs.ls, my.spct), names(my.named.wbs.ls))
+  expect_named(trim_wl(my.partnamed.wbs.ls, my.spct), names(my.partnamed.wbs.ls))
+})
