@@ -15,7 +15,7 @@ setWhereMeasured(photodiode.spct, na_geocode())
 setSensorProperties(photodiode.spct,
                     list(model = "G6262",
                          type = "GaAsP photodiode",
-                         entrance.optics = "wide",
+                         entrance.optics = "none",
                          supplier = "Hamamatsu")
 )
 # photodiode.spct <- normalize(photodiode.spct)
@@ -25,13 +25,13 @@ ccd.spct <- read.csv("data-raw/photodiode/hamamatsu_S10420-1.csv",
 setResponseSpct(ccd.spct, time.unit = "second")
 
 ccd.spct <- trim_wl(ccd.spct, range = c(200, 1100), fill = NULL)
-comment(ccd.spct) <- "Spectral response of CCD.\nHamamatsu S10420-1\nSource: CCD image sensors datasheet,\n document at http://www.hamamatsu.com/, Hamamatsu (2014), Hamamatsu City, Japan.\nResponse expressed quantum efficiency (as fraction of one)."
+comment(ccd.spct) <- "Spectral response of CCD.\nHamamatsu S10420-01\nSource: CCD image sensors datasheet,\n document at http://www.hamamatsu.com/, Hamamatsu (2014), Hamamatsu City, Japan.\nResponse expressed quantum efficiency (as fraction of one)."
 setWhatMeasured(ccd.spct, "CCD linear image sensor")
 setHowMeasured(ccd.spct, "Digitized from plot in manufacturer's data sheet.")
 setWhenMeasured(ccd.spct, ymd_hms(NA_character_))
 setWhereMeasured(ccd.spct, na_geocode())
 setSensorProperties(ccd.spct,
-                    list(model = "S10420-1",
+                    list(model = "S10420-01",
                          type = "Back-thinned CCD image sensor (\"linear\")",
                          supplier = "Hamamatsu",
                          entrance.optics = "wide",

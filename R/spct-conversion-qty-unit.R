@@ -913,7 +913,7 @@ e2q.source_spct <- function(x,
 #' @export
 #'
 e2q.response_spct <- function(x,
-                              action = "add",
+                              action = NULL,
                               byref = FALSE,
                               ...) {
   if (byref) {
@@ -975,7 +975,7 @@ e2q.response_spct <- function(x,
 #' @export
 #'
 e2q.source_mspct <- function(x,
-                             action = "add",
+                             action = NULL,
                              byref = FALSE,
                              ...,
                              .parallel = FALSE,
@@ -995,7 +995,7 @@ e2q.source_mspct <- function(x,
 #' @export
 #'
 e2q.response_mspct <- function(x,
-                               action = "add",
+                               action = NULL,
                                byref = FALSE,
                                ...,
                                .parallel = FALSE,
