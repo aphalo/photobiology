@@ -15,11 +15,11 @@ e2q(x, action, byref, ...)
 
 \method{e2q}{source_spct}(x, action = NULL, byref = FALSE, ...)
 
-\method{e2q}{response_spct}(x, action = "add", byref = FALSE, ...)
+\method{e2q}{response_spct}(x, action = NULL, byref = FALSE, ...)
 
-\method{e2q}{source_mspct}(x, action = "add", byref = FALSE, ..., .parallel = FALSE, .paropts = NULL)
+\method{e2q}{source_mspct}(x, action = NULL, byref = FALSE, ..., .parallel = FALSE, .paropts = NULL)
 
-\method{e2q}{response_mspct}(x, action = "add", byref = FALSE, ..., .parallel = FALSE, .paropts = NULL)
+\method{e2q}{response_mspct}(x, action = NULL, byref = FALSE, ..., .parallel = FALSE, .paropts = NULL)
 }
 \arguments{
 \item{x}{an R object.}
