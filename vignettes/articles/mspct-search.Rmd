@@ -1,0 +1,21 @@
+---
+title: "Finding Members of Collections"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(photobiology)
+library(photobiologyLEDs)
+```
+
+Sometimes, like in packages of R for Photobiology suite, vectors of member names based on properties such as colour are available. In other cases, properties can be computed and extraction of selected members based on them. Examples of this second approach are given in this article.
+
+- Computed colour, CCT, CRI, peak wavelength, peak width, PAR, illuminance, R:FR and other ratios, and other summaries.
+- The "deepest curve" from a set of spectra.
+- Raggedness (?).
