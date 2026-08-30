@@ -338,6 +338,7 @@ reference:
     - checkTimeUnit
     - copy_attributes
     - merge_attributes
+    - subset_attributes
     - formatted_range
     - normalize_range_arg
     - collect2mspct
