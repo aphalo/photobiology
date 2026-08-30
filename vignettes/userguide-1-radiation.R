@@ -244,6 +244,40 @@ new.spct <- c(my.mspct[5:4], my.mspct[3])
 summary(new.spct, which.metadata = "when.measured")$summary[ , -(2:6)]
 
 ## -----------------------------------------------------------------------------
+extracted.mspct <-
+sun_evening.mspct[q_irrad(sun_evening.mspct)[["Q_Total"]] > 130e-6]
+
+summary(sun_evening.mspct)
+summary(extracted.mspct)
+
+## -----------------------------------------------------------------------------
+q.irrads <- q_irrad(sun_evening.mspct)
+q.irrads
+selector <- q.irrads[["Q_Total"]] > 130e-6
+selector
+extracted.mspct <- sun_evening.mspct[selector] # subset a collection
+summary(extracted.mspct)
+
+## -----------------------------------------------------------------------------
+extracted.name <- q.irrads[["spct.idx"]][selector]
+extracted.name # a factor
+as.character(extracted.name) # character vector
+
+## -----------------------------------------------------------------------------
+distances <- abs(q.irrads[["Q_Total"]] - 130e-6)
+distances
+selector <- which(distances == min(distances))
+selector
+extracted.spct <- 
+  sun_evening.mspct[[selector]] # extract a single spectrum
+summary(extracted.spct)
+
+## -----------------------------------------------------------------------------
+extracted.name <- q.irrads[["spct.idx"]][selector]
+extracted.name # a factor
+as.character(extracted.name) # character vector
+
+## -----------------------------------------------------------------------------
 set.seed(1234564)
 sampled.mspct <- pull_sample(sun_evening.mspct, size = 2)
 summary(sampled.mspct, which.metadata = "when.measured")$summary[ , -(2:6)]

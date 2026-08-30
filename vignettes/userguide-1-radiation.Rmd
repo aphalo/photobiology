@@ -1174,18 +1174,71 @@ new.spct <- c(my.mspct[5:4], my.mspct[3])
 summary(new.spct, which.metadata = "when.measured")$summary[ , -(2:6)]
 ```
 
+### Extraction based on summary quantities
+
+Summaries can be computed from spectral data using, for example, any of the methods described below in section **Summaries**. To extract spectra based on a boundary condition, such as `>`, the code is simple.
+
+```{r}
+extracted.mspct <-
+sun_evening.mspct[q_irrad(sun_evening.mspct)[["Q_Total"]] > 130e-6]
+
+summary(sun_evening.mspct)
+summary(extracted.mspct)
+```
+
+The same code can be split into three statements to inspect the values at each step.
+
+```{r}
+q.irrads <- q_irrad(sun_evening.mspct)
+q.irrads
+selector <- q.irrads[["Q_Total"]] > 130e-6
+selector
+extracted.mspct <- sun_evening.mspct[selector] # subset a collection
+summary(extracted.mspct)
+```
+
+Instead of extracting the spectra it is possible to obtain their names. Continuing from above.
+
+```{r}
+extracted.name <- q.irrads[["spct.idx"]][selector]
+extracted.name # a factor
+as.character(extracted.name) # character vector
+```
+
+Extracting a single spectrum based on proximity, i.e., the spectrum yielding the nearest summary value to a target is only slightly more involved.
+
+```{r}
+distances <- abs(q.irrads[["Q_Total"]] - 130e-6)
+distances
+selector <- which(distances == min(distances))
+selector
+extracted.spct <- 
+  sun_evening.mspct[[selector]] # extract a single spectrum
+summary(extracted.spct)
+```
+
+To find the name of this spectrum, the same code as above can be used.
+
+```{r}
+extracted.name <- q.irrads[["spct.idx"]][selector]
+extracted.name # a factor
+as.character(extracted.name) # character vector
+```
+
 ### Random sampling
 
 With large collections of spectra it can be useful to extract a random subset of
-spectra. Method `pull_sample()` make this easy for multiple spectra, stored
-either in long form or in collections of spectra. (We can set the seed of the
-pseudo-random number generator to ensure repeatability).
+spectra. Method `pull_sample()` makes this extraction easy for multiple spectra,
+stored either in long form or as collections of spectra. (We can set the seed of
+the pseudo-random number generator to ensure repeatability). First from a collection.
 
 ```{r}
 set.seed(1234564)
 sampled.mspct <- pull_sample(sun_evening.mspct, size = 2)
 summary(sampled.mspct, which.metadata = "when.measured")$summary[ , -(2:6)]
 ```
+
+Below starting from the same spectra stored in long form.
 
 ```{r}
 set.seed(1234564)
