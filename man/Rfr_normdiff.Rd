@@ -144,16 +144,6 @@ If the argument is set to \code{quantity = "total"} the fraction is based on
 Only if the wavelength expanse of the two wavebands is the same, these two
 ratios are numerically identical.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{Rfr_normdiff(default)}: Default for generic function
-
-\item \code{Rfr_normdiff(reflector_spct)}: Method for \code{reflector_spct} objects
-
-\item \code{Rfr_normdiff(reflector_mspct)}: Calculates Rfr:Rfr from a \code{reflector_mspct}
-object.
-
-}}
 \note{
 The last two parameters control speed optimizations. The defaults
   should be suitable in most cases. If you will use repeatedly the same SWFs
@@ -181,8 +171,8 @@ Rfr_normdiff(Ler_leaf_rflt.spct,
 \code{\link{normalized_diff_ind}}, accepts different summary
 functions.
 
-Other Reflectance ratio functions: 
-\code{\link{Rfr_fraction}()},
-\code{\link{Rfr_ratio}()}
+Other Reflectance ratio functions:
+\code{\link[=Rfr_fraction]{Rfr_fraction()}},
+\code{\link[=Rfr_ratio]{Rfr_ratio()}}
 }
 \concept{Reflectance ratio functions}

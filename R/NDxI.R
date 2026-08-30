@@ -62,7 +62,7 @@ normalised_diff_ind <- normalized_diff_ind
 #'
 NDxI <- normalized_diff_ind
 
-#' @describeIn normalized_diff_ind default
+#' @rdname normalized_diff_ind
 #'
 #' @export
 #'
@@ -73,7 +73,7 @@ normalized_diff_ind.default <-
     NA_real_
   }
 
-#' @describeIn normalized_diff_ind
+#' @rdname normalized_diff_ind
 #'
 #' @export
 #'
@@ -114,7 +114,7 @@ normalized_diff_ind.generic_spct <- function(spct,
   }
 }
 
-#' @describeIn normalized_diff_ind
+#' @rdname normalized_diff_ind
 #'
 #' @export
 #'

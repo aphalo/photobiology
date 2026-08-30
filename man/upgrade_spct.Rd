@@ -21,8 +21,8 @@ The object is modified by reference. The class names with ending
   ".spct" replaced by their new equivalents ending in "_spct".
 }
 \seealso{
-Other upgrade from earlier versions: 
-\code{\link{is.old_spct}()},
-\code{\link{upgrade_spectra}()}
+Other upgrade from earlier versions:
+\code{\link[=is.old_spct]{is.old_spct()}},
+\code{\link[=upgrade_spectra]{upgrade_spectra()}}
 }
 \concept{upgrade from earlier versions}

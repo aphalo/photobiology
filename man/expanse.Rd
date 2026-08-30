@@ -47,19 +47,6 @@ particular the wavelength [\eqn{nm}] expanse of the wavelength range of
 objects of classes \code{waveband} or of class \code{generic_spct} or derived
 (or the expanse of values in a \code{numeric} vector).
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{expanse(default)}: Default method for generic function
-
-\item \code{expanse(numeric)}: Method for "numeric"
-
-\item \code{expanse(waveband)}: Method for "waveband"
-
-\item \code{expanse(generic_spct)}: Method for "generic_spct"
-
-\item \code{expanse(generic_mspct)}: Method for "generic_mspct" objects.
-
-}}
 \examples{
 expanse(10:20)
 expanse(sun.spct)

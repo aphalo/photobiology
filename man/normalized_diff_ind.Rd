@@ -57,15 +57,6 @@ difference among then is in the wavebands used.
 
   \deqn{\mathrm{NDxI} = \frac{f(s, wb_\mathrm{plus}) - f(s, wb_\mathrm{minus})}{f(s, wb_\mathrm{plus}) + f(s, wb_\mathrm{minus})}}
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{normalized_diff_ind(default)}: default
-
-\item \code{normalized_diff_ind(generic_spct)}: 
-
-\item \code{normalized_diff_ind(generic_mspct)}: 
-
-}}
 \note{
 Some NDxI indexes are directly based on satellite instrument data, such
   as those in the Landsat satellites. To simulate such indexes using spectral

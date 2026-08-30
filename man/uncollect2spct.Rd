@@ -47,13 +47,6 @@ Utility used for its side effects, invisibly returns a character
 Extract all members from a collection into separate objects in the parent
 frame of the call.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{uncollect2spct(default)}: Default for generic function
-
-\item \code{uncollect2spct(generic_mspct)}: 
-
-}}
 \examples{
 
 my.mscpt <- source_mspct(list(sun1.spct = sun.spct, sun2.spct = sun.spct))
@@ -62,9 +55,9 @@ ls(pattern = "*.spct")
 
 }
 \seealso{
-Other experimental utility functions: 
-\code{\link{collect2mspct}()},
-\code{\link{drop_user_cols}()},
-\code{\link{thin_wl}()}
+Other experimental utility functions:
+\code{\link[=collect2mspct]{collect2mspct()}},
+\code{\link[=drop_user_cols]{drop_user_cols()}},
+\code{\link[=thin_wl]{thin_wl()}}
 }
 \concept{experimental utility functions}

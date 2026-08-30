@@ -41,7 +41,7 @@ class(my.spct)
 
 }
 \seealso{
-Other set and unset spectral class functions: 
-\code{\link{setGenericSpct}()}
+Other set and unset spectral class functions:
+\code{\link[=setGenericSpct]{setGenericSpct()}}
 }
 \concept{set and unset spectral class functions}

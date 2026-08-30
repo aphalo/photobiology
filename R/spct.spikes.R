@@ -1,4 +1,4 @@
-#' Find spikes
+ #' Find spikes
 #'
 #' This function finds spikes in a numeric vector using the algorithm of
 #' Whitaker and Hayes (2018). Spikes are values in spectra that are unusually
@@ -275,7 +275,8 @@ despike <- function(x,
                     na.rm,
                     ...) UseMethod("despike")
 
-#' @describeIn despike Default returning always NA.
+#' @rdname despike
+#'
 #' @export
 despike.default <-
   function(x,
@@ -290,7 +291,8 @@ despike.default <-
     x[NA]
   }
 
-#' @describeIn despike Default function usable on numeric vectors.
+#' @rdname despike
+#'
 #' @export
 despike.numeric <-
   function(x,
@@ -312,7 +314,7 @@ despike.numeric <-
                     ...)
   }
 
-#' @describeIn despike  Method for "data.frame" objects.
+#' @rdname despike
 #'
 #' @export
 #'
@@ -346,7 +348,7 @@ despike.data.frame <-
     x
   }
 
-#' @describeIn despike  Method for "generic_spct" objects.
+#' @rdname despike
 #'
 #' @export
 #'
@@ -408,7 +410,7 @@ despike.generic_spct <-
     x
   }
 
-#' @describeIn despike  Method for "source_spct" objects.
+#' @rdname despike
 #'
 #' @param unit.out character One of "energy" or "photon"
 #'
@@ -464,7 +466,7 @@ despike.source_spct <-
     z
   }
 
-#' @describeIn despike  Method for "response_spct" objects.
+#' @rdname despike
 #'
 #' @export
 #'
@@ -518,7 +520,7 @@ despike.response_spct <-
     z
   }
 
-#' @describeIn despike  Method for "filter_spct" objects.
+#' @rdname despike
 #'
 #' @param filter.qty character One of "transmittance" or "absorbance"
 #'
@@ -577,7 +579,7 @@ despike.filter_spct <-
     z
   }
 
-#' @describeIn despike  Method for "reflector_spct" objects.
+#' @rdname despike
 #'
 #' @export
 #'
@@ -620,7 +622,7 @@ despike.reflector_spct <- function(x,
   x
 }
 
-#' @describeIn despike  Method for "solute_spct" objects.
+#' @rdname despike
 #'
 #' @export
 #'
@@ -669,7 +671,7 @@ despike.solute_spct <-
     z
   }
 
-#' @describeIn despike  Method for "cps_spct" objects.
+#' @rdname despike
 #'
 #' @export
 #'
@@ -714,7 +716,7 @@ despike.cps_spct <- function(x,
   x
 }
 
-#' @describeIn despike  Method for "raw_spct" objects.
+#' @rdname despike
 #'
 #' @export
 #'
@@ -762,7 +764,7 @@ despike.raw_spct <- function(x,
 
 # _mspct methods ----------------------------------------------------------
 
-#' @describeIn despike  Method for "generic_mspct" objects.
+#' @rdname despike
 #'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
@@ -801,7 +803,7 @@ despike.generic_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn despike  Method for "source_mspct" objects.
+#' @rdname despike
 #'
 #' @export
 #'
@@ -833,7 +835,7 @@ despike.source_mspct <-
             .paropts = .paropts)
   }
 
-#' @describeIn despike  Method for "cps_mspct" objects.
+#' @rdname despike
 #'
 #' @export
 #'
@@ -865,7 +867,7 @@ despike.response_mspct <-
             .paropts = .paropts)
   }
 
-#' @describeIn despike  Method for "filter_mspct" objects.
+#' @rdname despike
 #'
 #' @export
 #'
@@ -898,7 +900,7 @@ despike.filter_mspct <-
   }
 
 
-#' @describeIn despike  Method for "reflector_mspct" objects.
+#' @rdname despike
 #'
 #' @export
 #'
@@ -927,13 +929,13 @@ despike.reflector_mspct <-
             .paropts = .paropts)
   }
 
-#' @describeIn despike  Method for "solute_mspct" objects.
+#' @rdname despike
 #'
 #' @export
 #'
 despike.solute_mspct <- despike.reflector_mspct
 
-#' @describeIn despike  Method for "cps_mspct" objects.
+#' @rdname despike
 #'
 #' @export
 #'
@@ -961,7 +963,7 @@ despike.cps_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn despike  Method for "raw_mspct" objects.
+#' @rdname despike
 #'
 #' @export
 #'
@@ -1038,7 +1040,8 @@ despike.raw_mspct <- function(x,
 #'
 spikes <- function(x, z.threshold, max.spike.width, na.rm, ...) UseMethod("spikes")
 
-#' @describeIn spikes Default returning always NA.
+#' @rdname spikes
+#'
 #' @export
 spikes.default <-
   function(x,
@@ -1051,7 +1054,8 @@ spikes.default <-
     x[NA]
   }
 
-#' @describeIn spikes Default function usable on numeric vectors.
+#' @rdname spikes
+#'
 #' @export
 spikes.numeric <-
   function(x,
@@ -1065,7 +1069,7 @@ spikes.numeric <-
                   na.rm = na.rm)]
   }
 
-#' @describeIn spikes  Method for "data.frame" objects.
+#' @rdname spikes
 #'
 #' @export
 #'
@@ -1089,7 +1093,7 @@ spikes.data.frame <-
     x[spikes.idx,  , drop = FALSE]
   }
 
-#' @describeIn spikes  Method for "generic_spct" objects.
+#' @rdname spikes
 #'
 #' @export
 #'
@@ -1138,7 +1142,7 @@ spikes.generic_spct <-
     x[spikes.idx,  , drop = FALSE]
   }
 
-#' @describeIn spikes  Method for "source_spct" objects.
+#' @rdname spikes
 #'
 #' @param unit.out character One of "energy" or "photon"
 #'
@@ -1188,7 +1192,7 @@ spikes.source_spct <-
     z[spikes.idx,  , drop = FALSE]
   }
 
-#' @describeIn spikes  Method for "response_spct" objects.
+#' @rdname spikes
 #'
 #' @export
 #'
@@ -1236,7 +1240,7 @@ spikes.response_spct <-
     z[spikes.idx,  , drop = FALSE]
   }
 
-#' @describeIn spikes  Method for "filter_spct" objects.
+#' @rdname spikes
 #'
 #' @param filter.qty character One of "transmittance" or "absorbance"
 #'
@@ -1286,7 +1290,7 @@ spikes.filter_spct <-
     z[spikes.idx,  , drop = FALSE]
   }
 
-#' @describeIn spikes  Method for "reflector_spct" objects.
+#' @rdname spikes
 #'
 #' @export
 #'
@@ -1322,7 +1326,7 @@ spikes.reflector_spct <- function(x,
   x[spikes.idx,  , drop = FALSE]
 }
 
-#' @describeIn spikes  Method for "solute_spct" objects.
+#' @rdname spikes
 #'
 #' @export
 #'
@@ -1365,7 +1369,7 @@ spikes.solute_spct <-
     z[spikes.idx,  , drop = FALSE]
   }
 
-#' @describeIn spikes  Method for "cps_spct" objects.
+#' @rdname spikes
 #'
 #' @export
 #'
@@ -1402,7 +1406,7 @@ spikes.cps_spct <- function(x,
   x[spikes.idx,  , drop = FALSE]
 }
 
-#' @describeIn spikes  Method for "raw_spct" objects.
+#' @rdname spikes
 #'
 #' @export
 #'
@@ -1439,7 +1443,7 @@ spikes.raw_spct <- function(x,
   x[spikes.idx,  , drop = FALSE]
 }
 
-#' @describeIn spikes  Method for "generic_mspct" objects.
+#' @rdname spikes
 #'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
@@ -1473,7 +1477,7 @@ spikes.generic_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn spikes  Method for "source_mspct" objects.
+#' @rdname spikes
 #'
 #' @export
 #'
@@ -1501,7 +1505,7 @@ spikes.source_mspct <-
             .paropts = .paropts)
   }
 
-#' @describeIn spikes  Method for "cps_mspct" objects.
+#' @rdname spikes
 #'
 #' @export
 #'
@@ -1529,7 +1533,7 @@ spikes.response_mspct <-
             .paropts = .paropts)
   }
 
-#' @describeIn spikes  Method for "filter_mspct" objects.
+#' @rdname spikes
 #'
 #' @export
 #'
@@ -1558,7 +1562,7 @@ spikes.filter_mspct <-
   }
 
 
-#' @describeIn spikes  Method for "reflector_mspct" objects.
+#' @rdname spikes
 #'
 #' @export
 #'
@@ -1583,14 +1587,14 @@ spikes.reflector_mspct <-
             .paropts = .paropts)
   }
 
-#' @describeIn spikes  Method for "solute_mspct" objects.
+#' @rdname spikes
 #'
 #' @export
 #'
 spikes.solute_mspct <- spikes.reflector_mspct
 
 
-#' @describeIn spikes  Method for "cps_mspct" objects.
+#' @rdname spikes
 #'
 #' @export
 #'
@@ -1616,7 +1620,7 @@ spikes.cps_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn spikes  Method for "raw_mspct" objects.
+#' @rdname spikes
 #'
 #' @export
 #'

@@ -28,10 +28,10 @@ getTimeUnit(sun.spct)
 
 }
 \seealso{
-Other time attribute functions: 
-\code{\link{checkTimeUnit}()},
-\code{\link{convertThickness}()},
-\code{\link{convertTimeUnit}()},
-\code{\link{setTimeUnit}()}
+Other time attribute functions:
+\code{\link[=checkTimeUnit]{checkTimeUnit()}},
+\code{\link[=convertThickness]{convertThickness()}},
+\code{\link[=convertTimeUnit]{convertTimeUnit()}},
+\code{\link[=setTimeUnit]{setTimeUnit()}}
 }
 \concept{time attribute functions}

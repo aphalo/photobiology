@@ -33,21 +33,12 @@ if \code{x} contains tag data they are removed and the "spct.tags"
 Remove tags from an R object if present, otherwise return the object
 unchanged.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{untag(default)}: Default for generic function
-
-\item \code{untag(generic_spct)}: Specialization for generic_spct
-
-\item \code{untag(generic_mspct)}: Specialization for generic_spct
-
-}}
 \seealso{
-Other tagging and related functions: 
-\code{\link{is_tagged}()},
-\code{\link{tag}()},
-\code{\link{wb2rect_spct}()},
-\code{\link{wb2spct}()},
-\code{\link{wb2tagged_spct}()}
+Other tagging and related functions:
+\code{\link[=is_tagged]{is_tagged()}},
+\code{\link[=tag]{tag()}},
+\code{\link[=wb2rect_spct]{wb2rect_spct()}},
+\code{\link[=wb2spct]{wb2spct()}},
+\code{\link[=wb2tagged_spct]{wb2tagged_spct()}}
 }
 \concept{tagging and related functions}

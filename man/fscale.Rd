@@ -254,43 +254,6 @@ After scaling, calling the function passed as argument to \code{f}
   solutions of specific concentrations of solutes, \code{filter_spct} objects
   should be used instead.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{fscale(default)}: Default for generic function
-
-\item \code{fscale(source_spct)}: 
-
-\item \code{fscale(response_spct)}: 
-
-\item \code{fscale(filter_spct)}: 
-
-\item \code{fscale(reflector_spct)}: 
-
-\item \code{fscale(solute_spct)}: 
-
-\item \code{fscale(raw_spct)}: 
-
-\item \code{fscale(cps_spct)}: 
-
-\item \code{fscale(generic_spct)}: 
-
-\item \code{fscale(source_mspct)}: 
-
-\item \code{fscale(response_mspct)}: 
-
-\item \code{fscale(filter_mspct)}: 
-
-\item \code{fscale(reflector_mspct)}: 
-
-\item \code{fscale(solute_mspct)}: 
-
-\item \code{fscale(raw_mspct)}: 
-
-\item \code{fscale(cps_mspct)}: 
-
-\item \code{fscale(generic_mspct)}: 
-
-}}
 \section{Important changes}{
  Metadata describing the rescaling operation are
   stored in an attribute only if \code{set.scaled = TRUE} is passed to the
@@ -317,14 +280,14 @@ e_irrad(s400.spct, c(400, 700))
 
 }
 \seealso{
-Other rescaling functions: 
-\code{\link{fshift}()},
-\code{\link{getNormalized}()},
-\code{\link{getScaled}()},
-\code{\link{is_normalized}()},
-\code{\link{is_scaled}()},
-\code{\link{normalize}()},
-\code{\link{setNormalized}()},
-\code{\link{setScaled}()}
+Other rescaling functions:
+\code{\link[=fshift]{fshift()}},
+\code{\link[=getNormalized]{getNormalized()}},
+\code{\link[=getScaled]{getScaled()}},
+\code{\link[=is_normalized]{is_normalized()}},
+\code{\link[=is_scaled]{is_scaled()}},
+\code{\link[=normalize]{normalize()}},
+\code{\link[=setNormalized]{setNormalized()}},
+\code{\link[=setScaled]{setScaled()}}
 }
 \concept{rescaling functions}

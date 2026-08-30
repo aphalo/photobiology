@@ -36,9 +36,9 @@ Checks are applied by default after each operation that modifies
 \seealso{
 [check_spct()]
 
-Other data validity check functions: 
-\code{\link{check_spct}()},
-\code{\link{check_spectrum}()},
-\code{\link{check_w.length}()}
+Other data validity check functions:
+\code{\link[=check_spct]{check_spct()}},
+\code{\link[=check_spectrum]{check_spectrum()}},
+\code{\link[=check_w.length]{check_w.length()}}
 }
 \concept{data validity check functions}

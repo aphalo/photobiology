@@ -62,29 +62,6 @@ Converts a list of spectral objects into a "multi spectrum"
   corresponding multi-spct class, check that components of the list belong to
   the expected class.
 }
-\section{Functions}{
-\itemize{
-\item \code{calibration_mspct()}: Specialization for collections of \code{calibration_spct} objects.
-
-\item \code{raw_mspct()}: Specialization for collections of \code{raw_spct} objects.
-
-\item \code{cps_mspct()}: Specialization for collections of \code{cps_spct} objects.
-
-\item \code{source_mspct()}: Specialization for collections of \code{source_spct} objects.
-
-\item \code{filter_mspct()}: Specialization for collections of \code{filter_spct} objects.
-
-\item \code{reflector_mspct()}: Specialization for collections of \code{reflector_spct} objects.
-
-\item \code{object_mspct()}: Specialization for collections of \code{object_spct} objects.
-
-\item \code{solute_mspct()}: Specialization for collections of \code{solute_spct} objects.
-
-\item \code{response_mspct()}: Specialization for collections of \code{response_spct} objects.
-
-\item \code{chroma_mspct()}: Specialization for collections of \code{chroma_spct} objects.
-
-}}
 \note{
 Setting class = source_spct or class = source_mspct makes no difference
 }

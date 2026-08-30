@@ -127,23 +127,14 @@ A named \code{numeric} vector in the case of methods for individual
 \description{
 Calculate average photon- or energy-based photo-response.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{response(default)}: Default for generic function
-
-\item \code{response(response_spct)}: Method for response spectra.
-
-\item \code{response(response_mspct)}: Calculates response from a \code{response_mspct}
-
-}}
 \note{
 The parameter \code{use.hinges} controls speed optimization. The
   defaults should be suitable in most cases. Only the range of wavelengths
   in the wavebands is used and all BSWFs are ignored.
 }
 \seealso{
-Other response functions: 
-\code{\link{e_response}()},
-\code{\link{q_response}()}
+Other response functions:
+\code{\link[=e_response]{e_response()}},
+\code{\link[=q_response]{q_response()}}
 }
 \concept{response functions}

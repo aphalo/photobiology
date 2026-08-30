@@ -78,19 +78,6 @@ A copy of \code{x} converted into a \code{generic_mspct} object.
 Return a copy of an R object with its class set to a given type
   of spectrum.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{as.generic_mspct(default)}: 
-
-\item \code{as.generic_mspct(data.frame)}: 
-
-\item \code{as.generic_mspct(generic_spct)}: 
-
-\item \code{as.generic_mspct(list)}: 
-
-\item \code{as.generic_mspct(matrix)}: 
-
-}}
 \note{
 Members of \code{generic_mspct} objects can be heterogeneous: they can
   belong to any class derived from \code{generic_spct} and class is not
@@ -101,18 +88,18 @@ Members of \code{generic_mspct} objects can be heterogeneous: they can
   one of the dimensions of \code{x}.
 }
 \seealso{
-Other Coercion methods for collections of spectra: 
-\code{\link{as.calibration_mspct}()},
-\code{\link{as.chroma_mspct}()},
-\code{\link{as.cps_mspct}()},
-\code{\link{as.filter_mspct}()},
-\code{\link{as.object_mspct}()},
-\code{\link{as.raw_mspct}()},
-\code{\link{as.reflector_mspct}()},
-\code{\link{as.response_mspct}()},
-\code{\link{as.solute_mspct}()},
-\code{\link{as.source_mspct}()},
-\code{\link{split2mspct}()},
-\code{\link{subset2mspct}()}
+Other Coercion methods for collections of spectra:
+\code{\link[=as.calibration_mspct]{as.calibration_mspct()}},
+\code{\link[=as.chroma_mspct]{as.chroma_mspct()}},
+\code{\link[=as.cps_mspct]{as.cps_mspct()}},
+\code{\link[=as.filter_mspct]{as.filter_mspct()}},
+\code{\link[=as.object_mspct]{as.object_mspct()}},
+\code{\link[=as.raw_mspct]{as.raw_mspct()}},
+\code{\link[=as.reflector_mspct]{as.reflector_mspct()}},
+\code{\link[=as.response_mspct]{as.response_mspct()}},
+\code{\link[=as.solute_mspct]{as.solute_mspct()}},
+\code{\link[=as.source_mspct]{as.source_mspct()}},
+\code{\link[=split2mspct]{split2mspct()}},
+\code{\link[=subset2mspct]{subset2mspct()}}
 }
 \concept{Coercion methods for collections of spectra}

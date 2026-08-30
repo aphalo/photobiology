@@ -112,9 +112,9 @@ trim_spct(sun.spct, range = c(NA, 400))
 
 }
 \seealso{
-Other trim functions: 
-\code{\link{clip_wl}()},
-\code{\link{trim_waveband}()},
-\code{\link{trim_wl}()}
+Other trim functions:
+\code{\link[=clip_wl]{clip_wl()}},
+\code{\link[=trim_waveband]{trim_waveband()}},
+\code{\link[=trim_wl]{trim_wl()}}
 }
 \concept{trim functions}

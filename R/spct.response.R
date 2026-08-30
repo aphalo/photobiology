@@ -52,7 +52,7 @@
 #'
 response <- function(spct, w.band, unit.out, quantity, time.unit, scale.factor, wb.trim, use.hinges, ...) UseMethod("response")
 
-#' @describeIn response Default for generic function
+#' @rdname response
 #'
 #' @export
 #'
@@ -61,7 +61,7 @@ response.default <- function(spct, w.band, unit.out, quantity, time.unit, scale.
   return(NA)
 }
 
-#' @describeIn response Method for response spectra.
+#' @rdname response
 #'
 #' @export
 #'
@@ -404,7 +404,7 @@ resp_spct <-
 #'
 e_response <- function(spct, w.band, quantity, time.unit, scale.factor, wb.trim, use.hinges, ...) UseMethod("e_response")
 
-#' @describeIn e_response Default method for generic function
+#' @rdname e_response
 #'
 #' @export
 #'
@@ -413,7 +413,7 @@ e_response.default <- function(spct, w.band, quantity, time.unit, scale.factor, 
   return(NA)
 }
 
-#' @describeIn e_response Method for response spectra.
+#' @rdname e_response
 #'
 #' @export
 #'
@@ -515,7 +515,7 @@ q_response <- function(spct,
                        use.hinges,
                        ...) UseMethod("q_response")
 
-#' @describeIn q_response Default method for generic function
+#' @rdname q_response
 #'
 #' @export
 #'
@@ -524,7 +524,7 @@ q_response.default <- function(spct, w.band, quantity, time.unit, scale.factor, 
   return(NA)
 }
 
-#' @describeIn q_response Method for response spectra.
+#' @rdname q_response
 #'
 #' @export
 #'
@@ -569,7 +569,7 @@ q_response.response_spct <-
 
 # response_mspct methods -----------------------------------------------
 
-#' @describeIn response Calculates response from a \code{response_mspct}
+#' @rdname response
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx character Name of the column with the names of the members of the
@@ -625,8 +625,7 @@ response.response_mspct <-
                 idx = idx)
   }
 
-#' @describeIn q_response Calculates photon (quantum) response from a
-#'   \code{response_mspct}
+#' @rdname q_response
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx character Name of the column with the names of the members of the
@@ -680,8 +679,7 @@ q_response.response_mspct <-
                 idx = idx)
   }
 
-#' @describeIn e_response Calculates energy response from a
-#'   \code{response_mspct}
+#' @rdname e_response
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx character Name of the column with the names of the members of the

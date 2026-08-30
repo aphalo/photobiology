@@ -115,19 +115,6 @@ A named \code{numeric} vector in the case of methods for individual
 \description{
 Summary transmittance for supplied wavebands from filter or object spectrum.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{transmittance(default)}: Default method
-
-\item \code{transmittance(filter_spct)}: Method for filter spectra
-
-\item \code{transmittance(object_spct)}: Method for object spectra
-
-\item \code{transmittance(filter_mspct)}: Calculates transmittance from a \code{filter_mspct}
-
-\item \code{transmittance(object_mspct)}: Calculates transmittance from a \code{object_mspct}
-
-}}
 \note{
 The \code{use.hinges} parameter controls speed optimization. The
   defaults should be suitable in most cases. Only the range of wavelengths

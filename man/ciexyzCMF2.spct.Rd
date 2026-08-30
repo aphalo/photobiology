@@ -33,7 +33,7 @@ ciexyzCMF2.spct
 
 }
 \seealso{
-Other Visual response data examples: 
+Other Visual response data examples:
 \code{\link{beesxyzCMF.spct}},
 \code{\link{ciev10.spct}},
 \code{\link{ciev2.spct}},

@@ -32,7 +32,7 @@ colnames(sun_evening.spct)
 
 }
 \seealso{
-Other Spectral data examples: 
+Other Spectral data examples:
 \code{\link{A.illuminant.spct}},
 \code{\link{D50.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},

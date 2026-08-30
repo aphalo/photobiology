@@ -25,7 +25,7 @@ If \code{x} is an object of any of the multi spectral classes defined
   unchanged. The modified \code{x} is also returned invisibly.
 }
 \seealso{
-Other set and unset 'multi spectral' class functions: 
-\code{\link{shared_member_class}()}
+Other set and unset 'multi spectral' class functions:
+\code{\link[=shared_member_class]{shared_member_class()}}
 }
 \concept{set and unset 'multi spectral' class functions}

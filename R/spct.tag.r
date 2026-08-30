@@ -20,7 +20,7 @@
 #'
 tag <- function(x, ...) UseMethod("tag")
 
-#' @describeIn tag Default method for generic
+#' @rdname tag
 #'
 #' @export
 #'
@@ -29,9 +29,7 @@ tag.default <- function(x, ...) {
   return(x)
 }
 
-#' @describeIn tag Tag one of \code{generic_spct}, and derived classes including
-#'   \code{source_spct}, \code{filter_spct}, \code{reflector_spct},
-#'   \code{object_spct}, and \code{response_spct}.
+#' @rdname tag
 #'
 #' @param w.band waveband or list of waveband objects. The waveband(s) determine
 #'   the region(s) of the spectrum that are tagged
@@ -172,9 +170,8 @@ tag.generic_spct <-
     return(x)
   }
 
-#' @describeIn tag Tag one of \code{generic_mspct}, and derived classes including
-#'   \code{source_mspct}, \code{filter_mspct}, \code{reflector_mspct},
-#'   \code{object_mspct}, and \code{response_mspct}.
+#' @rdname tag
+#'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
 #' @param .paropts a list of additional options passed into the foreach function
@@ -466,7 +463,7 @@ fast_wb2rect_spct <- function(w.band, chroma.type = "CMF", simplify = TRUE) {
 #'
 untag <- function(x, ...) UseMethod("untag")
 
-#' @describeIn untag Default for generic function
+#' @rdname untag
 #'
 #' @export
 #'
@@ -474,7 +471,7 @@ untag.default <- function(x, ...) {
   return(x)
 }
 
-#' @describeIn untag Specialization for generic_spct
+#' @rdname untag
 #'
 #' @param byref logical indicating if new object will be created by reference or
 #'   by copy of x
@@ -510,7 +507,7 @@ untag.generic_spct <- function(x,
   return(x)
 }
 
-#' @describeIn untag Specialization for generic_spct
+#' @rdname untag
 #'
 #' @export
 #'

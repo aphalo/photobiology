@@ -33,7 +33,7 @@ H. Buiteveld and J. M. H. Hakvoort and M. Donze (1994) "The
 \url{https://omlc.org/spectra/water/}
 }
 \seealso{
-Other Spectral data examples: 
+Other Spectral data examples:
 \code{\link{A.illuminant.spct}},
 \code{\link{D50.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},

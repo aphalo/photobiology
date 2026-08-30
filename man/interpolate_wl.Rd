@@ -95,17 +95,6 @@ Depending on \code{method} natural spline interpolation or linear
   vector, \code{interpolate_wl} applies, one at a time, interpolation to all
   numeric columns found in \code{x}.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{interpolate_wl(default)}: Default for generic function
-
-\item \code{interpolate_wl(generic_spct)}: Interpolate wavelength in an object of class
-"generic_spct" or derived.
-
-\item \code{interpolate_wl(generic_mspct)}: Interpolate wavelength in an object of class
-"generic_mspct" or derived.
-
-}}
 \examples{
 interpolate_wl(sun.spct, 400:500, NA)
 interpolate_wl(sun.spct, 400:500, NULL)

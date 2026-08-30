@@ -37,10 +37,10 @@ my.spct
 
 }
 \seealso{
-Other time attribute functions: 
-\code{\link{checkTimeUnit}()},
-\code{\link{convertThickness}()},
-\code{\link{getTimeUnit}()},
-\code{\link{setTimeUnit}()}
+Other time attribute functions:
+\code{\link[=checkTimeUnit]{checkTimeUnit()}},
+\code{\link[=convertThickness]{convertThickness()}},
+\code{\link[=getTimeUnit]{getTimeUnit()}},
+\code{\link[=setTimeUnit]{setTimeUnit()}}
 }
 \concept{time attribute functions}

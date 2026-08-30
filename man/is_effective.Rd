@@ -34,31 +34,13 @@ A \code{logical}.
 A generic function for querying if a biological spectral weighting function
 (BSWF) has been applied to an object or is included in its definition.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{is_effective(default)}: Default method.
-
-\item \code{is_effective(waveband)}: Is a \code{waveband} object defining a method for
-calculating effective irradiance.
-
-\item \code{is_effective(generic_spct)}: Does a \code{source_spct} object contain effective
-spectral irradiance values.
-
-\item \code{is_effective(source_spct)}: Does a \code{source_spct} object contain effective
-spectral irradiance values.
-
-\item \code{is_effective(summary_generic_spct)}: Method for "summary_generic_spct".
-
-\item \code{is_effective(summary_source_spct)}: Method for "summary_source_spct".
-
-}}
 \examples{
 is_effective(summary(sun.spct))
 
 }
 \seealso{
-Other waveband attributes: 
-\code{\link{labels}()},
-\code{\link{normalization}()}
+Other waveband attributes:
+\code{\link{labels}},
+\code{\link[=normalization]{normalization()}}
 }
 \concept{waveband attributes}

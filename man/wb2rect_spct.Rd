@@ -50,11 +50,11 @@ Function \code{fast_wb2rect_spct()} differs from \code{wb2rect_spct()}
   are only approximate and original waveband names can be lost.
 }
 \seealso{
-Other tagging and related functions: 
-\code{\link{is_tagged}()},
-\code{\link{tag}()},
-\code{\link{untag}()},
-\code{\link{wb2spct}()},
-\code{\link{wb2tagged_spct}()}
+Other tagging and related functions:
+\code{\link[=is_tagged]{is_tagged()}},
+\code{\link[=tag]{tag()}},
+\code{\link[=untag]{untag()}},
+\code{\link[=wb2spct]{wb2spct()}},
+\code{\link[=wb2tagged_spct]{wb2tagged_spct()}}
 }
 \concept{tagging and related functions}

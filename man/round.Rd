@@ -46,16 +46,16 @@ quantity in the spectrum to which the function is applied depends on the
 class of \code{x} and the current value of output options.
 }
 \seealso{
-Other math operators and functions: 
+Other math operators and functions:
 \code{\link{MathFun}},
-\code{\link{^.generic_spct}()},
-\code{\link{convolve_each}()},
+\code{\link[=^.generic_spct]{^.generic_spct()}},
+\code{\link[=convolve_each]{convolve_each()}},
 \code{\link{div-.generic_spct}},
-\code{\link{log}()},
+\code{\link{log}},
 \code{\link{minus-.generic_spct}},
 \code{\link{mod-.generic_spct}},
 \code{\link{plus-.generic_spct}},
-\code{\link{sign}()},
+\code{\link{sign}},
 \code{\link{slash-.generic_spct}},
 \code{\link{times-.generic_spct}}
 }

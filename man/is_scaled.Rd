@@ -26,14 +26,14 @@ is_scaled(scaled.spct)
 
 }
 \seealso{
-Other rescaling functions: 
-\code{\link{fscale}()},
-\code{\link{fshift}()},
-\code{\link{getNormalized}()},
-\code{\link{getScaled}()},
-\code{\link{is_normalized}()},
-\code{\link{normalize}()},
-\code{\link{setNormalized}()},
-\code{\link{setScaled}()}
+Other rescaling functions:
+\code{\link[=fscale]{fscale()}},
+\code{\link[=fshift]{fshift()}},
+\code{\link[=getNormalized]{getNormalized()}},
+\code{\link[=getScaled]{getScaled()}},
+\code{\link[=is_normalized]{is_normalized()}},
+\code{\link[=normalize]{normalize()}},
+\code{\link[=setNormalized]{setNormalized()}},
+\code{\link[=setScaled]{setScaled()}}
 }
 \concept{rescaling functions}

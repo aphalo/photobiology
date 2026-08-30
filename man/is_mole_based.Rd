@@ -29,8 +29,8 @@ print("missing example")
 
 }
 \seealso{
-Other query units functions: 
-\code{\link{is_absorbance_based}()},
-\code{\link{is_photon_based}()}
+Other query units functions:
+\code{\link[=is_absorbance_based]{is_absorbance_based()}},
+\code{\link[=is_photon_based]{is_photon_based()}}
 }
 \concept{query units functions}

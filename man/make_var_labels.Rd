@@ -68,31 +68,6 @@ Objects of classes derived from \code{generic_spct} are used to
   attribute in each variable (= column) of a data frame or tibble. This is
   compatible with the approach used by package 'haven'.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{make_var_labels(default)}: 
-
-\item \code{make_var_labels(source_spct)}: 
-
-\item \code{make_var_labels(response_spct)}: 
-
-\item \code{make_var_labels(filter_spct)}: 
-
-\item \code{make_var_labels(reflector_spct)}: 
-
-\item \code{make_var_labels(object_spct)}: 
-
-\item \code{make_var_labels(solute_spct)}: 
-
-\item \code{make_var_labels(chroma_spct)}: 
-
-\item \code{make_var_labels(calibration_spct)}: 
-
-\item \code{make_var_labels(raw_spct)}: 
-
-\item \code{make_var_labels(cps_spct)}: 
-
-}}
 \note{
 These methods are still under development and the text of the labels
   may change. Not all classes derived from \code{generic_spct} are yet

@@ -17,8 +17,8 @@ Query if an object has old class names Query if an object has old class names
 as used in photobiology (>= 0.6.0).
 }
 \seealso{
-Other upgrade from earlier versions: 
-\code{\link{upgrade_spct}()},
-\code{\link{upgrade_spectra}()}
+Other upgrade from earlier versions:
+\code{\link[=upgrade_spct]{upgrade_spct()}},
+\code{\link[=upgrade_spectra]{upgrade_spectra()}}
 }
 \concept{upgrade from earlier versions}

@@ -146,33 +146,6 @@ These methods are exported and can be called by user code if needed,
   for example, when the checks have been disabled by setting an R option
   with \code{\link{disable_check_spct}}.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{check_spct(default)}: Default for generic function.
-
-\item \code{check_spct(generic_spct)}: Specialization for generic_spct.
-
-\item \code{check_spct(calibration_spct)}: Specialization for calibration_spct.
-
-\item \code{check_spct(raw_spct)}: Specialization for raw_spct.
-
-\item \code{check_spct(cps_spct)}: Specialization for cps_spct.
-
-\item \code{check_spct(filter_spct)}: Specialization for filter_spct.
-
-\item \code{check_spct(solute_spct)}: Specialization for solute_spct.
-
-\item \code{check_spct(reflector_spct)}: Specialization for reflector_spct.
-
-\item \code{check_spct(object_spct)}: Specialization for object_spct.
-
-\item \code{check_spct(response_spct)}: Specialization for response_spct.
-
-\item \code{check_spct(source_spct)}: Specialization for source_spct.
-
-\item \code{check_spct(chroma_spct)}: Specialization for chroma_spct.
-
-}}
 \examples{
 check_spct(sun.spct)
 
@@ -182,9 +155,9 @@ check_spct(sun.spct)
 
 }
 \seealso{
-Other data validity check functions: 
-\code{\link{check_spectrum}()},
-\code{\link{check_w.length}()},
-\code{\link{enable_check_spct}()}
+Other data validity check functions:
+\code{\link[=check_spectrum]{check_spectrum()}},
+\code{\link[=check_w.length]{check_w.length()}},
+\code{\link[=enable_check_spct]{enable_check_spct()}}
 }
 \concept{data validity check functions}

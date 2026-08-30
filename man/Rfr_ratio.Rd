@@ -146,16 +146,6 @@ If the argument is set to \code{quantity = "total"} the ratio is based on
 Only if the wavelength expanse of the two wavebands is the same, these two
 ratios are numerically identical.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{Rfr_ratio(default)}: Default for generic function
-
-\item \code{Rfr_ratio(reflector_spct)}: Method for \code{reflector_spct} objects
-
-\item \code{Rfr_ratio(reflector_mspct)}: Calculates Rfr:Rfr from a \code{reflector_mspct}
-object.
-
-}}
 \note{
 The last two parameters control speed
   optimizations. The defaults should be suitable in most cases. If you will
@@ -180,8 +170,8 @@ Rfr_ratio(Ler_leaf_rflt.spct,
 
 }
 \seealso{
-Other Reflectance ratio functions: 
-\code{\link{Rfr_fraction}()},
-\code{\link{Rfr_normdiff}()}
+Other Reflectance ratio functions:
+\code{\link[=Rfr_fraction]{Rfr_fraction()}},
+\code{\link[=Rfr_normdiff]{Rfr_normdiff()}}
 }
 \concept{Reflectance ratio functions}

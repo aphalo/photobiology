@@ -42,19 +42,6 @@ In the case of wavebands for spectral weighting functions
   to "update" the normalization after a transformation, such as conversion to
   a related physical quantity, of the spectral data.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{normalization(default)}: Default methods.
-
-\item \code{normalization(waveband)}: Normalization of a \code{\link{waveband}} object.
-
-\item \code{normalization(generic_spct)}: Normalization of a \code{\link{generic_spct}} object.
-
-\item \code{normalization(summary_generic_spct)}: Normalization of a \code{\link{summary.generic_spct}} object.
-
-\item \code{normalization(generic_mspct)}: Normalization of a \code{\link{generic_mspct}} object.
-
-}}
 \note{
 Older versions of the package stored only a subset of the metadata or
   only a flag to indicate that normalization had been applied. For such
@@ -74,8 +61,8 @@ normalization(my_wband)
 
 }
 \seealso{
-Other waveband attributes: 
-\code{\link{is_effective}()},
-\code{\link{labels}()}
+Other waveband attributes:
+\code{\link[=is_effective]{is_effective()}},
+\code{\link{labels}}
 }
 \concept{waveband attributes}

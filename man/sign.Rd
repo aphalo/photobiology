@@ -16,16 +16,16 @@ x (the sign of a real number is 1, 0, or -1 if the number is positive, zero,
 or negative, respectively).
 }
 \seealso{
-Other math operators and functions: 
+Other math operators and functions:
 \code{\link{MathFun}},
-\code{\link{^.generic_spct}()},
-\code{\link{convolve_each}()},
+\code{\link[=^.generic_spct]{^.generic_spct()}},
+\code{\link[=convolve_each]{convolve_each()}},
 \code{\link{div-.generic_spct}},
-\code{\link{log}()},
+\code{\link{log}},
 \code{\link{minus-.generic_spct}},
 \code{\link{mod-.generic_spct}},
 \code{\link{plus-.generic_spct}},
-\code{\link{round}()},
+\code{\link{round}},
 \code{\link{slash-.generic_spct}},
 \code{\link{times-.generic_spct}}
 }

@@ -111,39 +111,6 @@ The algorithm used for spectra is "naive" in an effort to keep it
   step and maximum relative step in the spectral variable between adjacent
   data values.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{thin_wl(default)}: Default for generic function
-
-\item \code{thin_wl(generic_spct)}: 
-
-\item \code{thin_wl(source_spct)}: 
-
-\item \code{thin_wl(response_spct)}: 
-
-\item \code{thin_wl(filter_spct)}: 
-
-\item \code{thin_wl(reflector_spct)}: 
-
-\item \code{thin_wl(solute_spct)}: 
-
-\item \code{thin_wl(raw_spct)}: 
-
-\item \code{thin_wl(cps_spct)}: 
-
-\item \code{thin_wl(object_spct)}: 
-
-\item \code{thin_wl(chroma_spct)}: 
-
-\item \code{thin_wl(calibration_spct)}: 
-
-\item \code{thin_wl(generic_mspct)}: 
-
-\item \code{thin_wl(chroma_mspct)}: 
-
-\item \code{thin_wl(calibration_mspct)}: 
-
-}}
 \note{
 The value of \code{max.slope.delta} is expressed as relative change in
   the slope of spectral variable per nanometre. This means that values
@@ -173,9 +140,9 @@ wl_stepsize(thinned.spct)
 
 }
 \seealso{
-Other experimental utility functions: 
-\code{\link{collect2mspct}()},
-\code{\link{drop_user_cols}()},
-\code{\link{uncollect2spct}()}
+Other experimental utility functions:
+\code{\link[=collect2mspct]{collect2mspct()}},
+\code{\link[=drop_user_cols]{drop_user_cols()}},
+\code{\link[=uncollect2spct]{uncollect2spct()}}
 }
 \concept{experimental utility functions}

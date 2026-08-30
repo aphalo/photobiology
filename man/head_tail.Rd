@@ -51,21 +51,6 @@ The value returned by \code{head_tail()} is equivalent to row
   in package 'utils' for \code{head()} and \code{tail()} have been
   implemented.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{head_tail(default)}: 
-
-\item \code{head_tail(data.frame)}: 
-
-\item \code{head_tail(matrix)}: 
-
-\item \code{head_tail(`function`)}: 
-
-\item \code{head_tail(table)}: 
-
-\item \code{head_tail(ftable)}: 
-
-}}
 \note{
 For some types of input, like functions, the output may be confusing,
   however, we have opted for consistency with existing functions. The code is

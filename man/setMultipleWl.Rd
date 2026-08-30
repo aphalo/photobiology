@@ -46,7 +46,7 @@ multiple_wl(my.spct)
 
 }
 \seealso{
-Other multiple.wl attribute functions: 
-\code{\link{getMultipleWl}()}
+Other multiple.wl attribute functions:
+\code{\link[=getMultipleWl]{getMultipleWl()}}
 }
 \concept{multiple.wl attribute functions}

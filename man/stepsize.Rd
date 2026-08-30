@@ -38,17 +38,6 @@ differences between successive sorted values.  In particular the wavelength
 step sizes [\eqn{nm}] of objects of class \code{generic_spct} or derived (or
 the step sizes of values in a \code{numeric} vector).
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{stepsize(default)}: Default function usable on numeric vectors.
-
-\item \code{stepsize(numeric)}: Method for numeric vectors.
-
-\item \code{stepsize(generic_spct)}: Method for "generic_spct" objects.
-
-\item \code{stepsize(generic_mspct)}: Method for "generic_mspct" objects.
-
-}}
 \examples{
 stepsize(sun.spct)
 wl_stepsize(sun.spct)
@@ -57,9 +46,9 @@ stepsize(sun.spct)
 
 }
 \seealso{
-Other wavelength summaries: 
-\code{\link{wl_midpoint}()},
-\code{\link{wl_min}()},
-\code{\link{wl_range}()}
+Other wavelength summaries:
+\code{\link[=wl_midpoint]{wl_midpoint()}},
+\code{\link[=wl_min]{wl_min()}},
+\code{\link[=wl_range]{wl_range()}}
 }
 \concept{wavelength summaries}

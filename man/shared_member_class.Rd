@@ -20,7 +20,7 @@ Finds the set intersection among the class attributes of all collection
 member as a target set of class names.
 }
 \seealso{
-Other set and unset 'multi spectral' class functions: 
-\code{\link{rmDerivedMspct}()}
+Other set and unset 'multi spectral' class functions:
+\code{\link[=rmDerivedMspct]{rmDerivedMspct()}}
 }
 \concept{set and unset 'multi spectral' class functions}

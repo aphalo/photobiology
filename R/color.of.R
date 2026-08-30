@@ -35,7 +35,7 @@
 #'
 color_of <- function(x, ...) UseMethod("color_of")
 
-#' @describeIn color_of Default method (returns always "black").
+#' @rdname color_of
 #'
 #' @export
 #'
@@ -52,8 +52,7 @@ color_of.default <- function(x, ...) {
   }
 }
 
-#' @describeIn color_of Method that returns Color definitions corresponding to
-#'   numeric values representing a wavelengths in nm.
+#' @rdname color_of
 #'
 #' @param type,chroma.type character telling whether "CMF", "CC", or "both"
 #'   should be returned for human vision, or an object of class
@@ -107,7 +106,7 @@ color_of.numeric <- function(x,
   color.out
 }
 
-#' @describeIn color_of Method that returns Color of elements in a list.
+#' @rdname color_of
 #'
 #' @param short.names logical indicating whether to use short or long names for
 #'   wavebands
@@ -136,7 +135,7 @@ color_of.list <- function(x,
   return(color.out)
 }
 
-#' @describeIn color_of Color at midpoint of a \code{\link{waveband}} object.
+#' @rdname color_of
 #'
 #' @export
 #'
@@ -178,7 +177,7 @@ color_of.waveband <-  function(x,
   return(color)
 }
 
-#' @describeIn color_of
+#' @rdname color_of
 #'
 #' @export
 #'
@@ -226,7 +225,7 @@ color_of.source_spct <- function(x,
   }
 }
 
-#' @describeIn color_of
+#' @rdname color_of
 #'
 #' @export
 #'

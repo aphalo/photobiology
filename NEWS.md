@@ -5,6 +5,10 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.14.3
+
+* Minor bug fix
+
 # photobiology 0.14.2
 
 * Add function `simul_sensor_response()`.

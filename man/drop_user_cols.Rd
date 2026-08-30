@@ -58,39 +58,10 @@ A copy of \code{x} possibly with some columns removed.
 \description{
 Remove from spectral object additional columns that are user defined.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{drop_user_cols(default)}: 
-
-\item \code{drop_user_cols(generic_spct)}: 
-
-\item \code{drop_user_cols(source_spct)}: 
-
-\item \code{drop_user_cols(response_spct)}: 
-
-\item \code{drop_user_cols(object_spct)}: 
-
-\item \code{drop_user_cols(filter_spct)}: 
-
-\item \code{drop_user_cols(reflector_spct)}: 
-
-\item \code{drop_user_cols(solute_spct)}: 
-
-\item \code{drop_user_cols(chroma_spct)}: 
-
-\item \code{drop_user_cols(calibration_spct)}: 
-
-\item \code{drop_user_cols(cps_spct)}: 
-
-\item \code{drop_user_cols(raw_spct)}: 
-
-\item \code{drop_user_cols(generic_mspct)}: 
-
-}}
 \seealso{
-Other experimental utility functions: 
-\code{\link{collect2mspct}()},
-\code{\link{thin_wl}()},
-\code{\link{uncollect2spct}()}
+Other experimental utility functions:
+\code{\link[=collect2mspct]{collect2mspct()}},
+\code{\link[=thin_wl]{thin_wl()}},
+\code{\link[=uncollect2spct]{uncollect2spct()}}
 }
 \concept{experimental utility functions}

@@ -146,16 +146,6 @@ If the argument is set to \code{quantity = "mean"} or
 Only if the wavelength expanse of the two wavebands is the same, these two
 ratios are numerically identical.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{q_fraction(default)}: Default for generic function
-
-\item \code{q_fraction(source_spct)}: Method for \code{source_spct} objects
-
-\item \code{q_fraction(source_mspct)}: Calculates photon:photon from a \code{source_mspct}
-object.
-
-}}
 \note{
 The last two parameters control speed
   optimizations. The defaults should be suitable in most cases. If you will
@@ -170,11 +160,11 @@ q_fraction(sun.spct, new_waveband(400,500), new_waveband(400,700))
 
 }
 \seealso{
-Other photon and energy ratio functions: 
-\code{\link{e_fraction}()},
-\code{\link{e_ratio}()},
-\code{\link{eq_ratio}()},
-\code{\link{q_ratio}()},
-\code{\link{qe_ratio}()}
+Other photon and energy ratio functions:
+\code{\link[=e_fraction]{e_fraction()}},
+\code{\link[=e_ratio]{e_ratio()}},
+\code{\link[=eq_ratio]{eq_ratio()}},
+\code{\link[=q_ratio]{q_ratio()}},
+\code{\link[=qe_ratio]{qe_ratio()}}
 }
 \concept{photon and energy ratio functions}

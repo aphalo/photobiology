@@ -34,7 +34,7 @@ two_sensors.spct
 \seealso{
 \code{\link{photodiode.spct}} and \code{\link{ccd.spct}}.
 
-Other Spectral data examples: 
+Other Spectral data examples:
 \code{\link{A.illuminant.spct}},
 \code{\link{D50.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},

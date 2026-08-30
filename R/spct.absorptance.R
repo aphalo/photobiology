@@ -65,7 +65,7 @@ absorptance <- function(spct,
                         use.hinges,
                         ...) UseMethod("absorptance")
 
-#' @describeIn absorptance Default for generic function
+#' @rdname absorptance
 #'
 #' @export
 #'
@@ -79,7 +79,7 @@ absorptance.default <- function(spct,
   NA_real_
 }
 
-#' @describeIn absorptance Specialization for filter spectra
+#' @rdname absorptance
 #'
 #' @export
 #'
@@ -121,7 +121,7 @@ absorptance.filter_spct <-
     }
   }
 
-#' @describeIn absorptance Specialization for object spectra
+#' @rdname absorptance
 #'
 #' @export
 #'
@@ -337,7 +337,7 @@ absorptance_spct <- function(spct,
 
 # filter_mspct methods -----------------------------------------------
 
-#' @describeIn absorptance Calculates absorptance from a \code{filter_mspct}
+#' @rdname absorptance
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
 #'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
@@ -378,7 +378,7 @@ absorptance.filter_mspct <-
 
 # object_mspct methods -----------------------------------------------
 
-#' @describeIn absorptance Calculates absorptance from a \code{object_mspct}
+#' @rdname absorptance
 #'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach

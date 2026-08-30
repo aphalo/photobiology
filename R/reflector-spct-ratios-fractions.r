@@ -91,7 +91,7 @@ Rfr_ratio <- function(spct,
                       use.hinges,
                       ...) UseMethod("Rfr_ratio")
 
-#' @describeIn Rfr_ratio Default for generic function
+#' @rdname Rfr_ratio
 #'
 #' @export
 #'
@@ -107,7 +107,7 @@ Rfr_ratio.default <- function(spct,
   NA_real_
 }
 
-#' @describeIn Rfr_ratio Method for \code{reflector_spct} objects
+#' @rdname Rfr_ratio
 #'
 #' @export
 #'
@@ -176,8 +176,7 @@ Rfr_ratio.reflector_spct <-
     return(ratio)
   }
 
-#' @describeIn Rfr_ratio Calculates Rfr:Rfr from a \code{reflector_mspct}
-#'   object.
+#' @rdname Rfr_ratio
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
 #'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
@@ -332,7 +331,7 @@ Rfr_fraction <- function(spct,
                          use.hinges,
                          ...) UseMethod("Rfr_fraction")
 
-#' @describeIn Rfr_fraction Default for generic function
+#' @rdname Rfr_fraction
 #'
 #' @export
 #'
@@ -348,7 +347,7 @@ Rfr_fraction.default <- function(spct,
   NA_real_
 }
 
-#' @describeIn Rfr_fraction Method for \code{reflector_spct} objects
+#' @rdname Rfr_fraction
 #'
 #' @export
 #'
@@ -418,8 +417,7 @@ Rfr_fraction.reflector_spct <-
     return(fraction)
   }
 
-#' @describeIn Rfr_fraction Calculates Rfr:Rfr from a \code{reflector_mspct}
-#'   object.
+#' @rdname Rfr_fraction
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
 #'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
@@ -576,7 +574,7 @@ Rfr_normdiff <- function(spct,
                          use.hinges,
                          ...) UseMethod("Rfr_normdiff")
 
-#' @describeIn Rfr_normdiff Default for generic function
+#' @rdname Rfr_normdiff
 #'
 #' @export
 #'
@@ -592,7 +590,7 @@ Rfr_normdiff.default <- function(spct,
   NA_real_
 }
 
-#' @describeIn Rfr_normdiff Method for \code{reflector_spct} objects
+#' @rdname Rfr_normdiff
 #'
 #' @export
 #'
@@ -665,8 +663,7 @@ Rfr_normdiff.reflector_spct <-
     return(Rfr.normdiff)
   }
 
-#' @describeIn Rfr_normdiff Calculates Rfr:Rfr from a \code{reflector_mspct}
-#'   object.
+#' @rdname Rfr_normdiff
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
 #'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.

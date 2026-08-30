@@ -164,11 +164,11 @@ e_irrad(sun.spct, split_bands(c(400,700), length.out = 3),
 
 }
 \seealso{
-Other irradiance functions: 
-\code{\link{e_fluence}()},
-\code{\link{fluence}()},
-\code{\link{irrad}()},
-\code{\link{q_fluence}()},
-\code{\link{q_irrad}()}
+Other irradiance functions:
+\code{\link[=e_fluence]{e_fluence()}},
+\code{\link[=fluence]{fluence()}},
+\code{\link[=irrad]{irrad()}},
+\code{\link[=q_fluence]{q_fluence()}},
+\code{\link[=q_irrad]{q_irrad()}}
 }
 \concept{irradiance functions}

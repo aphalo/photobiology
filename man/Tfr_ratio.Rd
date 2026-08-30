@@ -145,16 +145,6 @@ If the argument is set to \code{quantity = "total"} the ratio is based on
 Only if the wavelength expanse of the two wavebands is the same, these two
 ratios are numerically identical.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{Tfr_ratio(default)}: Default for generic function
-
-\item \code{Tfr_ratio(filter_spct)}: Method for \code{filter_spct} objects
-
-\item \code{Tfr_ratio(filter_mspct)}: Calculates Tfr:Tfr from a \code{filter_mspct}
-object.
-
-}}
 \note{
 The last two parameters control speed
   optimizations. The defaults should be suitable in most cases. If you will
@@ -179,8 +169,8 @@ Tfr_ratio(Ler_leaf_rflt.spct,
 
 }
 \seealso{
-Other transmittance ratio functions: 
-\code{\link{Tfr_fraction}()},
-\code{\link{Tfr_normdiff}()}
+Other transmittance ratio functions:
+\code{\link[=Tfr_fraction]{Tfr_fraction()}},
+\code{\link[=Tfr_normdiff]{Tfr_normdiff()}}
 }
 \concept{transmittance ratio functions}

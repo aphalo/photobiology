@@ -232,7 +232,7 @@ print.generic_spct <- function(x,
 
 # print method ------------------------------------------------------------
 
-#' @describeIn print.generic_spct
+#' @rdname print.generic_spct
 #'
 #' @param n.members	numeric Number of members of the collection to print.
 #'
@@ -651,7 +651,7 @@ print.summary_generic_spct <- function(x, ..., attr.simplify = TRUE) {
 
 # summary -----------------------------------------------------------------
 
-#' @describeIn summary.generic_spct
+#' @rdname summary.generic_spct
 #'
 #' @param idx character Name of the column with the names of the members of the
 #' collection of spectra.
@@ -732,7 +732,7 @@ summary.generic_mspct <- function(object,
   z
 }
 
-#' @describeIn print.summary_generic_spct
+#' @rdname print.summary_generic_spct
 #'
 #' @param width integer Width of text output to generate. This defaults to NULL,
 #'   which means use the width option.

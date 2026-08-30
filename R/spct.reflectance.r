@@ -46,7 +46,7 @@
 #'
 reflectance <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) UseMethod("reflectance")
 
-#' @describeIn reflectance Default for generic function
+#' @rdname reflectance
 #'
 #' @export
 #'
@@ -55,7 +55,7 @@ reflectance.default <- function(spct, w.band, quantity, wb.trim, use.hinges, ...
   return(NA)
 }
 
-#' @describeIn reflectance Specialization for reflector_spct
+#' @rdname reflectance
 #'
 #' @export
 #'
@@ -90,7 +90,7 @@ reflectance.reflector_spct <-
                      naming = naming)
   }
 
-#' @describeIn reflectance Specialization for object_spct
+#' @rdname reflectance
 #'
 #' @export
 #'
@@ -289,7 +289,7 @@ reflectance_spct <-
 
 # reflector_mspct methods -----------------------------------------------
 
-#' @describeIn reflectance Calculates reflectance from a \code{reflector_mspct}
+#' @rdname reflectance
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx character Name of the column with the names of the members of the
@@ -341,7 +341,7 @@ reflectance.reflector_mspct <-
 
 # object_mspct methods -----------------------------------------------
 
-#' @describeIn reflectance Calculates reflectance from a \code{object_mspct}
+#' @rdname reflectance
 #'
 #' @export
 #'

@@ -65,17 +65,6 @@ If \code{x} is an spectrum object, such as a
 A method to extract a random sample of members from a list, a collection of
 spectra or a spectrum object containing multiple spectra in long form.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{pull_sample(default)}: Default for generic function
-
-\item \code{pull_sample(list)}: Specialization for generic_spct
-
-\item \code{pull_sample(generic_spct)}: Specialization for generic_spct
-
-\item \code{pull_sample(generic_mspct)}: Specialization for generic_mspct
-
-}}
 \examples{
 a.list <- as.list(letters)
 names(a.list) <- LETTERS

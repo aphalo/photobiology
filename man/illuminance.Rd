@@ -82,16 +82,6 @@ A named \code{numeric} vector of length one in the case of methods
 Computes illuminance (lux), or the luminous flux incident on a surface, from
 spectral irradiance stored in a \code{source_spct} object.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{illuminance(default)}: Default for generic function
-
-\item \code{illuminance(source_spct)}: Calculates illuminance from a \code{source_spct}
-object.
-
-\item \code{illuminance(source_mspct)}: Calculates illuminance from a \code{source_mspct} object.
-
-}}
 \note{
 Formal parameter \code{allow.scaled} is used internally for calculation
   of ratios, as rescaling and normalization do not invalidate the calculation

@@ -19,18 +19,13 @@
 A method specialization that extracts the name and label of objects of class
 \code{waveband}.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{labels(generic_spct)}: 
-
-}}
 \examples{
 labels(sun.spct)
 
 }
 \seealso{
-Other waveband attributes: 
-\code{\link{is_effective}()},
-\code{\link{normalization}()}
+Other waveband attributes:
+\code{\link[=is_effective]{is_effective()}},
+\code{\link[=normalization]{normalization()}}
 }
 \concept{waveband attributes}

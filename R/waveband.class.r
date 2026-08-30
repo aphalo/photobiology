@@ -18,7 +18,7 @@ labels.waveband <- function(object, ...) {
   return(list(label = object[["label"]], name = object[["name"]]))
 }
 
-#' @describeIn labels
+#' @rdname labels
 #'
 #' @export
 #'
@@ -68,7 +68,7 @@ range.waveband <- function(..., na.rm = FALSE) {
   return(c(x[["low"]], x[["high"]])) # we are using double precision
 }
 
-#' @describeIn range
+#' @rdname range
 #'
 #' @export
 #'
@@ -82,7 +82,7 @@ range.generic_spct <- function(..., na.rm = FALSE) {
   #  range(x[["w.length"]], na.rm = na.rm)
 }
 
-#' @describeIn range
+#' @rdname range
 #'
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
@@ -136,7 +136,7 @@ min.waveband <- function(..., na.rm = FALSE) {
     return(x[["low"]])
 }
 
-#' @describeIn min
+#' @rdname min
 #'
 #' @export
 #'
@@ -146,7 +146,7 @@ min.generic_spct <- function(..., na.rm = FALSE) {
   wl[1]
 }
 
-#' @describeIn min
+#' @rdname min
 #'
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
@@ -198,7 +198,7 @@ max.waveband <- function(..., na.rm = FALSE) {
   return(x[["high"]])
 }
 
-#' @describeIn max
+#' @rdname max
 #'
 #' @export
 #'
@@ -208,7 +208,7 @@ max.generic_spct <- function(..., na.rm=FALSE) {
   wl[length(wl)]
 }
 
-#' @describeIn max
+#' @rdname max
 #'
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
@@ -259,7 +259,7 @@ wl_midpoint <- function(x, ...) {
 #'
 midpoint <- function(x, ...) UseMethod("midpoint")
 
-#' @describeIn midpoint Default method for generic function
+#' @rdname midpoint
 #'
 #' @export
 #'
@@ -270,7 +270,7 @@ midpoint.default <- function(x, ...) {
   NA_real_
 }
 
-#' @describeIn midpoint Default method for generic function
+#' @rdname midpoint
 #'
 #' @export
 #'
@@ -284,7 +284,7 @@ midpoint.numeric <- function(x, ...) {
   }
 }
 
-#' @describeIn midpoint Wavelength at center of a "waveband".
+#' @rdname midpoint
 #'
 #' @export
 #'
@@ -292,7 +292,7 @@ midpoint.waveband <- function(x, ...) {
   return(x[["low"]] + (x[["high"]] - x[["low"]]) / 2)
 }
 
-#' @describeIn midpoint Method for "generic_spct".
+#' @rdname midpoint
 #'
 #' @export
 #'
@@ -304,7 +304,7 @@ midpoint.generic_spct <- function(x, ...) {
   wl[1] + (wl[length(wl)] - wl[1]) / 2
 }
 
-#' @describeIn midpoint Method for "generic_mspct" objects.
+#' @rdname midpoint
 #'
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
@@ -363,7 +363,7 @@ wl_expanse <- function(x, ...) {
 #'
 expanse <- function(x, ...) UseMethod("expanse")
 
-#' @describeIn expanse Default method for generic function
+#' @rdname expanse
 #'
 #' @export
 #'
@@ -372,7 +372,7 @@ expanse.default <- function(x, ...) {
   NA
 }
 
-#' @describeIn expanse Method for "numeric"
+#' @rdname expanse
 #'
 #' @export
 #'
@@ -384,7 +384,7 @@ expanse.numeric <- function(x, ...) {
   }
 }
 
-#' @describeIn expanse Method for "waveband"
+#' @rdname expanse
 #'
 #' @export
 #'
@@ -392,7 +392,7 @@ expanse.waveband <- function(x, ...) {
   return(x[["high"]] - x[["low"]])
 }
 
-#' @describeIn expanse  Method for "generic_spct"
+#' @rdname expanse
 #'
 #' @export
 #'
@@ -404,7 +404,7 @@ expanse.generic_spct <- function(x, ...) {
   wl[length(wl)] - wl[1]
 }
 
-#' @describeIn expanse  Method for "generic_mspct" objects.
+#' @rdname expanse
 #'
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
@@ -460,7 +460,7 @@ expanse.generic_mspct <- function(x, ..., idx = "spct.idx") {
 #'
 normalization <- function(x) UseMethod("normalization")
 
-#' @describeIn normalization Default methods.
+#' @rdname normalization
 #'
 #' @export
 #'
@@ -469,7 +469,7 @@ normalization.default <- function(x) {
   return(NA_real_)
 }
 
-#' @describeIn normalization Normalization of a \code{\link{waveband}} object.
+#' @rdname normalization
 #'
 #' @export
 #'
@@ -477,7 +477,7 @@ normalization.waveband <- function(x) {
   return(ifelse(is.null(x[["norm"]]), NA_real_, x[["norm"]]))
 }
 
-#' @describeIn normalization Normalization of a \code{\link{generic_spct}} object.
+#' @rdname normalization
 #'
 #' @export
 #'
@@ -485,7 +485,7 @@ normalization.generic_spct <- function(x) {
   getNormalization(x)
 }
 
-#' @describeIn normalization Normalization of a \code{\link{summary.generic_spct}} object.
+#' @rdname normalization
 #'
 #' @export
 #'
@@ -493,7 +493,7 @@ normalization.summary_generic_spct <- function(x) {
   getNormalization(x)
 }
 
-#' @describeIn normalization Normalization of a \code{\link{generic_mspct}} object.
+#' @rdname normalization
 #'
 #' @export
 #'
@@ -518,7 +518,7 @@ normalization.generic_mspct <- function(x) {
 #'
 is_effective <- function(x) UseMethod("is_effective")
 
-#' @describeIn is_effective Default method.
+#' @rdname is_effective
 #'
 #' @export
 #'
@@ -527,8 +527,7 @@ is_effective.default <- function(x) {
   NA_integer_
 }
 
-#' @describeIn is_effective Is a \code{waveband} object defining a method for
-#'   calculating effective irradiance.
+#' @rdname is_effective
 #'
 #' @export
 #'
@@ -536,8 +535,7 @@ is_effective.waveband <- function(x) {
   x[["weight"]] != "none"
 }
 
-#' @describeIn is_effective Does a \code{source_spct} object contain effective
-#'   spectral irradiance values.
+#' @rdname is_effective
 #'
 #' @export
 #'
@@ -545,8 +543,7 @@ is_effective.generic_spct <- function(x) {
   FALSE
 }
 
-#' @describeIn is_effective Does a \code{source_spct} object contain effective
-#'   spectral irradiance values.
+#' @rdname is_effective
 #'
 #' @export
 #'
@@ -555,7 +552,7 @@ is_effective.source_spct <- function(x) {
   !is.null(bswf.used) && (bswf.used != "none")
 }
 
-#' @describeIn is_effective Method for "summary_generic_spct".
+#' @rdname is_effective
 #'
 #' @export
 #' @examples
@@ -565,7 +562,7 @@ is_effective.summary_generic_spct <- function(x) {
   FALSE
 }
 
-#' @describeIn is_effective Method for "summary_source_spct".
+#' @rdname is_effective
 #'
 #' @export
 #'
@@ -605,14 +602,16 @@ wl_stepsize <- function(x, ...) {
 #'
 stepsize <- function(x, ...) UseMethod("stepsize")
 
-#' @describeIn stepsize Default function usable on numeric vectors.
+#' @rdname stepsize
+#'
 #' @export
 stepsize.default <- function(x, ...) {
   warning("'stepsize()' not implemented for class '", class(x), "'.")
   c(NA_real_, NA_real_)
 }
 
-#' @describeIn stepsize Method for numeric vectors.
+#' @rdname stepsize
+#'
 #' @export
 stepsize.numeric <- function(x, ...) {
   stopifnot(!is.unsorted(x))
@@ -623,7 +622,7 @@ stepsize.numeric <- function(x, ...) {
   }
 }
 
-#' @describeIn stepsize  Method for "generic_spct" objects.
+#' @rdname stepsize
 #'
 #' @export
 #'
@@ -644,7 +643,7 @@ stepsize.generic_spct <- function(x, ...) {
   }
 }
 
-#' @describeIn stepsize  Method for "generic_mspct" objects.
+#' @rdname stepsize
 #'
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.

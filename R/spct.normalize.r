@@ -102,7 +102,7 @@ normalize <- function(x, ...) UseMethod("normalize")
 #'
 normalise <- normalize
 
-#' @describeIn normalize Default for generic function
+#' @rdname normalize
 #'
 #' @export
 #'
@@ -111,7 +111,7 @@ normalize.default <- function(x, ...) {
   x
 }
 
-#' @describeIn normalize Normalize a \code{source_spct} object.
+#' @rdname normalize
 #'
 #' @param range An R object on which \code{range()} returns a numeric vector of
 #'   length 2 with the limits of a range of wavelengths in nm. See
@@ -166,7 +166,7 @@ normalize.source_spct <- function(x,
                         ...))
 }
 
-#' @describeIn normalize Normalize a response spectrum.
+#' @rdname normalize
 #'
 #' @export
 #'
@@ -205,7 +205,7 @@ normalize.response_spct <- function(x,
                         ...))
 }
 
-#' @describeIn normalize Normalize a filter spectrum.
+#' @rdname normalize
 #'
 #' @param qty.out No longer supported and is ignored with a warning..
 #'
@@ -246,7 +246,7 @@ normalize.filter_spct <- function(x,
                           ...))
   }
 
-#' @describeIn normalize Normalize a reflector spectrum.
+#' @rdname normalize
 #'
 #' @export
 #'
@@ -284,7 +284,7 @@ normalize.reflector_spct <- function(x,
                    ...)
   }
 
-#' @describeIn normalize Normalize a solute spectrum.
+#' @rdname normalize
 #'
 #' @export
 #'
@@ -324,7 +324,7 @@ normalize.solute_spct <- function(x,
                  ...)
 }
 
-#' @describeIn normalize Normalize a raw spectrum.
+#' @rdname normalize
 #'
 #' @export
 #'
@@ -358,7 +358,7 @@ normalize.raw_spct <- function(x,
                  ...)
 }
 
-#' @describeIn normalize Normalize a cps spectrum.
+#' @rdname normalize
 #'
 #' @export
 #'
@@ -392,7 +392,7 @@ normalize.cps_spct <- function(x,
                  ...)
 }
 
-#' @describeIn normalize Normalize a raw spectrum.
+#' @rdname normalize
 #'
 #' @param col.names character vector containing the names of columns of \code{x}
 #'   to be normalized. Other columns are retained unchanged.
@@ -438,7 +438,7 @@ normalize.generic_spct <- function(x,
 # collections of spectra --------------------------------------------------
 
 
-#' @describeIn normalize Normalize the members of a source_mspct object.
+#' @rdname normalize
 #'
 #' @param .parallel	if \code{TRUE}, apply function in parallel, using parallel
 #'   backend provided by packege 'foreach'.
@@ -482,7 +482,7 @@ normalize.source_mspct <- function(x,
 
 }
 
-#' @describeIn normalize Normalize the members of a response_mspct object.
+#' @rdname normalize
 #'
 #' @export
 #'
@@ -513,7 +513,7 @@ normalize.response_mspct <- function(x,
 
 }
 
-#' @describeIn normalize Normalize the members of a filter_mspct object.
+#' @rdname normalize
 #'
 #' @export
 #'
@@ -545,7 +545,7 @@ normalize.filter_mspct <- function(x,
 
 }
 
-#' @describeIn normalize Normalize the members of a reflector_mspct object.
+#' @rdname normalize
 #'
 #' @export
 #'
@@ -576,7 +576,7 @@ normalize.reflector_mspct <- function(x,
 
 }
 
-#' @describeIn normalize Normalize the members of a raw_mspct object.
+#' @rdname normalize
 #'
 #' @export
 #'
@@ -602,7 +602,7 @@ normalize.raw_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn normalize Normalize the members of a cps_mspct object.
+#' @rdname normalize
 #'
 #' @export
 #'
@@ -628,7 +628,7 @@ normalize.cps_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn normalize Normalize the members of a solute_mspct object.
+#' @rdname normalize
 #'
 #' @export
 #'
@@ -658,7 +658,7 @@ normalize.solute_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn normalize Normalize the members of a solute_mspct object.
+#' @rdname normalize
 #'
 #' @export
 #'
@@ -1023,7 +1023,7 @@ setNormalized <- function(x,
                           norm.factors = NA_real_,
                           norm.cols = NA_character_,
                           norm.range = rep(NA_real_, 2),
-                          verbose = getOption("verbose_as_default", default = FALSE)) {
+                          verbose = getOption("photobiology.verbose", default = FALSE)) {
   name <- substitute(x)
 
   if (is.generic_mspct(x)) {

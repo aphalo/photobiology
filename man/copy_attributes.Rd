@@ -39,14 +39,3 @@ A copy of \code{y} with additional attributes set.
 Copy attributes from \code{x} to \code{y}. Methods defined for spectral
 and waveband objects of classes from package 'photobiology'.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{copy_attributes(default)}: Default for generic function
-
-\item \code{copy_attributes(generic_spct)}: 
-
-\item \code{copy_attributes(generic_mspct)}: 
-
-\item \code{copy_attributes(waveband)}: 
-
-}}

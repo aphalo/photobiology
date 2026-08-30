@@ -178,39 +178,6 @@ calculated with \code{f} for this waveband is substracted. This results in a
 zero shift (= additive correction) to the values in the returned object.
 Metadata attributes are retained unchanged.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{fshift(default)}: Default for generic function
-
-\item \code{fshift(source_spct)}: 
-
-\item \code{fshift(response_spct)}: 
-
-\item \code{fshift(filter_spct)}: 
-
-\item \code{fshift(reflector_spct)}: 
-
-\item \code{fshift(source_mspct)}: 
-
-\item \code{fshift(raw_spct)}: 
-
-\item \code{fshift(cps_spct)}: 
-
-\item \code{fshift(generic_spct)}: 
-
-\item \code{fshift(response_mspct)}: 
-
-\item \code{fshift(filter_mspct)}: 
-
-\item \code{fshift(reflector_mspct)}: 
-
-\item \code{fshift(raw_mspct)}: 
-
-\item \code{fshift(cps_mspct)}: 
-
-\item \code{fshift(generic_mspct)}: 
-
-}}
 \note{
 Method \code{fshift} is not implemented for \code{solute_spct} objects
   as the spectral data stored in them are a description of an intensive
@@ -218,14 +185,14 @@ Method \code{fshift} is not implemented for \code{solute_spct} objects
   of solutes, \code{filter_spct} objects can be used.
 }
 \seealso{
-Other rescaling functions: 
-\code{\link{fscale}()},
-\code{\link{getNormalized}()},
-\code{\link{getScaled}()},
-\code{\link{is_normalized}()},
-\code{\link{is_scaled}()},
-\code{\link{normalize}()},
-\code{\link{setNormalized}()},
-\code{\link{setScaled}()}
+Other rescaling functions:
+\code{\link[=fscale]{fscale()}},
+\code{\link[=getNormalized]{getNormalized()}},
+\code{\link[=getScaled]{getScaled()}},
+\code{\link[=is_normalized]{is_normalized()}},
+\code{\link[=is_scaled]{is_scaled()}},
+\code{\link[=normalize]{normalize()}},
+\code{\link[=setNormalized]{setNormalized()}},
+\code{\link[=setScaled]{setScaled()}}
 }
 \concept{rescaling functions}

@@ -32,7 +32,7 @@ CIE 2022, CIE standard illuminant D65, International Commission
 on Illumination (CIE), Vienna, Austria, \doi{10.25039/CIE.DS.hjfjmt59}.
 }
 \seealso{
-Other Spectral data examples: 
+Other Spectral data examples:
 \code{\link{A.illuminant.spct}},
 \code{\link{D50.illuminant.spct}},
 \code{\link{Ler_leaf.spct}},

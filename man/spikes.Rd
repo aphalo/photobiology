@@ -238,47 +238,6 @@ Spikes are detected based on a modified Z score calculated from the
   When the argument passed to \code{x} contains multiple spectra, the spikes
   are searched for in each spectrum independently of other spectra.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{spikes(default)}: Default returning always NA.
-
-\item \code{spikes(numeric)}: Default function usable on numeric vectors.
-
-\item \code{spikes(data.frame)}: Method for "data.frame" objects.
-
-\item \code{spikes(generic_spct)}: Method for "generic_spct" objects.
-
-\item \code{spikes(source_spct)}: Method for "source_spct" objects.
-
-\item \code{spikes(response_spct)}: Method for "response_spct" objects.
-
-\item \code{spikes(filter_spct)}: Method for "filter_spct" objects.
-
-\item \code{spikes(reflector_spct)}: Method for "reflector_spct" objects.
-
-\item \code{spikes(solute_spct)}: Method for "solute_spct" objects.
-
-\item \code{spikes(cps_spct)}: Method for "cps_spct" objects.
-
-\item \code{spikes(raw_spct)}: Method for "raw_spct" objects.
-
-\item \code{spikes(generic_mspct)}: Method for "generic_mspct" objects.
-
-\item \code{spikes(source_mspct)}: Method for "source_mspct" objects.
-
-\item \code{spikes(response_mspct)}: Method for "cps_mspct" objects.
-
-\item \code{spikes(filter_mspct)}: Method for "filter_mspct" objects.
-
-\item \code{spikes(reflector_mspct)}: Method for "reflector_mspct" objects.
-
-\item \code{spikes(solute_mspct)}: Method for "solute_mspct" objects.
-
-\item \code{spikes(cps_mspct)}: Method for "cps_mspct" objects.
-
-\item \code{spikes(raw_mspct)}: Method for "raw_mspct" objects.
-
-}}
 \examples{
 spikes(sun.spct)
 
@@ -287,13 +246,13 @@ spikes(sun.spct)
 See the documentation for \code{\link{find_spikes}} for details of
   the algorithm and implementation.
 
-Other peaks and valleys functions: 
-\code{\link{find_peaks}()},
-\code{\link{find_spikes}()},
-\code{\link{get_peaks}()},
-\code{\link{peaks}()},
-\code{\link{replace_bad_pixs}()},
-\code{\link{valleys}()},
-\code{\link{wls_at_target}()}
+Other peaks and valleys functions:
+\code{\link[=find_peaks]{find_peaks()}},
+\code{\link[=find_spikes]{find_spikes()}},
+\code{\link[=get_peaks]{get_peaks()}},
+\code{\link[=peaks]{peaks()}},
+\code{\link[=replace_bad_pixs]{replace_bad_pixs()}},
+\code{\link[=valleys]{valleys()}},
+\code{\link[=wls_at_target]{wls_at_target()}}
 }
 \concept{peaks and valleys functions}

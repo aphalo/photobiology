@@ -28,8 +28,8 @@ col2rgb(w_length2rgb(c(400, 500, 600, 700), color.name="a"))
 
 }
 \seealso{
-Other color functions: 
-\code{\link{rgb_spct}()},
-\code{\link{w_length_range2rgb}()}
+Other color functions:
+\code{\link[=rgb_spct]{rgb_spct()}},
+\code{\link[=w_length_range2rgb]{w_length_range2rgb()}}
 }
 \concept{color functions}

@@ -165,7 +165,7 @@ generic_mspct <- function(l = NULL,
   l
 }
 
-#' @describeIn generic_mspct Specialization for collections of \code{calibration_spct} objects.
+#' @rdname generic_mspct
 #'
 #' @export
 #'
@@ -177,7 +177,7 @@ calibration_mspct <- function(l = NULL,
   generic_mspct(l, class = "calibration_spct", ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn generic_mspct Specialization for collections of \code{raw_spct} objects.
+#' @rdname generic_mspct
 #'
 #' @export
 #'
@@ -189,7 +189,7 @@ raw_mspct <- function(l = NULL,
   generic_mspct(l, class = "raw_spct", ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn generic_mspct Specialization for collections of \code{cps_spct} objects.
+#' @rdname generic_mspct
 #'
 #' @export
 #'
@@ -200,7 +200,7 @@ cps_mspct <- function(l = NULL,
   generic_mspct(l, class = "cps_spct", ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn generic_mspct Specialization for collections of \code{source_spct} objects.
+#' @rdname generic_mspct
 #'
 #' @export
 #'
@@ -212,7 +212,7 @@ source_mspct <- function(l = NULL,
   generic_mspct(l, class = "source_spct", ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn generic_mspct Specialization for collections of \code{filter_spct} objects.
+#' @rdname generic_mspct
 #'
 #' @export
 #'
@@ -224,7 +224,7 @@ filter_mspct <- function(l = NULL,
   generic_mspct(l, class = "filter_spct", ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn generic_mspct Specialization for collections of \code{reflector_spct} objects.
+#' @rdname generic_mspct
 #'
 #' @export
 #'
@@ -236,7 +236,7 @@ reflector_mspct <- function(l = NULL,
   generic_mspct(l, class = "reflector_spct", ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn generic_mspct Specialization for collections of \code{object_spct} objects.
+#' @rdname generic_mspct
 #'
 #' @export
 #'
@@ -248,7 +248,7 @@ object_mspct <- function(l = NULL,
   generic_mspct(l, class = "object_spct", ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn generic_mspct Specialization for collections of \code{solute_spct} objects.
+#' @rdname generic_mspct
 #'
 #' @export
 #'
@@ -260,7 +260,7 @@ solute_mspct <- function(l = NULL,
   generic_mspct(l, class = "solute_spct", ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn generic_mspct Specialization for collections of \code{response_spct} objects.
+#' @rdname generic_mspct
 #'
 #' @export
 #'
@@ -272,7 +272,7 @@ response_mspct <- function(l = NULL,
   generic_mspct(l, class = "response_spct", ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn generic_mspct Specialization for collections of \code{chroma_spct} objects.
+#' @rdname generic_mspct
 #'
 #' @export
 #'
@@ -301,6 +301,7 @@ chroma_mspct <- function(l = NULL,
 #'
 #' @export
 #' @rdname is.generic_mspct
+#'
 #' @examples
 #' my.mspct <- filter_mspct(list(polyester.spct, yellow_gel.spct))
 #' is.any_mspct(my.mspct)
@@ -409,7 +410,7 @@ is.any_mspct <- function(x) {
 #'
 as.generic_mspct <- function(x, ...) UseMethod("as.generic_mspct")
 
-#' @describeIn as.generic_mspct
+#' @rdname as.generic_mspct
 #'
 #' @export
 #'
@@ -418,7 +419,7 @@ as.generic_mspct.default <- function(x, ...) {
   generic_mspct()
 }
 
-#' @describeIn as.generic_mspct
+#' @rdname as.generic_mspct
 #'
 #' @export
 #'
@@ -428,7 +429,7 @@ as.generic_mspct.data.frame <- function(x, force.spct.class = FALSE, ...) {
                    ...)
 }
 
-#' @describeIn as.generic_mspct
+#' @rdname as.generic_mspct
 #'
 #' @export
 #'
@@ -438,7 +439,7 @@ as.generic_mspct.generic_spct <- function(x, force.spct.class = FALSE, ...) {
                 ...)
 }
 
-#' @describeIn as.generic_mspct
+#' @rdname as.generic_mspct
 #'
 #' @export
 #'
@@ -455,7 +456,7 @@ as.generic_mspct.list <- function(x,
   generic_mspct(y, ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn as.generic_mspct
+#' @rdname as.generic_mspct
 #'
 #' @export
 #'
@@ -574,7 +575,7 @@ mat2mspct <- function(x,
 #'
 as.calibration_mspct <- function(x, ...) UseMethod("as.calibration_mspct")
 
-#' @describeIn as.calibration_mspct
+#' @rdname as.calibration_mspct
 #'
 #' @export
 #'
@@ -583,7 +584,7 @@ as.calibration_mspct.default <- function(x, ...) {
   calibration_mspct()
 }
 
-#' @describeIn as.calibration_mspct
+#' @rdname as.calibration_mspct
 #'
 #' @export
 #'
@@ -591,7 +592,7 @@ as.calibration_mspct.data.frame <- function(x, ...) {
   as.calibration_mspct(x = list(x), ...)
 }
 
-#' @describeIn as.calibration_mspct
+#' @rdname as.calibration_mspct
 #'
 #' @export
 #'
@@ -600,7 +601,7 @@ as.calibration_mspct.calibration_spct <- function(x,
   calibration_mspct(list(x))
 }
 
-#' @describeIn as.calibration_mspct
+#' @rdname as.calibration_mspct
 #'
 #' @export
 #'
@@ -615,7 +616,7 @@ as.calibration_mspct.list <- function(x,
   calibration_mspct(z, ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn as.calibration_mspct
+#' @rdname as.calibration_mspct
 #'
 #' @export
 #'
@@ -670,7 +671,7 @@ as.calibration_mspct.matrix <- function(x,
 #'
 as.raw_mspct <- function(x, ...) UseMethod("as.raw_mspct")
 
-#' @describeIn as.raw_mspct
+#' @rdname as.raw_mspct
 #'
 #' @export
 #'
@@ -679,7 +680,7 @@ as.raw_mspct.default <- function(x, ...) {
   raw_mspct()
 }
 
-#' @describeIn as.raw_mspct
+#' @rdname as.raw_mspct
 #'
 #' @export
 #'
@@ -687,7 +688,7 @@ as.raw_mspct.data.frame <- function(x, ...) {
   as.raw_mspct(x = list(x), ...)
 }
 
-#' @describeIn as.raw_mspct
+#' @rdname as.raw_mspct
 #'
 #' @export
 #'
@@ -695,7 +696,7 @@ as.raw_mspct.raw_spct <- function(x, ...) {
   raw_mspct(list(x), ...)
 }
 
-#' @describeIn as.raw_mspct
+#' @rdname as.raw_mspct
 #'
 #' @export
 #'
@@ -710,7 +711,7 @@ as.raw_mspct.list <- function(x,
   raw_mspct(z, ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn as.raw_mspct
+#' @rdname as.raw_mspct
 #'
 #' @export
 #'
@@ -764,7 +765,7 @@ as.raw_mspct.matrix <- function(x,
 #'
 as.cps_mspct <- function(x, ...) UseMethod("as.cps_mspct")
 
-#' @describeIn as.cps_mspct
+#' @rdname as.cps_mspct
 #'
 #' @export
 #'
@@ -773,7 +774,7 @@ as.cps_mspct.default <- function(x, ...) {
   cps_mspct()
 }
 
-#' @describeIn as.cps_mspct
+#' @rdname as.cps_mspct
 #'
 #' @export
 #'
@@ -781,7 +782,7 @@ as.cps_mspct.data.frame <- function(x, ...) {
   as.cps_mspct(x = list(x), ...)
 }
 
-#' @describeIn as.cps_mspct
+#' @rdname as.cps_mspct
 #'
 #' @export
 #'
@@ -789,7 +790,7 @@ as.cps_mspct.cps_spct <- function(x, ...) {
   cps_mspct(list(x), ...)
 }
 
-#' @describeIn as.cps_mspct
+#' @rdname as.cps_mspct
 #'
 #' @export
 #'
@@ -804,7 +805,7 @@ as.cps_mspct.list <- function(x,
   cps_mspct(z, ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn as.cps_mspct
+#' @rdname as.cps_mspct
 #'
 #' @export
 #'
@@ -862,7 +863,7 @@ as.cps_mspct.matrix <- function(x,
 #'
 as.source_mspct <- function(x, ...) UseMethod("as.source_mspct")
 
-#' @describeIn as.source_mspct
+#' @rdname as.source_mspct
 #'
 #' @export
 #'
@@ -871,7 +872,7 @@ as.source_mspct.default <- function(x, ...) {
   source_mspct()
 }
 
-#' @describeIn as.source_mspct
+#' @rdname as.source_mspct
 #'
 #' @export
 #'
@@ -888,7 +889,7 @@ as.source_mspct.data.frame <-
                     ...)
   }
 
-#' @describeIn as.source_mspct
+#' @rdname as.source_mspct
 #'
 #' @export
 #'
@@ -896,7 +897,7 @@ as.source_mspct.source_spct <- function(x, ...) {
   source_mspct(list(x), ...)
 }
 
-#' @describeIn as.source_mspct
+#' @rdname as.source_mspct
 #'
 #' @export
 #'
@@ -916,7 +917,7 @@ as.source_mspct.list <-
     source_mspct(z, ncol = ncol, byrow = byrow)
   }
 
-#' @describeIn as.source_mspct
+#' @rdname as.source_mspct
 #'
 #' @export
 #'
@@ -971,7 +972,7 @@ as.source_mspct.matrix <- function(x,
 #'
 as.response_mspct <- function(x, ...) UseMethod("as.response_mspct")
 
-#' @describeIn as.response_mspct
+#' @rdname as.response_mspct
 #'
 #' @export
 #'
@@ -980,7 +981,7 @@ as.response_mspct.default <- function(x, ...) {
   response_mspct()
 }
 
-#' @describeIn as.response_mspct
+#' @rdname as.response_mspct
 #'
 #' @export
 #'
@@ -993,7 +994,7 @@ as.response_mspct.data.frame <-
                     ...)
   }
 
-#' @describeIn as.response_mspct
+#' @rdname as.response_mspct
 #'
 #' @export
 #'
@@ -1001,7 +1002,7 @@ as.response_mspct.response_spct <- function(x, ...) {
   response_mspct(list(x), ...)
 }
 
-#' @describeIn as.response_mspct
+#' @rdname as.response_mspct
 #'
 #' @export
 #'
@@ -1017,7 +1018,7 @@ as.response_mspct.list <- function(x,
   response_mspct(z, ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn as.response_mspct
+#' @rdname as.response_mspct
 #'
 #' @export
 #'
@@ -1074,7 +1075,7 @@ as.response_mspct.matrix <- function(x,
 #'
 as.filter_mspct <- function(x, ...) UseMethod("as.filter_mspct")
 
-#' @describeIn as.filter_mspct
+#' @rdname as.filter_mspct
 #'
 #' @export
 #'
@@ -1083,7 +1084,7 @@ as.filter_mspct.default <- function(x, ...) {
   filter_mspct()
 }
 
-#' @describeIn as.filter_mspct
+#' @rdname as.filter_mspct
 #'
 #' @export
 #'
@@ -1098,7 +1099,7 @@ as.filter_mspct.data.frame <-
                     ...)
   }
 
-#' @describeIn as.filter_mspct
+#' @rdname as.filter_mspct
 #'
 #' @export
 #'
@@ -1106,7 +1107,7 @@ as.filter_mspct.filter_spct <- function(x, ...) {
   filter_mspct(list(x), ...)
 }
 
-#' @describeIn as.filter_mspct
+#' @rdname as.filter_mspct
 #'
 #' @export
 #'
@@ -1126,7 +1127,7 @@ as.filter_mspct.list <- function(x,
   filter_mspct(z, ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn as.filter_mspct
+#' @rdname as.filter_mspct
 #'
 #' @export
 #'
@@ -1182,7 +1183,7 @@ as.filter_mspct.matrix <- function(x,
 #'
 as.reflector_mspct <- function(x, ...) UseMethod("as.reflector_mspct")
 
-#' @describeIn as.reflector_mspct
+#' @rdname as.reflector_mspct
 #'
 #' @export
 #'
@@ -1191,7 +1192,7 @@ as.reflector_mspct.default <- function(x, ...) {
   reflector_mspct()
 }
 
-#' @describeIn as.reflector_mspct
+#' @rdname as.reflector_mspct
 #'
 #' @export
 #'
@@ -1206,7 +1207,7 @@ as.reflector_mspct.data.frame <-
                     ...)
   }
 
-#' @describeIn as.reflector_mspct
+#' @rdname as.reflector_mspct
 #'
 #' @export
 #'
@@ -1214,7 +1215,7 @@ as.reflector_mspct.reflector_spct <- function(x, ...) {
   reflector_mspct(list(x), ...)
 }
 
-#' @describeIn as.reflector_mspct
+#' @rdname as.reflector_mspct
 #'
 #' @export
 #'
@@ -1234,7 +1235,7 @@ as.reflector_mspct.list <- function(x,
   reflector_mspct(z, ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn as.reflector_mspct
+#' @rdname as.reflector_mspct
 #'
 #' @export
 #'
@@ -1278,7 +1279,7 @@ as.reflector_mspct.matrix <- function(x,
 #'
 as.object_mspct <- function(x, ...) UseMethod("as.object_mspct")
 
-#' @describeIn as.object_mspct
+#' @rdname as.object_mspct
 #'
 #' @export
 #'
@@ -1287,7 +1288,7 @@ as.object_mspct.default <- function(x, ...) {
   object_mspct()
 }
 
-#' @describeIn as.object_mspct
+#' @rdname as.object_mspct
 #'
 #' @export
 #'
@@ -1304,7 +1305,7 @@ as.object_mspct.data.frame <-
                     ...)
   }
 
-#' @describeIn as.object_mspct
+#' @rdname as.object_mspct
 #'
 #' @export
 #'
@@ -1312,7 +1313,7 @@ as.object_mspct.object_spct <- function(x, ...) {
   object_mspct(list(x), ...)
 }
 
-#' @describeIn as.object_mspct
+#' @rdname as.object_mspct
 #'
 #' @export
 #'
@@ -1370,7 +1371,7 @@ as.object_mspct.list <- function(x,
 #'
 as.solute_mspct <- function(x, ...) UseMethod("as.solute_mspct")
 
-#' @describeIn as.solute_mspct
+#' @rdname as.solute_mspct
 #'
 #' @export
 #'
@@ -1379,7 +1380,7 @@ as.solute_mspct.default <- function(x, ...) {
   solute_mspct()
 }
 
-#' @describeIn as.solute_mspct
+#' @rdname as.solute_mspct
 #'
 #' @export
 #'
@@ -1394,7 +1395,7 @@ as.solute_mspct.data.frame <-
                     ...)
   }
 
-#' @describeIn as.solute_mspct
+#' @rdname as.solute_mspct
 #'
 #' @export
 #'
@@ -1402,7 +1403,7 @@ as.solute_mspct.solute_spct <- function(x, ...) {
   solute_mspct(list(x), ...)
 }
 
-#' @describeIn as.solute_mspct
+#' @rdname as.solute_mspct
 #'
 #' @export
 #'
@@ -1422,7 +1423,7 @@ as.solute_mspct.list <- function(x,
   solute_mspct(z, ncol = ncol, byrow = byrow)
 }
 
-#' @describeIn as.solute_mspct
+#' @rdname as.solute_mspct
 #'
 #' @export
 #'
@@ -1463,7 +1464,7 @@ as.solute_mspct.matrix <- function(x,
 #'
 as.chroma_mspct <- function(x, ...) UseMethod("as.chroma_mspct")
 
-#' @describeIn as.chroma_mspct
+#' @rdname as.chroma_mspct
 #'
 #' @export
 #'
@@ -1472,7 +1473,7 @@ as.chroma_mspct.default <- function(x, ...) {
   chroma_mspct()
 }
 
-#' @describeIn as.chroma_mspct
+#' @rdname as.chroma_mspct
 #'
 #' @export
 #'
@@ -1480,7 +1481,7 @@ as.chroma_mspct.data.frame <- function(x, ...) {
   as.chroma_mspct(x = list(x), ...)
 }
 
-#' @describeIn as.chroma_mspct
+#' @rdname as.chroma_mspct
 #'
 #' @export
 #'
@@ -1488,7 +1489,7 @@ as.chroma_mspct.chroma_spct <- function(x, ...) {
   chroma_mspct(list(x), ...)
 }
 
-#' @describeIn as.chroma_mspct
+#' @rdname as.chroma_mspct
 #'
 #' @export
 #'

@@ -43,17 +43,6 @@ a list with fields named \code{"Rfr.constant"} [\eqn{/1}],
 Function to read the "filter.properties" attribute of an existing filter_spct
 or a filter_mspct.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{getFilterProperties(default)}: default
-
-\item \code{getFilterProperties(filter_spct)}: generic_spct
-
-\item \code{getFilterProperties(summary_filter_spct)}: summary_generic_spct
-
-\item \code{getFilterProperties(generic_mspct)}: filter_mspct
-
-}}
 \note{
 The method for collections of spectra returns the a tibble with a
   column of lists.
@@ -63,33 +52,33 @@ filter_properties(polyester.spct)
 
 }
 \seealso{
-Other measurement metadata functions: 
-\code{\link{add_attr2tb}()},
-\code{\link{getHowMeasured}()},
-\code{\link{getInstrDesc}()},
-\code{\link{getInstrSettings}()},
-\code{\link{getSensorProperties}()},
-\code{\link{getSoluteProperties}()},
-\code{\link{getWhatMeasured}()},
-\code{\link{getWhenMeasured}()},
-\code{\link{getWhereMeasured}()},
-\code{\link{get_attributes}()},
-\code{\link{isValidInstrDesc}()},
-\code{\link{isValidInstrSettings}()},
-\code{\link{select_spct_attributes}()},
-\code{\link{setFilterProperties}()},
-\code{\link{setHowMeasured}()},
-\code{\link{setInstrDesc}()},
-\code{\link{setInstrSettings}()},
-\code{\link{setSensorProperties}()},
-\code{\link{setSoluteProperties}()},
-\code{\link{setWhatMeasured}()},
-\code{\link{setWhenMeasured}()},
-\code{\link{setWhereMeasured}()},
-\code{\link{spct_attr2tb}()},
-\code{\link{spct_metadata}()},
-\code{\link{subset_attributes}()},
-\code{\link{trimInstrDesc}()},
-\code{\link{trimInstrSettings}()}
+Other measurement metadata functions:
+\code{\link[=add_attr2tb]{add_attr2tb()}},
+\code{\link[=getHowMeasured]{getHowMeasured()}},
+\code{\link[=getInstrDesc]{getInstrDesc()}},
+\code{\link[=getInstrSettings]{getInstrSettings()}},
+\code{\link[=getSensorProperties]{getSensorProperties()}},
+\code{\link[=getSoluteProperties]{getSoluteProperties()}},
+\code{\link[=getWhatMeasured]{getWhatMeasured()}},
+\code{\link[=getWhenMeasured]{getWhenMeasured()}},
+\code{\link[=getWhereMeasured]{getWhereMeasured()}},
+\code{\link[=get_attributes]{get_attributes()}},
+\code{\link[=isValidInstrDesc]{isValidInstrDesc()}},
+\code{\link[=isValidInstrSettings]{isValidInstrSettings()}},
+\code{\link[=select_spct_attributes]{select_spct_attributes()}},
+\code{\link[=setFilterProperties]{setFilterProperties()}},
+\code{\link[=setHowMeasured]{setHowMeasured()}},
+\code{\link[=setInstrDesc]{setInstrDesc()}},
+\code{\link[=setInstrSettings]{setInstrSettings()}},
+\code{\link[=setSensorProperties]{setSensorProperties()}},
+\code{\link[=setSoluteProperties]{setSoluteProperties()}},
+\code{\link[=setWhatMeasured]{setWhatMeasured()}},
+\code{\link[=setWhenMeasured]{setWhenMeasured()}},
+\code{\link[=setWhereMeasured]{setWhereMeasured()}},
+\code{\link[=spct_attr2tb]{spct_attr2tb()}},
+\code{\link[=spct_metadata]{spct_metadata()}},
+\code{\link[=subset_attributes]{subset_attributes()}},
+\code{\link[=trimInstrDesc]{trimInstrDesc()}},
+\code{\link[=trimInstrSettings]{trimInstrSettings()}}
 }
 \concept{measurement metadata functions}

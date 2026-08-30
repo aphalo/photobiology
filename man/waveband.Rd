@@ -83,11 +83,6 @@ Objects of class \code{waveband} are used to store the different
   in computations and labelling, as all the bits of information are passed
   together. Class \code{"waveband"} is derived from R class \code{list}.
 }
-\section{Functions}{
-\itemize{
-\item \code{new_waveband()}: A less flexible variant
-
-}}
 \examples{
 waveband(c(400,700))
 
@@ -95,7 +90,7 @@ new_waveband(400,700)
 
 }
 \seealso{
-Other waveband constructors: 
-\code{\link{split_bands}()}
+Other waveband constructors:
+\code{\link[=split_bands]{split_bands()}}
 }
 \concept{waveband constructors}

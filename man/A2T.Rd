@@ -46,27 +46,16 @@ A copy of \code{x} with a column \code{Tfr} added and \code{A} and
 \description{
 Function that converts absorbance (a.u.) into transmittance (fraction).
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{A2T(default)}: Default method for generic function
-
-\item \code{A2T(numeric)}: method for numeric vectors
-
-\item \code{A2T(filter_spct)}: Method for filter spectra
-
-\item \code{A2T(filter_mspct)}: Method for collections of filter spectra
-
-}}
 \seealso{
-Other quantity conversion functions: 
-\code{\link{Afr2T}()},
-\code{\link{T2A}()},
-\code{\link{T2Afr}()},
-\code{\link{any2T}()},
-\code{\link{as_quantum}()},
-\code{\link{e2q}()},
-\code{\link{e2qmol_multipliers}()},
-\code{\link{e2quantum_multipliers}()},
-\code{\link{q2e}()}
+Other quantity conversion functions:
+\code{\link[=Afr2T]{Afr2T()}},
+\code{\link[=T2A]{T2A()}},
+\code{\link[=T2Afr]{T2Afr()}},
+\code{\link[=any2T]{any2T()}},
+\code{\link[=as_quantum]{as_quantum()}},
+\code{\link[=e2q]{e2q()}},
+\code{\link[=e2qmol_multipliers]{e2qmol_multipliers()}},
+\code{\link[=e2quantum_multipliers]{e2quantum_multipliers()}},
+\code{\link[=q2e]{q2e()}}
 }
 \concept{quantity conversion functions}

@@ -81,7 +81,7 @@ q_fraction <- function(spct,
                        use.hinges,
                        ...) UseMethod("q_fraction")
 
-#' @describeIn q_fraction Default for generic function
+#' @rdname q_fraction
 #'
 #' @export
 #'
@@ -97,7 +97,7 @@ q_fraction.default <- function(spct,
   NA_real_
 }
 
-#' @describeIn q_fraction Method for \code{source_spct} objects
+#' @rdname q_fraction
 #'
 #' @export
 #'
@@ -169,8 +169,7 @@ q_fraction.source_spct <-
     return(fraction)
   }
 
-#' @describeIn q_fraction Calculates photon:photon from a \code{source_mspct}
-#'   object.
+#' @rdname q_fraction
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
 #'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
@@ -316,7 +315,7 @@ e_fraction <- function(spct,
                        use.hinges,
                        ...) UseMethod("e_fraction")
 
-#' @describeIn e_fraction Default for generic function
+#' @rdname e_fraction
 #'
 #' @export
 #'
@@ -332,7 +331,7 @@ e_fraction.default <- function(spct,
   NA_real_
 }
 
-#' @describeIn e_fraction Method for \code{source_spct} objects
+#' @rdname e_fraction
 #'
 #' @export
 #'
@@ -404,8 +403,7 @@ e_fraction.source_spct <-
     return(fraction)
   }
 
-#' @describeIn e_fraction Calculates energy:energy fraction from a
-#'   \code{source_mspct} object.
+#' @rdname e_fraction
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
 #'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.

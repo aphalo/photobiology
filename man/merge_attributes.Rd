@@ -42,10 +42,3 @@ A copy of \code{z} with additional attributes set.
 Merge attributes from \code{x} and \code{y} and copy them to \code{z}.
 Methods defined for spectral objects of classes from package 'photobiology'.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{merge_attributes(default)}: Default for generic function
-
-\item \code{merge_attributes(generic_spct)}: 
-
-}}

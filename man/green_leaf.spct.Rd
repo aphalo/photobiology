@@ -25,7 +25,7 @@ Aphalo, P. J. & Lehto, T. Effects of light quality on growth and N
 accumulation in birch seedlings Tree Physiology, 1997, 17, 125-132
 }
 \seealso{
-Other Spectral data examples: 
+Other Spectral data examples:
 \code{\link{A.illuminant.spct}},
 \code{\link{D50.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},

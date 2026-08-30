@@ -37,7 +37,7 @@ program with accompanying spectral databases for photochemical calculations",
 Photochem. Photobiol., 81, 212-213, 2005.
 }
 \seealso{
-Other Spectral data examples: 
+Other Spectral data examples:
 \code{\link{A.illuminant.spct}},
 \code{\link{D50.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},

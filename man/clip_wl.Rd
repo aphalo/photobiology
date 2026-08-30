@@ -40,19 +40,6 @@ a spectrum object or a collection of spectral objects of the same
 Clip head and tail of a spectrum based on wavelength limits, no
 interpolation used at range boundaries.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{clip_wl(default)}: Default for generic function
-
-\item \code{clip_wl(generic_spct)}: Clip an object of class "generic_spct" or derived.
-
-\item \code{clip_wl(generic_mspct)}: Clip an object of class "generic_mspct" or derived.
-
-\item \code{clip_wl(waveband)}: Clip an object of class "waveband".
-
-\item \code{clip_wl(list)}: Clip a list (of objects of class "waveband").
-
-}}
 \note{
 The condition tested is \code{wl >= range[1] & wl < (range[2] + 1e-13)}.
 }
@@ -63,9 +50,9 @@ clip_wl(sun.spct, range = c(400, NA))
 
 }
 \seealso{
-Other trim functions: 
-\code{\link{trim_spct}()},
-\code{\link{trim_waveband}()},
-\code{\link{trim_wl}()}
+Other trim functions:
+\code{\link[=trim_spct]{trim_spct()}},
+\code{\link[=trim_waveband]{trim_waveband()}},
+\code{\link[=trim_wl]{trim_wl()}}
 }
 \concept{trim functions}

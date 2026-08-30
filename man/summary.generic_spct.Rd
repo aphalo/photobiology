@@ -69,11 +69,6 @@ collection of spectra. Passing \code{"auto"} in the call, is equivalent to
 passing \code{"each"} or \code{"collection"} depending on the number of
 spectra contained in the object.
 }
-\section{Functions}{
-\itemize{
-\item \code{summary(generic_mspct)}: 
-
-}}
 \examples{
 summary(sun.spct)
 class(summary(sun.spct))

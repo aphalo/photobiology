@@ -26,8 +26,8 @@ The objects are modified by reference. The class names with ending
   \code{ls}, the default, or its equivalent \code{objects}.
 }
 \seealso{
-Other upgrade from earlier versions: 
-\code{\link{is.old_spct}()},
-\code{\link{upgrade_spct}()}
+Other upgrade from earlier versions:
+\code{\link[=is.old_spct]{is.old_spct()}},
+\code{\link[=upgrade_spct]{upgrade_spct()}}
 }
 \concept{upgrade from earlier versions}

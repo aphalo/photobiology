@@ -73,25 +73,6 @@ values, and discarding data for wavelength not shared. Alternatively, filling
 the spectral data for wavelengths outside the overlapping range with with
 \code{NA} when data is not available.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{join_mspct(default)}: 
-
-\item \code{join_mspct(generic_mspct)}: 
-
-\item \code{join_mspct(source_mspct)}: 
-
-\item \code{join_mspct(response_mspct)}: 
-
-\item \code{join_mspct(filter_mspct)}: 
-
-\item \code{join_mspct(reflector_mspct)}: 
-
-\item \code{join_mspct(object_mspct)}: 
-
-\item \code{join_mspct(solute_mspct)}: 
-
-}}
 \note{
 Currently only \code{generic_spct}, \code{source_mspct},
   \code{response_mspct}, \code{filter_mspct}, \code{reflector_mspct},

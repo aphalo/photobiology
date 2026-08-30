@@ -156,13 +156,13 @@ with(sun.data, which(find_valleys(s.e.irrad, span = 51)))
 \seealso{
 \code{\link[splus2R]{peaks}}.
 
-Other peaks and valleys functions: 
-\code{\link{find_spikes}()},
-\code{\link{get_peaks}()},
-\code{\link{peaks}()},
-\code{\link{replace_bad_pixs}()},
-\code{\link{spikes}()},
-\code{\link{valleys}()},
-\code{\link{wls_at_target}()}
+Other peaks and valleys functions:
+\code{\link[=find_spikes]{find_spikes()}},
+\code{\link[=get_peaks]{get_peaks()}},
+\code{\link[=peaks]{peaks()}},
+\code{\link[=replace_bad_pixs]{replace_bad_pixs()}},
+\code{\link[=spikes]{spikes()}},
+\code{\link[=valleys]{valleys()}},
+\code{\link[=wls_at_target]{wls_at_target()}}
 }
 \concept{peaks and valleys functions}

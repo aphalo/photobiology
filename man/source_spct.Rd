@@ -323,17 +323,17 @@ Constructors can be used to create spectral objects from spectral
 
 \code{\link{setSoluteProperties}}
 
-Other constructors of spectral objects: 
-\code{\link{as.calibration_spct}()},
-\code{\link{as.chroma_spct}()},
-\code{\link{as.cps_spct}()},
-\code{\link{as.filter_spct}()},
-\code{\link{as.generic_spct}()},
-\code{\link{as.object_spct}()},
-\code{\link{as.raw_spct}()},
-\code{\link{as.reflector_spct}()},
-\code{\link{as.response_spct}()},
-\code{\link{as.solute_spct}()},
-\code{\link{as.source_spct}()}
+Other constructors of spectral objects:
+\code{\link[=as.calibration_spct]{as.calibration_spct()}},
+\code{\link[=as.chroma_spct]{as.chroma_spct()}},
+\code{\link[=as.cps_spct]{as.cps_spct()}},
+\code{\link[=as.filter_spct]{as.filter_spct()}},
+\code{\link[=as.generic_spct]{as.generic_spct()}},
+\code{\link[=as.object_spct]{as.object_spct()}},
+\code{\link[=as.raw_spct]{as.raw_spct()}},
+\code{\link[=as.reflector_spct]{as.reflector_spct()}},
+\code{\link[=as.response_spct]{as.response_spct()}},
+\code{\link[=as.solute_spct]{as.solute_spct()}},
+\code{\link[=as.source_spct]{as.source_spct()}}
 }
 \concept{constructors of spectral objects}

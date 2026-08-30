@@ -48,14 +48,16 @@ setWhenMeasured <- function(x, when.measured, ...) UseMethod("setWhenMeasured")
   setWhenMeasured(x, when.measured = value)
 }
 
-#' @describeIn setWhenMeasured default
+#' @rdname setWhenMeasured
+#'
 #' @export
 setWhenMeasured.default <- function(x, when.measured, ...) {
   warning("Default dummy method called.")
   invisible(x)
 }
 
-#' @describeIn setWhenMeasured generic_spct
+#' @rdname setWhenMeasured
+#'
 #' @export
 setWhenMeasured.generic_spct <-
   function(x,
@@ -84,17 +86,20 @@ setWhenMeasured.generic_spct <-
     invisible(x)
   }
 
-#' @describeIn setWhenMeasured summary_generic_spct
+#' @rdname setWhenMeasured
+#'
 #' @export
 #'
 setWhenMeasured.summary_generic_spct <- setWhenMeasured.generic_spct
 
-#' @describeIn setWhenMeasured data.frame
+#' @rdname setWhenMeasured
+#'
 #' @export
 #'
 setWhenMeasured.data.frame <- setWhenMeasured.generic_spct
 
-#' @describeIn setWhenMeasured generic_mspct
+#' @rdname setWhenMeasured
+#'
 #' @export
 setWhenMeasured.generic_mspct <-
   function(x,
@@ -152,14 +157,15 @@ getWhenMeasured <- function(x, ...) UseMethod("getWhenMeasured")
 #'
 when_measured <- getWhenMeasured
 
-#' @describeIn getWhenMeasured default
+#' @rdname getWhenMeasured
+#'
 #' @export
 getWhenMeasured.default <- function(x, ...) {
   # we return an NA of class POSIXct
   suppressWarnings(lubridate::ymd_hms(NA_character_, tz = "UTC"))
 }
 
-#' @describeIn getWhenMeasured generic_spct
+#' @rdname getWhenMeasured
 #'
 #' @param as.df logical If \code{TRUE} return a data frame instead of a list,
 #'   when the value stored in the attribute is a list.
@@ -196,15 +202,18 @@ getWhenMeasured.generic_spct <- function(x, as.df = FALSE, ..., simplify = FALSE
   when.measured
 }
 
-#' @describeIn getWhenMeasured summary_generic_spct
+#' @rdname getWhenMeasured
+#'
 #' @export
 getWhenMeasured.summary_generic_spct <- getWhenMeasured.generic_spct
 
-#' @describeIn getWhenMeasured data.frame
+#' @rdname getWhenMeasured
+#'
 #' @export
 getWhenMeasured.data.frame <- getWhenMeasured.generic_spct
 
-#' @describeIn getWhenMeasured generic_mspct
+#' @rdname getWhenMeasured
+#'
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
 #' @param simplify logical If all members share the same attribute value return
@@ -310,7 +319,7 @@ setWhereMeasured <-
   setWhereMeasured(x, where.measured = value)
 }
 
-#' @describeIn setWhereMeasured default
+#' @rdname setWhereMeasured
 #' @export
 setWhereMeasured.default <- function(x,
                                      where.measured,
@@ -321,7 +330,7 @@ setWhereMeasured.default <- function(x,
   x
 }
 
-#' @describeIn setWhereMeasured generic_spct
+#' @rdname setWhereMeasured
 #' @export
 setWhereMeasured.generic_spct <- function(x,
                                           where.measured = NA,
@@ -372,17 +381,18 @@ setWhereMeasured.generic_spct <- function(x,
   invisible(x)
 }
 
-#' @describeIn setWhereMeasured summary_generic_spct
+#' @rdname setWhereMeasured
 #'
 #' @export
 setWhereMeasured.summary_generic_spct <- setWhereMeasured.generic_spct
 
-#' @describeIn setWhereMeasured data.frame
+#' @rdname setWhereMeasured
 #'
 #' @export
 setWhereMeasured.data.frame <- setWhereMeasured.generic_spct
 
-#' @describeIn setWhereMeasured generic_mspct
+#' @rdname setWhereMeasured
+#'
 #' @note Method for collections of spectra recycles the location information
 #'   only if it is a one row \code{data.frame}.
 #' @export
@@ -503,14 +513,16 @@ getWhereMeasured <- function(x, ...) UseMethod("getWhereMeasured")
 #'
 where_measured <- getWhereMeasured
 
-#' @describeIn getWhereMeasured default
+#' @rdname getWhereMeasured
+#'
 #' @export
 #'
 getWhereMeasured.default <- function(x, ...) {
   SunCalcMeeus::na_geocode()
 }
 
-#' @describeIn getWhereMeasured generic_spct
+#' @rdname getWhereMeasured
+#'
 #' @export
 #'
 getWhereMeasured.generic_spct <- function(x,
@@ -568,11 +580,12 @@ getWhereMeasured.generic_spct <- function(x,
   }
 }
 
-#' @describeIn getWhereMeasured summary_generic_spct
+#' @rdname getWhereMeasured
+#'
 #' @export
 getWhereMeasured.summary_generic_spct <- getWhereMeasured.generic_spct
 
-#' @describeIn getWhereMeasured generic_mspct
+#' @rdname getWhereMeasured
 #'
 #' @export
 #'
@@ -609,7 +622,8 @@ getWhereMeasured.generic_mspct <- function(x,
   z
 }
 
-#' @describeIn getWhereMeasured data.frame
+#' @rdname getWhereMeasured
+#'
 #' @export
 #'
 getWhereMeasured.data.frame <- function(x, ...) {
@@ -663,7 +677,8 @@ setHowMeasured <- function(x, ...) {UseMethod("setHowMeasured")}
   setHowMeasured(x, how.measured = value)
 }
 
-#' @describeIn setHowMeasured default
+#' @rdname setHowMeasured
+#'
 #' @export
 setHowMeasured.default <- function(x,
                                    how.measured,
@@ -671,7 +686,8 @@ setHowMeasured.default <- function(x,
   x
 }
 
-#' @describeIn setHowMeasured generic_spct
+#' @rdname setHowMeasured
+#'
 #' @export
 setHowMeasured.generic_spct <- function(x, how.measured, ...) {
   name <- substitute(x)
@@ -683,15 +699,17 @@ setHowMeasured.generic_spct <- function(x, how.measured, ...) {
   invisible(x)
 }
 
-#' @describeIn setHowMeasured summary_generic_spct
+#' @rdname setHowMeasured
+#'
 #' @export
 setHowMeasured.summary_generic_spct <- setHowMeasured.generic_spct
 
-#' @describeIn setHowMeasured data.frame
+#' @rdname setHowMeasured
+#'
 #' @export
 setHowMeasured.data.frame <- setHowMeasured.generic_spct
 
-#' @describeIn setHowMeasured generic_mspct
+#' @rdname setHowMeasured
 #'
 #' @export
 setHowMeasured.generic_mspct <- function(x,
@@ -724,7 +742,7 @@ getHowMeasured <- function(x, ...) UseMethod("getHowMeasured")
 #'
 how_measured <- getHowMeasured
 
-#' @describeIn getHowMeasured default
+#' @rdname getHowMeasured
 #'
 #' @export
 getHowMeasured.default <- function(x, ...) {
@@ -732,7 +750,7 @@ getHowMeasured.default <- function(x, ...) {
   NA_character_
 }
 
-#' @describeIn getHowMeasured generic_spct
+#' @rdname getHowMeasured
 #'
 #' @export
 getHowMeasured.generic_spct <- function(x, ..., simplify = FALSE) {
@@ -748,17 +766,17 @@ getHowMeasured.generic_spct <- function(x, ..., simplify = FALSE) {
   z
 }
 
-#' @describeIn getHowMeasured summary_generic_spct
+#' @rdname getHowMeasured
 #'
 #' @export
 getHowMeasured.summary_generic_spct <- getHowMeasured.generic_spct
 
-#' @describeIn getHowMeasured data.frame
+#' @rdname getHowMeasured
 #'
 #' @export
 getHowMeasured.data.frame <- getHowMeasured.generic_spct
 
-#' @describeIn getHowMeasured generic_mspct
+#' @rdname getHowMeasured
 #'
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
@@ -1373,13 +1391,14 @@ setWhatMeasured <- function(x, ...) {UseMethod("setWhatMeasured")}
   setWhatMeasured(x, what.measured = value)
 }
 
-#' @describeIn setWhatMeasured default
+#' @rdname setWhatMeasured
 #' @export
 setWhatMeasured.default <- function(x, what.measured, ...) {
   x
 }
 
-#' @describeIn setWhatMeasured generic_spct
+#' @rdname setWhatMeasured
+#'
 #' @export
 setWhatMeasured.generic_spct <- function(x, what.measured, ...) {
   name <- substitute(x)
@@ -1391,15 +1410,17 @@ setWhatMeasured.generic_spct <- function(x, what.measured, ...) {
   invisible(x)
 }
 
-#' @describeIn setWhatMeasured summary_generic_spct
+#' @rdname setWhatMeasured
+#'
 #' @export
 setWhatMeasured.summary_generic_spct <- setWhatMeasured.generic_spct
 
-#' @describeIn setWhatMeasured data.frame
+#' @rdname setWhatMeasured
+#'
 #' @export
 setWhatMeasured.data.frame <- setWhatMeasured.generic_spct
 
-#' @describeIn setWhatMeasured generic_mspct
+#' @rdname setWhatMeasured
 #'
 #' @export
 setWhatMeasured.generic_mspct <- function(x,
@@ -1433,14 +1454,14 @@ getWhatMeasured <- function(x, ...) UseMethod("getWhatMeasured")
 #'
 what_measured <- getWhatMeasured
 
-#' @describeIn getWhatMeasured default
+#' @rdname getWhatMeasured
 #' @export
 getWhatMeasured.default <- function(x, ...) {
   # we return an NA of class character
   NA_character_
 }
 
-#' @describeIn getWhatMeasured generic_spct
+#' @rdname getWhatMeasured
 #' @export
 getWhatMeasured.generic_spct <- function(x,
                                          ...,
@@ -1464,16 +1485,19 @@ getWhatMeasured.generic_spct <- function(x,
   z
 }
 
-#' @describeIn getWhatMeasured summary_generic_spct
+#' @rdname getWhatMeasured
+#'
 #' @export
 getWhatMeasured.summary_generic_spct <- getWhatMeasured.generic_spct
 
-#' @describeIn getWhatMeasured data.frame
+#' @rdname getWhatMeasured
+#'
 #' @export
 #'
 getWhatMeasured.data.frame <- getWhatMeasured.generic_spct
 
-#' @describeIn getWhatMeasured generic_mspct
+#' @rdname getWhatMeasured
+#'
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
 #' @param simplify logical If all members share the same attribute value return

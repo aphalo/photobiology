@@ -280,7 +280,7 @@ interpolate_wl <- function(x,
                            method,
                            ...) UseMethod("interpolate_wl")
 
-#' @describeIn interpolate_wl Default for generic function
+#' @rdname interpolate_wl
 #'
 #' @export
 #'
@@ -293,8 +293,7 @@ interpolate_wl.default <- function(x,
   stop("'interpolate_wl()' is not defined for objects of class '", class(x)[1], "'.")
 }
 
-#' @describeIn interpolate_wl  Interpolate wavelength in an object of class
-#'   "generic_spct" or derived.
+#' @rdname interpolate_wl
 #'
 #' @export
 #'
@@ -327,8 +326,8 @@ interpolate_wl.generic_spct <- function(x,
                    method = method)
 }
 
-#' @describeIn interpolate_wl  Interpolate wavelength in an object of class
-#'   "generic_mspct" or derived.
+#' @rdname interpolate_wl
+#'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
 #' @param .paropts a list of additional options passed into the foreach function

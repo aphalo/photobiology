@@ -120,19 +120,6 @@ A named \code{numeric} vector in the case of methods for individual
 Function to calculate the mean, total, or other summary of absorbance for
 spectral data stored in a \code{filter_spct} or in an \code{object_spct}.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{absorbance(default)}: Default for generic function
-
-\item \code{absorbance(filter_spct)}: Specialization for filter spectra
-
-\item \code{absorbance(object_spct)}: Specialization for object spectra
-
-\item \code{absorbance(filter_mspct)}: Calculates absorbance from a \code{filter_mspct}
-
-\item \code{absorbance(object_mspct)}: Calculates absorbance from a \code{object_mspct}
-
-}}
 \note{
 The \code{use.hinges} parameter controls speed optimization. The
   defaults should be suitable in most cases. Only the range of wavelengths in

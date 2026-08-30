@@ -42,19 +42,6 @@ character vector An object containing a verbal description of the
 \description{
 Method to read the \code{"how.measured"} attribute of an R object.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{getHowMeasured(default)}: default
-
-\item \code{getHowMeasured(generic_spct)}: generic_spct
-
-\item \code{getHowMeasured(summary_generic_spct)}: summary_generic_spct
-
-\item \code{getHowMeasured(data.frame)}: data.frame
-
-\item \code{getHowMeasured(generic_mspct)}: generic_mspct
-
-}}
 \note{
 The method for collections of spectra returns the
   a data frame with a column of character strings.
@@ -69,33 +56,33 @@ how_measured(my.spct)
 
 }
 \seealso{
-Other measurement metadata functions: 
-\code{\link{add_attr2tb}()},
-\code{\link{getFilterProperties}()},
-\code{\link{getInstrDesc}()},
-\code{\link{getInstrSettings}()},
-\code{\link{getSensorProperties}()},
-\code{\link{getSoluteProperties}()},
-\code{\link{getWhatMeasured}()},
-\code{\link{getWhenMeasured}()},
-\code{\link{getWhereMeasured}()},
-\code{\link{get_attributes}()},
-\code{\link{isValidInstrDesc}()},
-\code{\link{isValidInstrSettings}()},
-\code{\link{select_spct_attributes}()},
-\code{\link{setFilterProperties}()},
-\code{\link{setHowMeasured}()},
-\code{\link{setInstrDesc}()},
-\code{\link{setInstrSettings}()},
-\code{\link{setSensorProperties}()},
-\code{\link{setSoluteProperties}()},
-\code{\link{setWhatMeasured}()},
-\code{\link{setWhenMeasured}()},
-\code{\link{setWhereMeasured}()},
-\code{\link{spct_attr2tb}()},
-\code{\link{spct_metadata}()},
-\code{\link{subset_attributes}()},
-\code{\link{trimInstrDesc}()},
-\code{\link{trimInstrSettings}()}
+Other measurement metadata functions:
+\code{\link[=add_attr2tb]{add_attr2tb()}},
+\code{\link[=getFilterProperties]{getFilterProperties()}},
+\code{\link[=getInstrDesc]{getInstrDesc()}},
+\code{\link[=getInstrSettings]{getInstrSettings()}},
+\code{\link[=getSensorProperties]{getSensorProperties()}},
+\code{\link[=getSoluteProperties]{getSoluteProperties()}},
+\code{\link[=getWhatMeasured]{getWhatMeasured()}},
+\code{\link[=getWhenMeasured]{getWhenMeasured()}},
+\code{\link[=getWhereMeasured]{getWhereMeasured()}},
+\code{\link[=get_attributes]{get_attributes()}},
+\code{\link[=isValidInstrDesc]{isValidInstrDesc()}},
+\code{\link[=isValidInstrSettings]{isValidInstrSettings()}},
+\code{\link[=select_spct_attributes]{select_spct_attributes()}},
+\code{\link[=setFilterProperties]{setFilterProperties()}},
+\code{\link[=setHowMeasured]{setHowMeasured()}},
+\code{\link[=setInstrDesc]{setInstrDesc()}},
+\code{\link[=setInstrSettings]{setInstrSettings()}},
+\code{\link[=setSensorProperties]{setSensorProperties()}},
+\code{\link[=setSoluteProperties]{setSoluteProperties()}},
+\code{\link[=setWhatMeasured]{setWhatMeasured()}},
+\code{\link[=setWhenMeasured]{setWhenMeasured()}},
+\code{\link[=setWhereMeasured]{setWhereMeasured()}},
+\code{\link[=spct_attr2tb]{spct_attr2tb()}},
+\code{\link[=spct_metadata]{spct_metadata()}},
+\code{\link[=subset_attributes]{subset_attributes()}},
+\code{\link[=trimInstrDesc]{trimInstrDesc()}},
+\code{\link[=trimInstrSettings]{trimInstrSettings()}}
 }
 \concept{measurement metadata functions}

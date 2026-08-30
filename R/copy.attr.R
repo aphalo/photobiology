@@ -151,7 +151,7 @@ spct_attributes <- function(.class = "all", attributes = "*") {
 #'
 copy_attributes <- function(x, y, which, ...) UseMethod("copy_attributes")
 
-#' @describeIn copy_attributes Default for generic function
+#' @rdname copy_attributes
 #'
 #' @export
 #'
@@ -162,7 +162,7 @@ copy_attributes.default <- function(x, y,
   y
 }
 
-#' @describeIn copy_attributes
+#' @rdname copy_attributes
 #'
 #' @export
 #'
@@ -192,7 +192,7 @@ copy_attributes.generic_spct <- function(x, y,
   y
 }
 
-#' @describeIn copy_attributes
+#' @rdname copy_attributes
 #'
 #' @export
 #'
@@ -212,7 +212,7 @@ copy_attributes.generic_mspct <- function(x, y,
   y
 }
 
-#' @describeIn copy_attributes
+#' @rdname copy_attributes
 #'
 #' @export
 #'
@@ -251,7 +251,7 @@ copy_attributes.waveband <- function(x, y, which = NULL, ...) {
 merge_attributes <-
   function(x, y, z, which, which.not, ...) UseMethod("merge_attributes")
 
-#' @describeIn merge_attributes Default for generic function
+#' @rdname merge_attributes
 #'
 #' @export
 #'
@@ -264,7 +264,7 @@ merge_attributes.default <- function(x, y, z,
   z
 }
 
-#' @describeIn merge_attributes
+#' @rdname merge_attributes
 #'
 #' @param copy.class logical If TRUE class attributes are also copied.
 #'
@@ -340,14 +340,16 @@ merge_attributes.generic_spct <- function(x, y, z,
 #'
 #' @seealso \code{\link{select_spct_attributes}}
 #'
-#' @keywords internal
+#' @export
 #'
 #' @family measurement metadata functions
 #'
 subset_attributes <-
   function(x, to.keep, ...) UseMethod("subset_attributes")
 
-#' @describeIn subset_attributes default
+#' @rdname subset_attributes
+#'
+#' @export
 #'
 subset_attributes.default <-
   function(x, to.keep, ...) {
@@ -356,7 +358,9 @@ subset_attributes.default <-
     x
   }
 
-#' @describeIn subset_attributes generic_spct
+#' @rdname subset_attributes
+#'
+#' @export
 #'
 subset_attributes.generic_spct <-
   function(x,
@@ -425,7 +429,8 @@ subset_attributes.generic_spct <-
 get_attributes <-
   function(x, which, ...) UseMethod("get_attributes")
 
-#' @describeIn get_attributes generic_spct
+#' @rdname get_attributes
+#'
 #' @export
 #'
 get_attributes.generic_spct <-
@@ -442,7 +447,8 @@ get_attributes.generic_spct <-
     spct.attr[names(spct.attr) %in% target.attributes]
   }
 
-#' @describeIn get_attributes source_spct
+#' @rdname get_attributes
+#'
 #' @export
 #'
 get_attributes.source_spct <- function(x,
@@ -454,7 +460,8 @@ get_attributes.source_spct <- function(x,
                               ...)
 }
 
-#' @describeIn get_attributes filter_spct
+#' @rdname get_attributes
+#'
 #' @export
 #'
 get_attributes.filter_spct <- function(x,
@@ -467,7 +474,8 @@ get_attributes.filter_spct <- function(x,
 }
 
 
-#' @describeIn get_attributes reflector_spct
+#' @rdname get_attributes
+#'
 #' @export
 #'
 get_attributes.reflector_spct <- function(x,
@@ -480,7 +488,8 @@ get_attributes.reflector_spct <- function(x,
 }
 
 
-#' @describeIn get_attributes object_spct
+#' @rdname get_attributes
+#'
 #' @export
 #'
 get_attributes.object_spct <- function(x,
@@ -492,7 +501,8 @@ get_attributes.object_spct <- function(x,
                               ...)
 }
 
-#' @describeIn get_attributes solute_spct
+#' @rdname get_attributes
+#'
 #' @export
 #'
 get_attributes.solute_spct <- function(x,
@@ -504,7 +514,8 @@ get_attributes.solute_spct <- function(x,
                               ...)
 }
 
-#' @describeIn get_attributes waveband
+#' @rdname get_attributes
+#'
 #' @export
 #'
 get_attributes.waveband <- function(x,

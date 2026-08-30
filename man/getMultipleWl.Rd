@@ -27,7 +27,7 @@ multiple_wl(sun_evening.spct)
 
 }
 \seealso{
-Other multiple.wl attribute functions: 
-\code{\link{setMultipleWl}()}
+Other multiple.wl attribute functions:
+\code{\link[=setMultipleWl]{setMultipleWl()}}
 }
 \concept{multiple.wl attribute functions}

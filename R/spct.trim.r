@@ -357,7 +357,7 @@ extend2extremes <- function(mspct,
 #'
 trim_wl <- function(x, range, use.hinges, fill, ...) UseMethod("trim_wl")
 
-#' @describeIn trim_wl Default for generic function
+#' @rdname trim_wl
 #'
 #' @export
 #'
@@ -366,7 +366,7 @@ trim_wl.default <- function(x, range, use.hinges, fill, ...) {
   x
 }
 
-#' @describeIn trim_wl Trim an object of class "generic_spct" or derived.
+#' @rdname trim_wl
 #'
 #' @export
 #'
@@ -402,7 +402,8 @@ trim_wl.generic_spct <- function(x,
             verbose = getOption("photobiology.verbose") )
 }
 
-#' @describeIn trim_wl  Trim an object of class "generic_mspct" or derived.
+#' @rdname trim_wl
+#'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
 #' @param .paropts a list of additional options passed into the foreach function
@@ -437,7 +438,8 @@ trim_wl.generic_mspct <- function(x,
              .paropts = .paropts)
 }
 
-#' @describeIn trim_wl Trim an object of class "waveband".
+#' @rdname trim_wl
+#'
 #' @param trim logical (default is TRUE which trims the wavebands at the
 #'   boundary, while FALSE discards wavebands that are partly off-boundary).
 #'
@@ -462,7 +464,7 @@ trim_wl.waveband <- function(x,
                 use.hinges = use.hinges)
 }
 
-#' @describeIn trim_wl Trim a list (of "waveband" objects).
+#' @rdname trim_wl
 #'
 #' @note trim_wl when applied to waveband objects always inserts hinges when
 #'   trimming.
@@ -514,7 +516,7 @@ trim_wl.list <- function(x,
 #'
 clip_wl <- function(x, range, ...) UseMethod("clip_wl")
 
-#' @describeIn clip_wl Default for generic function
+#' @rdname clip_wl
 #'
 #' @export
 #'
@@ -523,7 +525,7 @@ clip_wl.default <- function(x, range, ...) {
   x
 }
 
-#' @describeIn clip_wl Clip an object of class "generic_spct" or derived.
+#' @rdname clip_wl
 #'
 #' @export
 #'
@@ -555,7 +557,7 @@ clip_wl.generic_spct <- function(x, range = NULL, ...) {
   }
 }
 
-#' @describeIn clip_wl  Clip an object of class "generic_mspct" or derived.
+#' @rdname clip_wl
 #'
 #' @param expand logical Expand or not members containing spectra in long form.
 #'
@@ -573,7 +575,7 @@ clip_wl.generic_mspct <- function(x, range = NULL, expand = TRUE, ...) {
           range = range)
 }
 
-#' @describeIn clip_wl Clip an object of class "waveband".
+#' @rdname clip_wl
 #'
 #' @export
 #'
@@ -586,7 +588,7 @@ clip_wl.waveband <- function(x, range = NULL, ...) {
                 trim = FALSE)
 }
 
-#' @describeIn clip_wl Clip a list (of objects of class "waveband").
+#' @rdname clip_wl
 #'
 #' @export
 #'

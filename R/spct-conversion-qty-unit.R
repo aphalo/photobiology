@@ -22,7 +22,7 @@
 #'
 A2T <- function(x, action, byref, ...) UseMethod("A2T")
 
-#' @describeIn A2T Default method for generic function
+#' @rdname A2T
 #'
 #' @export
 #'
@@ -31,7 +31,7 @@ A2T.default <- function(x, action = NULL, byref = FALSE, ...) {
   return(x)
 }
 
-#' @describeIn A2T method for numeric vectors
+#' @rdname A2T
 #'
 #' @export
 #'
@@ -39,7 +39,7 @@ A2T.numeric <- function(x, action = NULL, byref = FALSE, ...) {
   return(10^-x)
 }
 
-#' @describeIn A2T Method for filter spectra
+#' @rdname A2T
 #'
 #' @export
 #'
@@ -96,7 +96,7 @@ A2T.filter_spct <- function(x, action = "add", byref = FALSE, ...) {
   return(x)
 }
 
-#' @describeIn A2T Method for collections of filter spectra
+#' @rdname A2T
 #'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
@@ -182,7 +182,7 @@ A2T.filter_mspct <- function(x,
 #'
 T2A <- function(x, action, byref, clean, ...) UseMethod("T2A")
 
-#' @describeIn T2A Default method for generic function
+#' @rdname T2A
 #'
 #' @export
 #'
@@ -191,7 +191,7 @@ T2A.default <- function(x, action = NULL, byref = FALSE, ...) {
   return(x)
 }
 
-#' @describeIn T2A Method for numeric vectors
+#' @rdname T2A
 #'
 #' @export
 #'
@@ -211,7 +211,7 @@ T2A.numeric <- function(x,
   return(-log10(x))
 }
 
-#' @describeIn T2A Method for filter spectra
+#' @rdname T2A
 #'
 #' @export
 #'
@@ -276,7 +276,7 @@ T2A.filter_spct <- function(x,
   return(x)
 }
 
-#' @describeIn T2A Method for collections of filter spectra
+#' @rdname T2A
 #'
 #' @param .parallel	if \code{TRUE}, apply function in parallel, using parallel
 #'   backend provided by foreach.
@@ -365,7 +365,7 @@ T2A.filter_mspct <- function(x,
 #'
 T2Afr <- function(x, action, byref, clean, ...) UseMethod("T2Afr")
 
-#' @describeIn T2Afr Default method for generic function
+#' @rdname T2Afr
 #'
 #' @export
 #'
@@ -378,7 +378,7 @@ T2Afr.default <- function(x,
   x
 }
 
-#' @describeIn T2Afr Default method for generic function
+#' @rdname T2Afr
 #'
 #' @param Rfr numeric vector. Spectral reflectance o reflectance factor.
 #'   Set to zero if \code{x} is internal reflectance,
@@ -406,7 +406,7 @@ T2Afr.numeric <- function(x,
   1 - Tfr.internal
 }
 
-#' @describeIn T2Afr Method for filter spectra
+#' @rdname T2Afr
 #'
 #' @export
 #'
@@ -494,13 +494,13 @@ T2Afr.filter_spct <- function(x,
   x
 }
 
-#' @describeIn T2Afr Method for object spectra
+#' @rdname T2Afr
 #'
 #' @export
 #'
 T2Afr.object_spct <- T2Afr.filter_spct
 
-#' @describeIn T2Afr Method for collections of filter spectra
+#' @rdname T2Afr
 #'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
@@ -530,7 +530,7 @@ T2Afr.filter_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn T2Afr Method for collections of object spectra
+#' @rdname T2Afr
 #'
 #' @export
 #'
@@ -564,7 +564,7 @@ T2Afr.object_mspct <- T2Afr.filter_mspct
 #'
 Afr2T <- function(x, action, byref, clean, ...) UseMethod("Afr2T")
 
-#' @describeIn Afr2T Default method for generic function
+#' @rdname Afr2T
 #'
 #' @export
 #'
@@ -577,7 +577,7 @@ Afr2T.default <- function(x,
   x
 }
 
-#' @describeIn Afr2T Default method for generic function
+#' @rdname Afr2T
 #'
 #' @param Rfr numeric vector. Spectral reflectance o reflectance factor.
 #'   Set to zero if \code{x} is internal reflectance,
@@ -605,7 +605,7 @@ Afr2T.numeric <- function(x,
   1 - Afr.internal
 }
 
-#' @describeIn Afr2T Method for filter spectra
+#' @rdname Afr2T
 #'
 #' @export
 #'
@@ -685,13 +685,13 @@ Afr2T.filter_spct <- function(x,
   check_spct(x)
 }
 
-#' @describeIn Afr2T Method for object spectra
+#' @rdname Afr2T
 #'
 #' @export
 #'
 Afr2T.object_spct <- Afr2T.filter_spct
 
-#' @describeIn Afr2T Method for collections of filter spectra
+#' @rdname Afr2T
 #'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
@@ -721,7 +721,7 @@ Afr2T.filter_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn Afr2T Method for collections of object spectra
+#' @rdname Afr2T
 #'
 #' @export
 #'
@@ -845,7 +845,7 @@ any2Afr <- function(x, action = "add", clean = FALSE) {
 #'
 e2q <- function(x, action, byref, ...) UseMethod("e2q")
 
-#' @describeIn e2q Default method
+#' @rdname e2q
 #'
 #' @export
 #'
@@ -853,7 +853,7 @@ e2q.default <- function(x, action = "add", byref = FALSE, ...) {
   return(NA)
 }
 
-#' @describeIn e2q Method for spectral irradiance
+#' @rdname e2q
 #'
 #' @export
 #'
@@ -908,7 +908,7 @@ e2q.source_spct <- function(x,
   return(x)
 }
 
-#' @describeIn e2q Method for spectral responsiveness
+#' @rdname e2q
 #'
 #' @export
 #'
@@ -962,7 +962,7 @@ e2q.response_spct <- function(x,
   return(x)
 }
 
-#' @describeIn e2q Method for collections of (light) source spectra
+#' @rdname e2q
 #'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
@@ -990,7 +990,7 @@ e2q.source_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn e2q Method for collections of response spectra
+#' @rdname e2q
 #'
 #' @export
 #'
@@ -1036,7 +1036,7 @@ e2q.response_mspct <- function(x,
 #'
 q2e <- function(x, action, byref, ...) UseMethod("q2e")
 
-#' @describeIn q2e Default method
+#' @rdname q2e
 #'
 #' @export
 #'
@@ -1044,7 +1044,7 @@ q2e.default <- function(x, action = "add", byref = FALSE, ...) {
   return(NA)
 }
 
-#' @describeIn q2e Method for spectral irradiance
+#' @rdname q2e
 #'
 #' @export
 #'
@@ -1098,7 +1098,7 @@ q2e.source_spct <- function(x,
   return(x)
 }
 
-#' @describeIn q2e Method for spectral responsiveness
+#' @rdname q2e
 #'
 #' @export
 #'
@@ -1152,7 +1152,7 @@ q2e.response_spct <- function(x,
   return(x)
 }
 
-#' @describeIn q2e Method for collections of (light) source spectra
+#' @rdname q2e
 #'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
@@ -1181,7 +1181,7 @@ q2e.source_mspct <- function(x,
 }
 
 
-#' @describeIn q2e Method for collections of response spectra
+#' @rdname q2e
 #'
 #' @export
 #'

@@ -26,11 +26,6 @@ which means use the width option.}
 \description{
 A function to nicely print objects of classes "summary...spct".
 }
-\section{Functions}{
-\itemize{
-\item \code{print(summary_generic_mspct)}: 
-
-}}
 \examples{
 print(summary(sun.spct))
 

@@ -45,7 +45,7 @@ smooth_spct <- function(x,
                         wl.range,
                         ...) UseMethod("smooth_spct")
 
-#' @describeIn smooth_spct Default for generic function
+#' @rdname smooth_spct
 #'
 #' @export
 #'
@@ -54,7 +54,7 @@ smooth_spct.default <- function(x, method, strength, wl.range, ...) {
   return(x)
 }
 
-#' @describeIn smooth_spct Smooth a source spectrum
+#' @rdname smooth_spct
 #'
 #' @export
 #'
@@ -198,7 +198,7 @@ smooth_spct.source_spct <- function(x,
   check_spct(x, force = FALSE)
 }
 
-#' @describeIn smooth_spct Smooth a filter spectrum
+#' @rdname smooth_spct
 #'
 #' @export
 #'
@@ -369,7 +369,7 @@ smooth_spct.filter_spct <- function(x,
   check_spct(x, force = FALSE)
 }
 
-#' @describeIn smooth_spct Smooth a reflector spectrum
+#' @rdname smooth_spct
 #'
 #' @export
 #'
@@ -472,7 +472,7 @@ smooth_spct.reflector_spct <- function(x,
   check_spct(x, force = FALSE)
 }
 
-#' @describeIn smooth_spct Smooth a solute attenuation spectrum
+#' @rdname smooth_spct
 #'
 #' @export
 #'
@@ -582,7 +582,7 @@ smooth_spct.solute_spct <- function(x,
   check_spct(x, force = FALSE)
 }
 
-#' @describeIn smooth_spct Smooth a response spectrum
+#' @rdname smooth_spct
 #'
 #' @export
 #'
@@ -725,7 +725,7 @@ smooth_spct.response_spct <- function(x,
   check_spct(x, force = FALSE)
 }
 
-#' @describeIn smooth_spct Smooth a counts per second spectrum
+#' @rdname smooth_spct
 #'
 #' @export
 #'
@@ -839,7 +839,7 @@ smooth_spct.cps_spct <- function(x,
 # _mspct ------------------------------------------------------------------
 
 
-#' @describeIn smooth_spct
+#' @rdname smooth_spct
 #'
 #' @export
 #'

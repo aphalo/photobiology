@@ -12,7 +12,7 @@ setNormalized(
   norm.factors = NA_real_,
   norm.cols = NA_character_,
   norm.range = rep(NA_real_, 2),
-  verbose = getOption("verbose_as_default", default = FALSE)
+  verbose = getOption("photobiology.verbose", default = FALSE)
 )
 
 setNormalised(
@@ -22,7 +22,7 @@ setNormalised(
   norm.factors = NA_real_,
   norm.cols = NA_character_,
   norm.range = rep(NA_real_, 2),
-  verbose = getOption("verbose_as_default", default = FALSE)
+  verbose = getOption("photobiology.verbose", default = FALSE)
 )
 }
 \arguments{
@@ -114,14 +114,14 @@ is_normalized(pretended_sun.spct)
 
 }
 \seealso{
-Other rescaling functions: 
-\code{\link{fscale}()},
-\code{\link{fshift}()},
-\code{\link{getNormalized}()},
-\code{\link{getScaled}()},
-\code{\link{is_normalized}()},
-\code{\link{is_scaled}()},
-\code{\link{normalize}()},
-\code{\link{setScaled}()}
+Other rescaling functions:
+\code{\link[=fscale]{fscale()}},
+\code{\link[=fshift]{fshift()}},
+\code{\link[=getNormalized]{getNormalized()}},
+\code{\link[=getScaled]{getScaled()}},
+\code{\link[=is_normalized]{is_normalized()}},
+\code{\link[=is_scaled]{is_scaled()}},
+\code{\link[=normalize]{normalize()}},
+\code{\link[=setScaled]{setScaled()}}
 }
 \concept{rescaling functions}

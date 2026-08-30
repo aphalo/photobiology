@@ -35,13 +35,6 @@ A method specialization that returns the wavelength maximum [\eqn{nm}] from
 objects of classes \code{waveband} or of class \code{generic_spct} or
 derived.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{max(generic_spct)}: 
-
-\item \code{max(generic_mspct)}: 
-
-}}
 \examples{
 max(sun.spct)
 wl_max(sun.spct)

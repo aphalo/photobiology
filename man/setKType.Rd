@@ -31,7 +31,7 @@ print("missing example")
 
 }
 \seealso{
-Other K attribute functions: 
-\code{\link{getKType}()}
+Other K attribute functions:
+\code{\link[=getKType]{getKType()}}
 }
 \concept{K attribute functions}

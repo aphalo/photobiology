@@ -43,7 +43,7 @@ pull_sample <- function(x, size, ...) {
   UseMethod("pull_sample")
 }
 
-#' @describeIn pull_sample Default for generic function
+#' @rdname pull_sample
 #'
 #' @export
 #'
@@ -52,7 +52,7 @@ pull_sample.default <- function(x, size, ...) {
   generic_mspct()
 }
 
-#' @describeIn pull_sample Specialization for generic_spct
+#' @rdname pull_sample
 #'
 #' @export
 #'
@@ -81,7 +81,7 @@ pull_sample.list <- function(x,
   z
 }
 
-#' @describeIn pull_sample Specialization for generic_spct
+#' @rdname pull_sample
 #'
 #' @export
 #'
@@ -103,7 +103,7 @@ pull_sample.generic_spct <- function(x,
   x[id.factor %in% pulled.ids, ]
 }
 
-#' @describeIn pull_sample Specialization for generic_mspct
+#' @rdname pull_sample
 #'
 #' @export
 #'

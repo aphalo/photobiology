@@ -67,9 +67,9 @@ collect2mspct(collection.class = "response_mspct")
 
 }
 \seealso{
-Other experimental utility functions: 
-\code{\link{drop_user_cols}()},
-\code{\link{thin_wl}()},
-\code{\link{uncollect2spct}()}
+Other experimental utility functions:
+\code{\link[=drop_user_cols]{drop_user_cols()}},
+\code{\link[=thin_wl]{thin_wl()}},
+\code{\link[=uncollect2spct]{uncollect2spct()}}
 }
 \concept{experimental utility functions}

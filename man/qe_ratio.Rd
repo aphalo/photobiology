@@ -133,11 +133,11 @@ qe_ratio(sun.spct,
 
 }
 \seealso{
-Other photon and energy ratio functions: 
-\code{\link{e_fraction}()},
-\code{\link{e_ratio}()},
-\code{\link{eq_ratio}()},
-\code{\link{q_fraction}()},
-\code{\link{q_ratio}()}
+Other photon and energy ratio functions:
+\code{\link[=e_fraction]{e_fraction()}},
+\code{\link[=e_ratio]{e_ratio()}},
+\code{\link[=eq_ratio]{eq_ratio()}},
+\code{\link[=q_fraction]{q_fraction()}},
+\code{\link[=q_ratio]{q_ratio()}}
 }
 \concept{photon and energy ratio functions}

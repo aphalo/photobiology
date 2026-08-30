@@ -82,9 +82,9 @@ trim_waveband(VIS, c(400, 700), trunc.labels = "!")
 
 }
 \seealso{
-Other trim functions: 
-\code{\link{clip_wl}()},
-\code{\link{trim_spct}()},
-\code{\link{trim_wl}()}
+Other trim functions:
+\code{\link[=clip_wl]{clip_wl()}},
+\code{\link[=trim_spct]{trim_spct()}},
+\code{\link[=trim_wl]{trim_wl()}}
 }
 \concept{trim functions}

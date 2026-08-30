@@ -117,16 +117,6 @@ A named \code{numeric} vector in the case of methods for individual
 This function returns the mean, total, or contribution of response for each
 waveband and a response spectrum.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{e_response(default)}: Default method for generic function
-
-\item \code{e_response(response_spct)}: Method for response spectra.
-
-\item \code{e_response(response_mspct)}: Calculates energy response from a
-\code{response_mspct}
-
-}}
 \note{
 The parameter \code{use.hinges} controls speed optimization. The
   defaults should be suitable in most cases. Only the range of wavelengths
@@ -138,8 +128,8 @@ e_response(photodiode.spct)
 
 }
 \seealso{
-Other response functions: 
-\code{\link{q_response}()},
-\code{\link{response}()}
+Other response functions:
+\code{\link[=q_response]{q_response()}},
+\code{\link[=response]{response()}}
 }
 \concept{response functions}

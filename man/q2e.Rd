@@ -53,29 +53,16 @@ The converted spectral values are added to or replace the existing
   'photobiology' the spectrum will be renormalized after conversion using the
   same arguments as previously.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{q2e(default)}: Default method
-
-\item \code{q2e(source_spct)}: Method for spectral irradiance
-
-\item \code{q2e(response_spct)}: Method for spectral responsiveness
-
-\item \code{q2e(source_mspct)}: Method for collections of (light) source spectra
-
-\item \code{q2e(response_mspct)}: Method for collections of response spectra
-
-}}
 \seealso{
-Other quantity conversion functions: 
-\code{\link{A2T}()},
-\code{\link{Afr2T}()},
-\code{\link{T2A}()},
-\code{\link{T2Afr}()},
-\code{\link{any2T}()},
-\code{\link{as_quantum}()},
-\code{\link{e2q}()},
-\code{\link{e2qmol_multipliers}()},
-\code{\link{e2quantum_multipliers}()}
+Other quantity conversion functions:
+\code{\link[=A2T]{A2T()}},
+\code{\link[=Afr2T]{Afr2T()}},
+\code{\link[=T2A]{T2A()}},
+\code{\link[=T2Afr]{T2Afr()}},
+\code{\link[=any2T]{any2T()}},
+\code{\link[=as_quantum]{as_quantum()}},
+\code{\link[=e2q]{e2q()}},
+\code{\link[=e2qmol_multipliers]{e2qmol_multipliers()}},
+\code{\link[=e2quantum_multipliers]{e2quantum_multipliers()}}
 }
 \concept{quantity conversion functions}

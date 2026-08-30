@@ -60,7 +60,7 @@ colnames(my.spct)
 
 }
 \seealso{
-Other idfactor attribute functions: 
-\code{\link{getIdFactor}()}
+Other idfactor attribute functions:
+\code{\link[=getIdFactor]{getIdFactor()}}
 }
 \concept{idfactor attribute functions}

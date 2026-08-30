@@ -19,7 +19,7 @@ Datasets for a hypothetical objects with transmittance 0/1
 \itemize{ \item w.length (nm) \item Tfr (0..1) \item Rfr (0..1) }
 }
 \seealso{
-Other Spectral data examples: 
+Other Spectral data examples:
 \code{\link{A.illuminant.spct}},
 \code{\link{D50.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},

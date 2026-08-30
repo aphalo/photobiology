@@ -105,35 +105,20 @@ The R names used are: \code{Tfr} for \eqn{\tau} and \eqn{T} are \code{Tfr},
 between \eqn{\alpha} and \eqn{\alpha\prime} is made based on metadata
 attributes.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{T2Afr(default)}: Default method for generic function
-
-\item \code{T2Afr(numeric)}: Default method for generic function
-
-\item \code{T2Afr(filter_spct)}: Method for filter spectra
-
-\item \code{T2Afr(object_spct)}: Method for object spectra
-
-\item \code{T2Afr(filter_mspct)}: Method for collections of filter spectra
-
-\item \code{T2Afr(object_mspct)}: Method for collections of object spectra
-
-}}
 \examples{
 T2Afr(Ler_leaf.spct)
 
 }
 \seealso{
-Other quantity conversion functions: 
-\code{\link{A2T}()},
-\code{\link{Afr2T}()},
-\code{\link{T2A}()},
-\code{\link{any2T}()},
-\code{\link{as_quantum}()},
-\code{\link{e2q}()},
-\code{\link{e2qmol_multipliers}()},
-\code{\link{e2quantum_multipliers}()},
-\code{\link{q2e}()}
+Other quantity conversion functions:
+\code{\link[=A2T]{A2T()}},
+\code{\link[=Afr2T]{Afr2T()}},
+\code{\link[=T2A]{T2A()}},
+\code{\link[=any2T]{any2T()}},
+\code{\link[=as_quantum]{as_quantum()}},
+\code{\link[=e2q]{e2q()}},
+\code{\link[=e2qmol_multipliers]{e2qmol_multipliers()}},
+\code{\link[=e2quantum_multipliers]{e2quantum_multipliers()}},
+\code{\link[=q2e]{q2e()}}
 }
 \concept{quantity conversion functions}

@@ -23,7 +23,7 @@
 #'
 uncollect2spct <- function(x, ...) UseMethod("uncollect2spct")
 
-#' @describeIn uncollect2spct Default for generic function
+#' @rdname uncollect2spct
 #'
 #' @export
 #'
@@ -32,7 +32,7 @@ uncollect2spct.default <- function(x, ...) {
   invisible(character())
 }
 
-#' @describeIn uncollect2spct
+#' @rdname uncollect2spct
 #'
 #' @param name.tag character. A string used as tag for the names of the objects.
 #'   If of length zero, names of members are used as named of objects. Otherwise
@@ -225,7 +225,7 @@ collect2mspct <- function(.list = NULL,
 #'
 thin_wl <- function(x, ...) UseMethod("thin_wl")
 
-#' @describeIn thin_wl Default for generic function
+#' @rdname thin_wl
 #'
 #' @export
 #'
@@ -234,7 +234,7 @@ thin_wl.default <- function(x, ...) {
   x
 }
 
-#' @describeIn thin_wl
+#' @rdname thin_wl
 #'
 #' @param max.wl.step numeric. Largest allowed wavelength difference between
 #'   adjacent spectral values in nanometres (nm).
@@ -321,7 +321,7 @@ thin_wl.generic_spct <- function(x,
   x[x[["w.length"]] %in% wls.to.keep, ]
 }
 
-#' @describeIn thin_wl
+#' @rdname thin_wl
 #'
 #' @param unit.out character Allowed values "energy", and "photon", or its alias
 #'   "quantum".
@@ -353,7 +353,7 @@ thin_wl.source_spct <- function(x,
   }
 }
 
-#' @describeIn thin_wl
+#' @rdname thin_wl
 #'
 #' @export
 #'
@@ -382,7 +382,7 @@ thin_wl.response_spct <- function(x,
   }
 }
 
-#' @describeIn thin_wl
+#' @rdname thin_wl
 #'
 #' @param qty.out character Allowed values "transmittance", and "absorbance".
 #'
@@ -421,7 +421,7 @@ thin_wl.filter_spct <- function(x,
   }
 }
 
-#' @describeIn thin_wl
+#' @rdname thin_wl
 #'
 #' @export
 #'
@@ -438,7 +438,7 @@ thin_wl.reflector_spct <- function(x,
                        ...)
 }
 
-#' @describeIn thin_wl
+#' @rdname thin_wl
 #'
 #' @export
 #'
@@ -461,37 +461,37 @@ thin_wl.solute_spct <- function(x,
                        ...)
 }
 
-#' @describeIn thin_wl
+#' @rdname thin_wl
 #'
 #' @export
 #'
 thin_wl.raw_spct <- thin_wl.generic_spct
 
-#' @describeIn thin_wl
+#' @rdname thin_wl
 #'
 #' @export
 #'
 thin_wl.cps_spct <- thin_wl.generic_spct
 
-#' @describeIn thin_wl
+#' @rdname thin_wl
 #'
 #' @export
 #'
 thin_wl.object_spct <- thin_wl.generic_spct
 
-#' @describeIn thin_wl
+#' @rdname thin_wl
 #'
 #' @export
 #'
 thin_wl.chroma_spct <- thin_wl.default
 
-#' @describeIn thin_wl
+#' @rdname thin_wl
 #'
 #' @export
 #'
 thin_wl.calibration_spct <- thin_wl.default
 
-#' @describeIn thin_wl
+#' @rdname thin_wl
 #'
 #' @export
 #'
@@ -508,13 +508,13 @@ thin_wl.generic_mspct <- function(x,
           ...)
 }
 
-#' @describeIn thin_wl
+#' @rdname thin_wl
 #'
 #' @export
 #'
 thin_wl.chroma_mspct <- thin_wl.default
 
-#' @describeIn thin_wl
+#' @rdname thin_wl
 #'
 #' @export
 #'
@@ -538,7 +538,7 @@ thin_wl.calibration_mspct <- thin_wl.default
 #'
 drop_user_cols <- function(x, keep.also, ...) UseMethod("drop_user_cols")
 
-#' @describeIn drop_user_cols
+#' @rdname drop_user_cols
 #'
 #' @export
 #'
@@ -547,7 +547,7 @@ drop_user_cols.default <- function(x, keep.also = NULL, ...) {
   x
 }
 
-#' @describeIn drop_user_cols
+#' @rdname drop_user_cols
 #'
 #' @export
 #'
@@ -559,7 +559,7 @@ drop_user_cols.generic_spct <- function(x, keep.also, ...) {
   x[ , selector]
 }
 
-#' @describeIn drop_user_cols
+#' @rdname drop_user_cols
 #'
 #' @export
 #'
@@ -570,7 +570,7 @@ drop_user_cols.source_spct <- function(x, keep.also = NULL, ...) {
   x[ , selector]
 }
 
-#' @describeIn drop_user_cols
+#' @rdname drop_user_cols
 #'
 #' @export
 #'
@@ -581,7 +581,7 @@ drop_user_cols.response_spct <- function(x, keep.also = NULL, ...) {
   x[ , selector]
 }
 
-#' @describeIn drop_user_cols
+#' @rdname drop_user_cols
 #'
 #' @export
 #'
@@ -592,7 +592,7 @@ drop_user_cols.object_spct <- function(x, keep.also = NULL, ...) {
   x[ , selector]
 }
 
-#' @describeIn drop_user_cols
+#' @rdname drop_user_cols
 #'
 #' @export
 #'
@@ -606,7 +606,7 @@ drop_user_cols.filter_spct <- function(x, keep.also = NULL, ...) {
   x[ , selector]
 }
 
-#' @describeIn drop_user_cols
+#' @rdname drop_user_cols
 #'
 #' @export
 #'
@@ -620,7 +620,7 @@ drop_user_cols.reflector_spct <- function(x, keep.also = NULL, ...) {
   x[ , selector]
 }
 
-#' @describeIn drop_user_cols
+#' @rdname drop_user_cols
 #'
 #' @export
 #'
@@ -631,7 +631,7 @@ drop_user_cols.solute_spct <- function(x, keep.also = NULL, ...) {
   x[ , selector]
 }
 
-#' @describeIn drop_user_cols
+#' @rdname drop_user_cols
 #'
 #' @export
 #'
@@ -642,7 +642,7 @@ drop_user_cols.chroma_spct <- function(x, keep.also = NULL, ...) {
   x[ , selector]
 }
 
-#' @describeIn drop_user_cols
+#' @rdname drop_user_cols
 #'
 #' @export
 #'
@@ -653,7 +653,7 @@ drop_user_cols.calibration_spct <- function(x, keep.also = NULL, ...) {
   x[ , selector]
 }
 
-#' @describeIn drop_user_cols
+#' @rdname drop_user_cols
 #'
 #' @export
 #'
@@ -665,7 +665,7 @@ drop_user_cols.cps_spct <- function(x, keep.also = NULL, ...) {
   x[ , selector]
 }
 
-#' @describeIn drop_user_cols
+#' @rdname drop_user_cols
 #'
 #' @export
 #'
@@ -677,7 +677,7 @@ drop_user_cols.raw_spct <- function(x, keep.also = NULL, ...) {
   x[ , selector]
 }
 
-#' @describeIn drop_user_cols
+#' @rdname drop_user_cols
 #'
 #' @export
 #'

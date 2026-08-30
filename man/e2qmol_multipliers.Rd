@@ -21,15 +21,15 @@ with(sun.data, e2qmol_multipliers(w.length))
 
 }
 \seealso{
-Other quantity conversion functions: 
-\code{\link{A2T}()},
-\code{\link{Afr2T}()},
-\code{\link{T2A}()},
-\code{\link{T2Afr}()},
-\code{\link{any2T}()},
-\code{\link{as_quantum}()},
-\code{\link{e2q}()},
-\code{\link{e2quantum_multipliers}()},
-\code{\link{q2e}()}
+Other quantity conversion functions:
+\code{\link[=A2T]{A2T()}},
+\code{\link[=Afr2T]{Afr2T()}},
+\code{\link[=T2A]{T2A()}},
+\code{\link[=T2Afr]{T2Afr()}},
+\code{\link[=any2T]{any2T()}},
+\code{\link[=as_quantum]{as_quantum()}},
+\code{\link[=e2q]{e2q()}},
+\code{\link[=e2quantum_multipliers]{e2quantum_multipliers()}},
+\code{\link[=q2e]{q2e()}}
 }
 \concept{quantity conversion functions}

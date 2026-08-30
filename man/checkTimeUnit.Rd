@@ -20,10 +20,10 @@ if x is not a \code{source_spct} or a \code{response_spct} object, NA
 is returned
 }
 \seealso{
-Other time attribute functions: 
-\code{\link{convertThickness}()},
-\code{\link{convertTimeUnit}()},
-\code{\link{getTimeUnit}()},
-\code{\link{setTimeUnit}()}
+Other time attribute functions:
+\code{\link[=convertThickness]{convertThickness()}},
+\code{\link[=convertTimeUnit]{convertTimeUnit()}},
+\code{\link[=getTimeUnit]{getTimeUnit()}},
+\code{\link[=setTimeUnit]{setTimeUnit()}}
 }
 \concept{time attribute functions}

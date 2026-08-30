@@ -27,8 +27,8 @@ rgb_spct(sun.spct)
 
 }
 \seealso{
-Other color functions: 
-\code{\link{w_length2rgb}()},
-\code{\link{w_length_range2rgb}()}
+Other color functions:
+\code{\link[=w_length2rgb]{w_length2rgb()}},
+\code{\link[=w_length_range2rgb]{w_length_range2rgb()}}
 }
 \concept{color functions}

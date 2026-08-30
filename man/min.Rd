@@ -35,22 +35,15 @@ A method specialization that returns the wavelength minimum [\eqn{nm}] from
 objects of classes \code{waveband} or of class \code{generic_spct} or
 derived.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{min(generic_spct)}: 
-
-\item \code{min(generic_mspct)}: 
-
-}}
 \examples{
 min(sun.spct)
 wl_min(sun.spct)
 
 }
 \seealso{
-Other wavelength summaries: 
-\code{\link{wl_midpoint}()},
-\code{\link{wl_range}()},
-\code{\link{wl_stepsize}()}
+Other wavelength summaries:
+\code{\link[=wl_midpoint]{wl_midpoint()}},
+\code{\link[=wl_range]{wl_range()}},
+\code{\link[=wl_stepsize]{wl_stepsize()}}
 }
 \concept{wavelength summaries}

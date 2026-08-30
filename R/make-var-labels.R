@@ -50,7 +50,7 @@ make_var_labels <- function(x, ...) {
   UseMethod("make_var_labels")
 }
 
-#' @describeIn make_var_labels
+#' @rdname make_var_labels
 #'
 #' @export
 #'
@@ -59,7 +59,7 @@ make_var_labels.default <-
     list()
   }
 
-#' @describeIn make_var_labels
+#' @rdname make_var_labels
 #'
 #' @export
 #'
@@ -122,7 +122,7 @@ make_var_labels.source_spct <- function(x, ...) {
 
 }
 
-#' @describeIn make_var_labels
+#' @rdname make_var_labels
 #'
 #' @export
 #'
@@ -183,7 +183,7 @@ make_var_labels.response_spct <- function(x, ...) {
 
 }
 
-#' @describeIn make_var_labels
+#' @rdname make_var_labels
 #'
 #' @export
 #'
@@ -211,7 +211,7 @@ make_var_labels.filter_spct <- function(x, ...) {
 
 }
 
-#' @describeIn make_var_labels
+#' @rdname make_var_labels
 #'
 #' @export
 #'
@@ -237,7 +237,7 @@ make_var_labels.reflector_spct <- function(x, ...) {
 
 }
 
-#' @describeIn make_var_labels
+#' @rdname make_var_labels
 #'
 #' @export
 #'
@@ -268,7 +268,7 @@ make_var_labels.object_spct <- function(x, ...) {
 
 }
 
-#' @describeIn make_var_labels
+#' @rdname make_var_labels
 #'
 #' @export
 #'
@@ -292,7 +292,7 @@ make_var_labels.solute_spct <- function(x, ...) {
 
 }
 
-#' @describeIn make_var_labels
+#' @rdname make_var_labels
 #'
 #' @export
 #'
@@ -308,7 +308,7 @@ make_var_labels.chroma_spct <- function(x, ...) {
 
 }
 
-#' @describeIn make_var_labels
+#' @rdname make_var_labels
 #'
 #' @export
 #'
@@ -322,7 +322,7 @@ make_var_labels.calibration_spct <- function(x, ...) {
 
 }
 
-#' @describeIn make_var_labels
+#' @rdname make_var_labels
 #'
 #' @export
 #'
@@ -345,7 +345,7 @@ make_var_labels.raw_spct <- function(x, ...) {
 
 }
 
-#' @describeIn make_var_labels
+#' @rdname make_var_labels
 #'
 #' @export
 #'

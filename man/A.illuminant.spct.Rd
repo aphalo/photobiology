@@ -34,7 +34,7 @@ Commission on Illumination (CIE), Vienna, Austria,
 \doi{10.25039/CIE.DS.8jsxjrsn}.
 }
 \seealso{
-Other Spectral data examples: 
+Other Spectral data examples:
 \code{\link{D50.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},
 \code{\link{Ler_leaf.spct}},

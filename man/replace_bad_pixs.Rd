@@ -68,13 +68,13 @@ Whitaker, D. A.; Hayes, K. (2018) A simple algorithm for despiking Raman
 spectra. Chemometrics and Intelligent Laboratory Systems, 179, 82-84.
 }
 \seealso{
-Other peaks and valleys functions: 
-\code{\link{find_peaks}()},
-\code{\link{find_spikes}()},
-\code{\link{get_peaks}()},
-\code{\link{peaks}()},
-\code{\link{spikes}()},
-\code{\link{valleys}()},
-\code{\link{wls_at_target}()}
+Other peaks and valleys functions:
+\code{\link[=find_peaks]{find_peaks()}},
+\code{\link[=find_spikes]{find_spikes()}},
+\code{\link[=get_peaks]{get_peaks()}},
+\code{\link[=peaks]{peaks()}},
+\code{\link[=spikes]{spikes()}},
+\code{\link[=valleys]{valleys()}},
+\code{\link[=wls_at_target]{wls_at_target()}}
 }
 \concept{peaks and valleys functions}

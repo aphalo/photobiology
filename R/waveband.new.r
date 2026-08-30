@@ -79,7 +79,8 @@ waveband <- function(x = NULL,
                wb.label = wb.label)
 }
 
-#' @describeIn waveband A less flexible variant
+#' @rdname waveband
+#'
 #' @param w.low,w.high numeric value, wavelengths at the short end and long ends
 #'   of the wavelength band [\eqn{nm}].
 #'

@@ -22,11 +22,11 @@ is_tagged(sun.spct)
 
 }
 \seealso{
-Other tagging and related functions: 
-\code{\link{tag}()},
-\code{\link{untag}()},
-\code{\link{wb2rect_spct}()},
-\code{\link{wb2spct}()},
-\code{\link{wb2tagged_spct}()}
+Other tagging and related functions:
+\code{\link[=tag]{tag()}},
+\code{\link[=untag]{untag()}},
+\code{\link[=wb2rect_spct]{wb2rect_spct()}},
+\code{\link[=wb2spct]{wb2spct()}},
+\code{\link[=wb2tagged_spct]{wb2tagged_spct()}}
 }
 \concept{tagging and related functions}

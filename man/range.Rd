@@ -35,13 +35,6 @@ A method specialization that returns the wavelength range [\eqn{nm}] from
 objects of classes \code{waveband} or of class \code{generic_spct} or
 derived.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{range(generic_spct)}: 
-
-\item \code{range(generic_mspct)}: 
-
-}}
 \examples{
 range(sun.spct)
 wl_range(sun.spct)
@@ -50,9 +43,9 @@ range(sun.spct)
 
 }
 \seealso{
-Other wavelength summaries: 
-\code{\link{wl_midpoint}()},
-\code{\link{wl_min}()},
-\code{\link{wl_stepsize}()}
+Other wavelength summaries:
+\code{\link[=wl_midpoint]{wl_midpoint()}},
+\code{\link[=wl_min]{wl_min()}},
+\code{\link[=wl_stepsize]{wl_stepsize()}}
 }
 \concept{wavelength summaries}

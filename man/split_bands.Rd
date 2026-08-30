@@ -49,7 +49,7 @@ split_bands(waveband(c(400,700)), length.out=5)
 
 }
 \seealso{
-Other waveband constructors: 
-\code{\link{waveband}()}
+Other waveband constructors:
+\code{\link[=waveband]{waveband()}}
 }
 \concept{waveband constructors}

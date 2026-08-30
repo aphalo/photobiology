@@ -130,18 +130,18 @@ Convert a data frame object into a "multi spectrum" object by
   other than wavelength into individual spct objects.
 }
 \seealso{
-Other Coercion methods for collections of spectra: 
-\code{\link{as.calibration_mspct}()},
-\code{\link{as.chroma_mspct}()},
-\code{\link{as.cps_mspct}()},
-\code{\link{as.filter_mspct}()},
-\code{\link{as.generic_mspct}()},
-\code{\link{as.object_mspct}()},
-\code{\link{as.raw_mspct}()},
-\code{\link{as.reflector_mspct}()},
-\code{\link{as.response_mspct}()},
-\code{\link{as.solute_mspct}()},
-\code{\link{as.source_mspct}()},
-\code{\link{subset2mspct}()}
+Other Coercion methods for collections of spectra:
+\code{\link[=as.calibration_mspct]{as.calibration_mspct()}},
+\code{\link[=as.chroma_mspct]{as.chroma_mspct()}},
+\code{\link[=as.cps_mspct]{as.cps_mspct()}},
+\code{\link[=as.filter_mspct]{as.filter_mspct()}},
+\code{\link[=as.generic_mspct]{as.generic_mspct()}},
+\code{\link[=as.object_mspct]{as.object_mspct()}},
+\code{\link[=as.raw_mspct]{as.raw_mspct()}},
+\code{\link[=as.reflector_mspct]{as.reflector_mspct()}},
+\code{\link[=as.response_mspct]{as.response_mspct()}},
+\code{\link[=as.solute_mspct]{as.solute_mspct()}},
+\code{\link[=as.source_mspct]{as.source_mspct()}},
+\code{\link[=subset2mspct]{subset2mspct()}}
 }
 \concept{Coercion methods for collections of spectra}

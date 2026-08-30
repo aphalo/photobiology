@@ -547,7 +547,7 @@ chroma_spct <- function(w.length=NULL,
 #'
 as.generic_spct <- function(x, ...) {UseMethod("as.generic_spct")}
 
-#' @describeIn as.generic_spct
+#' @rdname as.generic_spct
 #'
 #' @export
 #'
@@ -572,7 +572,7 @@ as.generic_spct.default <- function(x, ...) {
 #'
 as.calibration_spct <- function(x, ...) {UseMethod("as.calibration_spct")}
 
-#' @describeIn as.calibration_spct
+#' @rdname as.calibration_spct
 #'
 #' @export
 #'
@@ -597,7 +597,7 @@ as.calibration_spct.default <- function(x, ...) {
 #'
 as.raw_spct <- function(x, ...) {UseMethod("as.raw_spct")}
 
-#' @describeIn as.raw_spct
+#' @rdname as.raw_spct
 #'
 #' @export
 #'
@@ -622,7 +622,7 @@ as.raw_spct.default <- function(x, ...) {
 #'
 as.cps_spct <- function(x, ...) {UseMethod("as.cps_spct")}
 
-#' @describeIn as.cps_spct
+#' @rdname as.cps_spct
 #'
 #' @export
 #'
@@ -655,7 +655,7 @@ as.cps_spct.default <- function(x, ...) {
 #'
 as.source_spct <- function(x, ...) {UseMethod("as.source_spct")}
 
-#' @describeIn as.source_spct
+#' @rdname as.source_spct
 #'
 #' @export
 #'
@@ -692,7 +692,7 @@ as.source_spct.default <-
 #'
 as.response_spct <- function(x, ...) {UseMethod("as.response_spct")}
 
-#' @describeIn as.response_spct
+#' @rdname as.response_spct
 #'
 #' @export
 #'
@@ -700,7 +700,7 @@ as.response_spct.default <- function(x, time.unit = "second", ...) {
   setResponseSpct(x, time.unit = time.unit, ...)
 }
 
-#' @describeIn as.response_spct
+#' @rdname as.response_spct
 #'
 #' @param w.length numeric vector of wavelengths (nm).
 #' @param fill value to use as response for wavelengths outside the waveband
@@ -793,7 +793,7 @@ as.response_spct.waveband <-
 #'
 as.reflector_spct <- function(x, ...) {UseMethod("as.reflector_spct")}
 
-#' @describeIn as.reflector_spct
+#' @rdname as.reflector_spct
 #'
 #'
 #' @export
@@ -832,7 +832,7 @@ as.reflector_spct.default <-
 #'
 as.object_spct <- function(x, ...) {UseMethod("as.object_spct")}
 
-#' @describeIn as.object_spct
+#' @rdname as.object_spct
 #'
 #' @export
 #'
@@ -871,7 +871,7 @@ as.object_spct.default <- function(x,
 #'
 as.filter_spct <- function(x, ...) {UseMethod("as.filter_spct")}
 
-#'@describeIn as.filter_spct
+#'@rdname as.filter_spct
 #'
 #' @export
 #'
@@ -886,7 +886,7 @@ as.filter_spct.default <-
                   ...)
   }
 
-#'@describeIn as.filter_spct
+#'@rdname as.filter_spct
 #'
 #' @param Rfr.constant numeric The value of the reflection factor (/1) to be
 #'   set.
@@ -974,7 +974,7 @@ as.filter_spct.solute_spct <-
 #'
 as.solute_spct <- function(x, ...) {UseMethod("as.solute_spct")}
 
-#' @describeIn as.solute_spct
+#' @rdname as.solute_spct
 #'
 #'
 #' @export
@@ -990,7 +990,7 @@ as.solute_spct.default <-
                   ...)
   }
 
-#'@describeIn as.solute_spct
+#'@rdname as.solute_spct
 #'
 #' @param name,solvent.name character The names of the substance and of the
 #'   solvent. A named character vector, with member names such as "IUPAC" for
@@ -1083,7 +1083,7 @@ as.solute_spct.filter_spct <-
 #'
 as.chroma_spct <- function(x, ...) {UseMethod("as.chroma_spct")}
 
-#' @describeIn as.chroma_spct
+#' @rdname as.chroma_spct
 #'
 #' @export
 #'

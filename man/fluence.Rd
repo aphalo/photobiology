@@ -139,11 +139,11 @@ fluence(sun.spct,
 
 }
 \seealso{
-Other irradiance functions: 
-\code{\link{e_fluence}()},
-\code{\link{e_irrad}()},
-\code{\link{irrad}()},
-\code{\link{q_fluence}()},
-\code{\link{q_irrad}()}
+Other irradiance functions:
+\code{\link[=e_fluence]{e_fluence()}},
+\code{\link[=e_irrad]{e_irrad()}},
+\code{\link[=irrad]{irrad()}},
+\code{\link[=q_fluence]{q_fluence()}},
+\code{\link[=q_irrad]{q_irrad()}}
 }
 \concept{irradiance functions}

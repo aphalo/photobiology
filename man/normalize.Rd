@@ -311,43 +311,6 @@ By default normalization is done based on the maximum of the
   solutions of specific concentrations of solutes, \code{filter_spct} objects
   should be used instead.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{normalize(default)}: Default for generic function
-
-\item \code{normalize(source_spct)}: Normalize a \code{source_spct} object.
-
-\item \code{normalize(response_spct)}: Normalize a response spectrum.
-
-\item \code{normalize(filter_spct)}: Normalize a filter spectrum.
-
-\item \code{normalize(reflector_spct)}: Normalize a reflector spectrum.
-
-\item \code{normalize(solute_spct)}: Normalize a solute spectrum.
-
-\item \code{normalize(raw_spct)}: Normalize a raw spectrum.
-
-\item \code{normalize(cps_spct)}: Normalize a cps spectrum.
-
-\item \code{normalize(generic_spct)}: Normalize a raw spectrum.
-
-\item \code{normalize(source_mspct)}: Normalize the members of a source_mspct object.
-
-\item \code{normalize(response_mspct)}: Normalize the members of a response_mspct object.
-
-\item \code{normalize(filter_mspct)}: Normalize the members of a filter_mspct object.
-
-\item \code{normalize(reflector_mspct)}: Normalize the members of a reflector_mspct object.
-
-\item \code{normalize(raw_mspct)}: Normalize the members of a raw_mspct object.
-
-\item \code{normalize(cps_mspct)}: Normalize the members of a cps_mspct object.
-
-\item \code{normalize(solute_mspct)}: Normalize the members of a solute_mspct object.
-
-\item \code{normalize(generic_mspct)}: Normalize the members of a solute_mspct object.
-
-}}
 \note{
 The second formal argument is ellipsis, thus all parameters except
   \code{x} have to be always passed by name.
@@ -369,14 +332,14 @@ str(getNormalization(norm_sun_evening.mspct))
 
 }
 \seealso{
-Other rescaling functions: 
-\code{\link{fscale}()},
-\code{\link{fshift}()},
-\code{\link{getNormalized}()},
-\code{\link{getScaled}()},
-\code{\link{is_normalized}()},
-\code{\link{is_scaled}()},
-\code{\link{setNormalized}()},
-\code{\link{setScaled}()}
+Other rescaling functions:
+\code{\link[=fscale]{fscale()}},
+\code{\link[=fshift]{fshift()}},
+\code{\link[=getNormalized]{getNormalized()}},
+\code{\link[=getScaled]{getScaled()}},
+\code{\link[=is_normalized]{is_normalized()}},
+\code{\link[=is_scaled]{is_scaled()}},
+\code{\link[=setNormalized]{setNormalized()}},
+\code{\link[=setScaled]{setScaled()}}
 }
 \concept{rescaling functions}

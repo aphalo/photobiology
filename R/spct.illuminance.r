@@ -49,7 +49,7 @@
 #'
 illuminance <- function(spct, std, scale.factor, allow.scaled, ...) UseMethod("illuminance")
 
-#' @describeIn illuminance Default for generic function
+#' @rdname illuminance
 #'
 #' @export
 #'
@@ -58,8 +58,7 @@ illuminance.default <- function(spct, std, scale.factor, allow.scaled, ...) {
   return(NA_real_)
 }
 
-#' @describeIn illuminance  Calculates illuminance from a \code{source_spct}
-#'   object.
+#' @rdname illuminance
 #'
 #' @method illuminance source_spct
 #' @export
@@ -142,7 +141,7 @@ illuminance.source_spct <-
 
 # source_mspct methods -----------------------------------------------
 
-#' @describeIn illuminance Calculates illuminance from a \code{source_mspct} object.
+#' @rdname illuminance
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
 #'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.

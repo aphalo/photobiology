@@ -18,7 +18,7 @@
 #'
 clean <- function(x, range, range.s.data, fill, ...) UseMethod("clean")
 
-#' @describeIn clean Default for generic function
+#' @rdname clean
 #'
 #' @export
 #'
@@ -27,7 +27,8 @@ clean.default <- function(x, range, range.s.data, fill, ...) {
   x
 }
 
-#' @describeIn clean Replace off-range values in a source spectrum
+#' @rdname clean
+#'
 #' @param unit.out character string with allowed values "energy", and "photon",
 #'   or its alias "quantum"
 #'
@@ -60,7 +61,8 @@ clean.source_spct <-
     }
   }
 
-#' @describeIn clean Replace off-range values in a filter spectrum
+#' @rdname clean
+#'
 #' @param qty.out character string with allowed values "energy", and "photon",
 #'   or its alias "quantum"
 #'
@@ -108,7 +110,7 @@ clean.filter_spct <-
     }
   }
 
-#' @describeIn clean Replace off-range values in a reflector spectrum
+#' @rdname clean
 #'
 #' @export
 #'
@@ -126,7 +128,7 @@ clean.reflector_spct <-
                ...)
   }
 
-#' @describeIn clean Replace off-range values in a solute spectrum
+#' @rdname clean
 #'
 #' @export
 #'
@@ -146,7 +148,7 @@ clean.solute_spct <-
                ...)
   }
 
-#' @describeIn clean Replace off-range values in an object spectrum
+#' @rdname clean
 #'
 #' @param min.Afr numeric Gives the minimum value accepted for the computed
 #'   absorptance. The default \code{NULL} sets a valid value (Afr >= 0) with
@@ -208,7 +210,7 @@ clean.object_spct <-
     z
   }
 
-#' @describeIn clean Replace off-range values in a response spectrum
+#' @rdname clean
 #'
 #' @export
 #'
@@ -239,7 +241,7 @@ clean.response_spct <-
     }
   }
 
-#' @describeIn clean Replace off-range values in a counts per second spectrum
+#' @rdname clean
 #'
 #' @export
 #'
@@ -257,7 +259,7 @@ clean.cps_spct <-
                ...)
   }
 
-#' @describeIn clean Replace off-range values in a raw counts spectrum
+#' @rdname clean
 #'
 #' @export
 #'
@@ -275,7 +277,7 @@ clean.raw_spct <-
                ...)
   }
 
-#' @describeIn clean Replace off-range values in a generic spectrum
+#' @rdname clean
 #'
 #' @param col.names character The name of the variable to clean
 #'
@@ -298,7 +300,7 @@ clean.generic_spct <-
 
 # Collections of spectra --------------------------------------------------
 
-#' @describeIn clean
+#' @rdname clean
 #'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
@@ -342,7 +344,7 @@ clean.source_mspct <-
     }
   }
 
-#' @describeIn clean
+#' @rdname clean
 #'
 #' @export
 #'
@@ -378,7 +380,7 @@ clean.filter_mspct <-
     }
   }
 
-#' @describeIn clean
+#' @rdname clean
 #'
 #' @export
 #'
@@ -410,7 +412,7 @@ clean.reflector_mspct <-
     }
   }
 
-#' @describeIn clean
+#' @rdname clean
 #'
 #' @export
 #'
@@ -445,7 +447,7 @@ clean.object_mspct <-
     }
   }
 
-#' @describeIn clean
+#' @rdname clean
 #'
 #' @export
 #'
@@ -477,7 +479,7 @@ clean.solute_mspct <-
     }
   }
 
-#' @describeIn clean
+#' @rdname clean
 #'
 #' @export
 #'
@@ -513,7 +515,7 @@ clean.response_mspct <-
     }
   }
 
-#' @describeIn clean
+#' @rdname clean
 #'
 #' @export
 #'
@@ -545,13 +547,13 @@ clean.cps_mspct <-
     }
   }
 
-#' @describeIn clean
+#' @rdname clean
 #'
 #' @export
 #'
 clean.raw_mspct <- clean.cps_mspct
 
-#' @describeIn clean
+#' @rdname clean
 #'
 #' @export
 #'

@@ -445,14 +445,15 @@ check_spct <- function(x, byref, strict.range, force = FALSE, ...) {
   }
 }
 
-#' @describeIn check_spct Default for generic function.
+#' @rdname check_spct
+#'
 #' @export
 check_spct.default <-
   function(x, byref = FALSE, strict.range = NA, force = FALSE, ...) {
     x
   }
 
-#' @describeIn check_spct Specialization for generic_spct.
+#' @rdname check_spct
 #'
 #' @param multiple.wl numeric Maximum number of repeated w.length entries with
 #'   same value. If \code{NULL} skip check of ordering and multiple wavelengths.
@@ -528,7 +529,8 @@ check_spct.generic_spct <-
     x
   }
 
-#' @describeIn check_spct Specialization for calibration_spct.
+#' @rdname check_spct
+#'
 #' @export
 check_spct.calibration_spct <-
   function(x,
@@ -556,7 +558,8 @@ check_spct.calibration_spct <-
     x
   }
 
-#' @describeIn check_spct Specialization for raw_spct.
+#' @rdname check_spct
+#'
 #' @export
 check_spct.raw_spct <-
   function(x,
@@ -586,7 +589,8 @@ check_spct.raw_spct <-
     x
   }
 
-#' @describeIn check_spct Specialization for cps_spct.
+#' @rdname check_spct
+#'
 #' @export
 check_spct.cps_spct <-
   function(x,
@@ -619,7 +623,8 @@ check_spct.cps_spct <-
     }
   }
 
-#' @describeIn check_spct Specialization for filter_spct.
+#' @rdname check_spct
+#'
 #' @export
 check_spct.filter_spct <-
   function(x,
@@ -688,7 +693,8 @@ check_spct.filter_spct <-
     x
   }
 
-#' @describeIn check_spct Specialization for solute_spct.
+#' @rdname check_spct
+#'
 #' @export
 check_spct.solute_spct <-
   function(x,
@@ -750,7 +756,8 @@ check_spct.solute_spct <-
     x
   }
 
-#' @describeIn check_spct Specialization for reflector_spct.
+#' @rdname check_spct
+#'
 #' @export
 check_spct.reflector_spct <-
   function(x,
@@ -787,7 +794,8 @@ check_spct.reflector_spct <-
     x
   }
 
-#' @describeIn check_spct Specialization for object_spct.
+#' @rdname check_spct
+#'
 #' @export
 
 check_spct.object_spct <-
@@ -865,7 +873,8 @@ check_spct.object_spct <-
     x
   }
 
-#' @describeIn check_spct Specialization for response_spct.
+#' @rdname check_spct
+#'
 #' @export
 check_spct.response_spct <-
   function(x,
@@ -904,7 +913,8 @@ check_spct.response_spct <-
     x
   }
 
-#' @describeIn check_spct Specialization for source_spct.
+#' @rdname check_spct
+#'
 #' @export
 check_spct.source_spct <-
   function(x,
@@ -948,7 +958,8 @@ check_spct.source_spct <-
     x
   }
 
-#' @describeIn check_spct Specialization for chroma_spct.
+#' @rdname check_spct
+#'
 #' @export
 
 check_spct.chroma_spct <-
@@ -1164,7 +1175,7 @@ setGenericSpct <-
     invisible(x)
   }
 
-#' @describeIn setGenericSpct Set class of a an object to "calibration_spct".
+#' @rdname setGenericSpct
 #'
 #' @export
 #'
@@ -1186,7 +1197,7 @@ setCalibrationSpct <-
     invisible(x)
   }
 
-#' @describeIn setGenericSpct Set class of a an object to "raw_spct".
+#' @rdname setGenericSpct
 #'
 #' @export
 #'
@@ -1208,7 +1219,7 @@ setRawSpct <-
     invisible(x)
   }
 
-#' @describeIn setGenericSpct Set class of a an object to "cps_spct".
+#' @rdname setGenericSpct
 #'
 #' @export
 #'
@@ -1232,7 +1243,7 @@ setCpsSpct <-
     invisible(x)
   }
 
-#' @describeIn setGenericSpct Set class of an object to "filter_spct".
+#' @rdname setGenericSpct
 #'
 #' @param Tfr.type character Either "total" or "internal".
 #' @param Rfr.constant numeric The value of the reflection factor [\eqn{/1}].
@@ -1291,7 +1302,7 @@ setFilterSpct <-
     invisible(x)
   }
 
-#' @describeIn setGenericSpct Set class of an object to "solute_spct".
+#' @rdname setGenericSpct
 #'
 #' @param K.type character A string, either "attenuation", "absorption" or
 #'   "scattering".
@@ -1364,7 +1375,7 @@ setSoluteSpct <-
     invisible(x)
   }
 
-#' @describeIn setGenericSpct Set class of a an object to "reflector_spct".
+#' @rdname setGenericSpct
 #'
 #' @param Rfr.type character A string, either "total" or "specular".
 #'
@@ -1410,7 +1421,7 @@ setReflectorSpct <-
     invisible(x)
   }
 
-#' @describeIn setGenericSpct Set class of an object to "object_spct".
+#' @rdname setGenericSpct
 #'
 #' @export
 #'
@@ -1461,7 +1472,7 @@ setObjectSpct <-
     invisible(x)
   }
 
-#' @describeIn setGenericSpct Set class of an object to "response_spct".
+#' @rdname setGenericSpct
 #'
 #' @param time.unit character string indicating the time unit used for spectral
 #'   irradiance or exposure (\code{"second"}, \code{"day"} or \code{"exposure"})
@@ -1489,7 +1500,7 @@ setResponseSpct <-
     invisible(x)
   }
 
-#' @describeIn setGenericSpct Set class of an object to "source_spct".
+#' @rdname setGenericSpct
 #'
 #' @param bswf.used character A string, either \code{"none"} or the name of a
 #'   BSWF. (Users seldom need to change the default, as this metadata value
@@ -1519,7 +1530,7 @@ setSourceSpct <-
     invisible(x)
   }
 
-#' @describeIn setGenericSpct Set class of an object to "chroma_spct".
+#' @rdname setGenericSpct
 #'
 #' @export
 #'
@@ -1570,11 +1581,13 @@ setChromaSpct <-
 is.generic_spct <- function(x) inherits(x, "generic_spct")
 
 #' @rdname is.generic_spct
+#'
 #' @export
 #'
 is.raw_spct <- function(x) inherits(x, "raw_spct")
 
 #' @rdname is.generic_spct
+#'
 #' @export
 #'
 is.calibration_spct <- function(x) inherits(x, "calibration_spct")
@@ -1585,6 +1598,7 @@ is.calibration_spct <- function(x) inherits(x, "calibration_spct")
 is.cps_spct <- function(x) inherits(x, "cps_spct")
 
 #' @rdname is.generic_spct
+#'
 #' @export
 #'
 is.source_spct <- function(x) inherits(x, "source_spct")
@@ -1595,16 +1609,19 @@ is.source_spct <- function(x) inherits(x, "source_spct")
 is.response_spct <- function(x) inherits(x, "response_spct")
 
 #' @rdname is.generic_spct
+#'
 #' @export
 #'
 is.filter_spct <- function(x) inherits(x, "filter_spct")
 
 #' @rdname is.generic_spct
+#'
 #' @export
 #'
 is.reflector_spct <- function(x) inherits(x, "reflector_spct")
 
 #' @rdname is.generic_spct
+#'
 #' @export
 #'
 is.object_spct <- function(x) inherits(x, "object_spct")
@@ -1615,6 +1632,7 @@ is.object_spct <- function(x) inherits(x, "object_spct")
 is.solute_spct <- function(x) inherits(x, "solute_spct")
 
 #' @rdname is.generic_spct
+#'
 #' @export
 #'
 is.chroma_spct <- function(x) inherits(x, "chroma_spct")
@@ -1695,6 +1713,7 @@ is_tagged <- function(x) {
 #' @family query units functions
 #'
 #' @rdname is_photon_based
+#'
 #' @examples
 #' colnames(sun.spct)
 #' is_photon_based(sun.spct)
@@ -1759,6 +1778,7 @@ is_energy_based <- function(x) {
 #' @family query units functions
 #'
 #' @rdname is_absorbance_based
+#'
 #' @examples
 #' is_absorbance_based(polyester.spct)
 #' my.spct <- T2A(polyester.spct)
@@ -3107,7 +3127,8 @@ getFilterProperties <-
 #'
 filter_properties <- getFilterProperties
 
-#' @describeIn getFilterProperties default
+#' @rdname getFilterProperties
+#'
 #' @export
 getFilterProperties.default <- function(x,
                                         return.null = FALSE,
@@ -3129,7 +3150,8 @@ getFilterProperties.default <- function(x,
   }
 }
 
-#' @describeIn getFilterProperties generic_spct
+#' @rdname getFilterProperties
+#'
 #' @export
 getFilterProperties.filter_spct <- function(x,
                                             return.null = FALSE,
@@ -3151,13 +3173,14 @@ getFilterProperties.filter_spct <- function(x,
   filter.properties
 }
 
-#' @describeIn getFilterProperties summary_generic_spct
+#' @rdname getFilterProperties
 #'
 #' @export
 #'
 getFilterProperties.summary_filter_spct <- getFilterProperties.filter_spct
 
-#' @describeIn getFilterProperties filter_mspct
+#' @rdname getFilterProperties
+#'
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
 #' @note The method for collections of spectra returns the a tibble with a
@@ -3580,7 +3603,7 @@ getSoluteProperties <- function(x,
 #'
 solute_properties <- getSoluteProperties
 
-#' @describeIn getSoluteProperties default
+#' @rdname getSoluteProperties
 #'
 #' @export
 #'
@@ -3608,7 +3631,7 @@ getSoluteProperties.default <- function(x,
   }
 }
 
-#' @describeIn getSoluteProperties solute_spct
+#' @rdname getSoluteProperties
 #'
 #' @export
 #'
@@ -3637,13 +3660,13 @@ getSoluteProperties.solute_spct <- function(x,
   solute.properties
 }
 
-#' @describeIn getSoluteProperties summary_solute_spct
+#' @rdname getSoluteProperties
 #'
 #' @export
 #'
 getSoluteProperties.summary_solute_spct <- getSoluteProperties.solute_spct
 
-#' @describeIn getSoluteProperties solute_mspct
+#' @rdname getSoluteProperties
 #'
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.

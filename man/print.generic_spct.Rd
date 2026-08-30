@@ -44,11 +44,6 @@ starting from the shortest wavelengths pass a positive integer to \code{n}.
 Objects are printed as is, ignoring the current settings of R options
 \code{photobiology.radiation.unit} and \code{photobiology.filter.qty}.
 }
-\section{Functions}{
-\itemize{
-\item \code{print(generic_mspct)}: 
-
-}}
 \note{
 Methods \code{\link[utils]{head}()}, \code{tail()} and
   \code{\link{head_tail}()} give additional flexibility on the selection

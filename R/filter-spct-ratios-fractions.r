@@ -90,7 +90,7 @@ Tfr_ratio <- function(spct,
                       use.hinges,
                       ...) UseMethod("Tfr_ratio")
 
-#' @describeIn Tfr_ratio Default for generic function
+#' @rdname Tfr_ratio
 #'
 #' @export
 #'
@@ -106,7 +106,7 @@ Tfr_ratio.default <- function(spct,
   NA_real_
 }
 
-#' @describeIn Tfr_ratio Method for \code{filter_spct} objects
+#' @rdname Tfr_ratio
 #'
 #' @export
 #'
@@ -175,8 +175,7 @@ Tfr_ratio.filter_spct <-
     return(ratio)
   }
 
-#' @describeIn Tfr_ratio Calculates Tfr:Tfr from a \code{filter_mspct}
-#'   object.
+#' @rdname Tfr_ratio
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
 #'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
@@ -331,7 +330,7 @@ Tfr_fraction <- function(spct,
                          use.hinges,
                          ...) UseMethod("Tfr_fraction")
 
-#' @describeIn Tfr_fraction Default for generic function
+#' @rdname Tfr_fraction
 #'
 #' @export
 #'
@@ -347,7 +346,7 @@ Tfr_fraction.default <- function(spct,
   NA_real_
 }
 
-#' @describeIn Tfr_fraction Method for \code{filter_spct} objects
+#' @rdname Tfr_fraction
 #'
 #' @export
 #'
@@ -417,8 +416,7 @@ Tfr_fraction.filter_spct <-
     return(fraction)
   }
 
-#' @describeIn Tfr_fraction Calculates Tfr:Tfr from a \code{filter_mspct}
-#'   object.
+#' @rdname Tfr_fraction
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
 #'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
@@ -575,7 +573,7 @@ Tfr_normdiff <- function(spct,
                          use.hinges,
                          ...) UseMethod("Tfr_normdiff")
 
-#' @describeIn Tfr_normdiff Default for generic function
+#' @rdname Tfr_normdiff
 #'
 #' @export
 #'
@@ -591,7 +589,7 @@ Tfr_normdiff.default <- function(spct,
   NA_real_
 }
 
-#' @describeIn Tfr_normdiff Method for \code{filter_spct} objects
+#' @rdname Tfr_normdiff
 #'
 #' @export
 #'
@@ -664,8 +662,7 @@ Tfr_normdiff.filter_spct <-
     return(Tfr.normdiff)
   }
 
-#' @describeIn Tfr_normdiff Calculates Tfr:Tfr from a \code{filter_mspct}
-#'   object.
+#' @rdname Tfr_normdiff
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
 #'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.

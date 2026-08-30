@@ -63,22 +63,6 @@ A color definition in hexadecimal format as a \code{character} string
 \description{
 Equivalent RGB color of an object such as a spectrum, wavelength or waveband.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{color_of(default)}: Default method (returns always "black").
-
-\item \code{color_of(numeric)}: Method that returns Color definitions corresponding to
-numeric values representing a wavelengths in nm.
-
-\item \code{color_of(list)}: Method that returns Color of elements in a list.
-
-\item \code{color_of(waveband)}: Color at midpoint of a \code{\link{waveband}} object.
-
-\item \code{color_of(source_spct)}: 
-
-\item \code{color_of(source_mspct)}: 
-
-}}
 \note{
 The specialization of \code{color_of()} for \code{numeric} and function
   \code{fast_color_of_wl()} accept both positive and negative values in

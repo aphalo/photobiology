@@ -25,7 +25,7 @@
 #'
 fshift <- function(x, ...) UseMethod("fshift")
 
-#' @describeIn fshift Default for generic function
+#' @rdname fshift
 #'
 #' @export
 #'
@@ -36,7 +36,7 @@ fshift.default <- function(x, ...) {
   return(x)
 }
 
-#' @describeIn fshift
+#' @rdname fshift
 #'
 #' @param range An R object on which \code{range()} returns a numeric vector of
 #'   length 2 with the limits of a range of wavelengths in nm, with min and max
@@ -76,7 +76,7 @@ fshift.source_spct <-
     }
   }
 
-#' @describeIn fshift
+#' @rdname fshift
 #'
 #' @export
 #'
@@ -108,7 +108,7 @@ fshift.response_spct <-
     }
   }
 
-#' @describeIn fshift
+#' @rdname fshift
 #'
 #' @param qty.out character Allowed values "transmittance", and "absorbance"
 #'
@@ -137,7 +137,7 @@ fshift.filter_spct <- function(x,
   }
 }
 
-#' @describeIn fshift
+#' @rdname fshift
 #'
 #' @export
 #'
@@ -153,7 +153,7 @@ fshift.reflector_spct <- function(x,
                      ...))
 }
 
-#' @describeIn fshift
+#' @rdname fshift
 #'
 #' @export
 #'
@@ -172,7 +172,7 @@ fshift.source_mspct <-
             ...)
   }
 
-#' @describeIn fshift
+#' @rdname fshift
 #'
 #' @export
 #'
@@ -188,7 +188,7 @@ fshift.raw_spct <- function(x,
                      ...))
 }
 
-#' @describeIn fshift
+#' @rdname fshift
 #'
 #' @export
 #'
@@ -204,7 +204,7 @@ fshift.cps_spct <- function(x,
                      ...))
 }
 
-#' @describeIn fshift
+#' @rdname fshift
 #'
 #' @param col.names character vector containing the names of columns or
 #'   variables to which to apply the scale shift.
@@ -225,7 +225,7 @@ fshift.generic_spct <- function(x,
 
 # Collections of spectra --------------------------------------------------
 
-#' @describeIn fshift
+#' @rdname fshift
 #'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
@@ -259,7 +259,7 @@ fshift.response_mspct <-
             .paropts = .paropts)
   }
 
-#' @describeIn fshift
+#' @rdname fshift
 #'
 #' @export
 #'
@@ -285,7 +285,7 @@ fshift.filter_mspct <-
             .paropts = .paropts)
   }
 
-#' @describeIn fshift
+#' @rdname fshift
 #'
 #' @export
 #'
@@ -310,7 +310,7 @@ fshift.reflector_mspct <-
             .paropts = .paropts)
   }
 
-#' @describeIn fshift
+#' @rdname fshift
 #'
 #' @export
 #'
@@ -333,7 +333,7 @@ fshift.raw_mspct <-
             .paropts = .paropts)
   }
 
-#' @describeIn fshift
+#' @rdname fshift
 #'
 #' @export
 #'
@@ -356,7 +356,7 @@ fshift.cps_mspct <-
             .paropts = .paropts)
   }
 
-#' @describeIn fshift
+#' @rdname fshift
 #'
 #' @export
 #'

@@ -59,19 +59,6 @@ A copy of \code{x} converted into a \code{calibration_mspctt} object.
 Return a copy of an R object with its class set to a given type
   of spectrum.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{as.calibration_mspct(default)}: 
-
-\item \code{as.calibration_mspct(data.frame)}: 
-
-\item \code{as.calibration_mspct(calibration_spct)}: 
-
-\item \code{as.calibration_mspct(list)}: 
-
-\item \code{as.calibration_mspct(matrix)}: 
-
-}}
 \note{
 When \code{x} is a square matrix an explicit argument is needed for
   \code{byrow} to indicate how data in \code{x} should be read. In every case
@@ -79,18 +66,18 @@ When \code{x} is a square matrix an explicit argument is needed for
   of \code{x}.
 }
 \seealso{
-Other Coercion methods for collections of spectra: 
-\code{\link{as.chroma_mspct}()},
-\code{\link{as.cps_mspct}()},
-\code{\link{as.filter_mspct}()},
-\code{\link{as.generic_mspct}()},
-\code{\link{as.object_mspct}()},
-\code{\link{as.raw_mspct}()},
-\code{\link{as.reflector_mspct}()},
-\code{\link{as.response_mspct}()},
-\code{\link{as.solute_mspct}()},
-\code{\link{as.source_mspct}()},
-\code{\link{split2mspct}()},
-\code{\link{subset2mspct}()}
+Other Coercion methods for collections of spectra:
+\code{\link[=as.chroma_mspct]{as.chroma_mspct()}},
+\code{\link[=as.cps_mspct]{as.cps_mspct()}},
+\code{\link[=as.filter_mspct]{as.filter_mspct()}},
+\code{\link[=as.generic_mspct]{as.generic_mspct()}},
+\code{\link[=as.object_mspct]{as.object_mspct()}},
+\code{\link[=as.raw_mspct]{as.raw_mspct()}},
+\code{\link[=as.reflector_mspct]{as.reflector_mspct()}},
+\code{\link[=as.response_mspct]{as.response_mspct()}},
+\code{\link[=as.solute_mspct]{as.solute_mspct()}},
+\code{\link[=as.source_mspct]{as.source_mspct()}},
+\code{\link[=split2mspct]{split2mspct()}},
+\code{\link[=subset2mspct]{subset2mspct()}}
 }
 \concept{Coercion methods for collections of spectra}

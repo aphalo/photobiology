@@ -28,7 +28,7 @@ id_factor(sun_evening.spct)
 
 }
 \seealso{
-Other idfactor attribute functions: 
-\code{\link{setIdFactor}()}
+Other idfactor attribute functions:
+\code{\link[=setIdFactor]{setIdFactor()}}
 }
 \concept{idfactor attribute functions}

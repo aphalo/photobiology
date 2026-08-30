@@ -65,7 +65,7 @@
 #'
 fscale <- function(x, ...) UseMethod("fscale")
 
-#' @describeIn fscale Default for generic function
+#' @rdname fscale
 #'
 #' @export
 #'
@@ -76,7 +76,7 @@ fscale.default <- function(x, ...) {
   x
 }
 
-#' @describeIn fscale
+#' @rdname fscale
 #'
 #' @param range numeric. An R object on which \code{range()} returns a numeric
 #'   vector of length 2 with the limits of a range of wavelengths in nm, with
@@ -136,7 +136,7 @@ fscale.source_spct <- function(x,
   }
 }
 
-#' @describeIn fscale
+#' @rdname fscale
 #'
 #' @export
 #'
@@ -184,7 +184,7 @@ fscale.response_spct <- function(x,
   }
 }
 
-#' @describeIn fscale
+#' @rdname fscale
 #'
 #' @param qty.out character. Allowed values "transmittance", and "absorbance".
 #'
@@ -235,7 +235,7 @@ fscale.filter_spct <- function(x,
   }
 }
 
-#' @describeIn fscale
+#' @rdname fscale
 #'
 #' @export
 #'
@@ -271,7 +271,7 @@ fscale.reflector_spct <- function(x,
               ...)
 }
 
-#' @describeIn fscale
+#' @rdname fscale
 #'
 #' @export
 #'
@@ -308,7 +308,7 @@ fscale.solute_spct <- function(x,
               ...)
 }
 
-#' @describeIn fscale
+#' @rdname fscale
 #'
 #' @export
 #'
@@ -342,7 +342,7 @@ fscale.raw_spct <- function(x,
                ...)
 }
 
-#' @describeIn fscale
+#' @rdname fscale
 #'
 #' @export
 #'
@@ -376,7 +376,7 @@ fscale.cps_spct <- function(x,
               ...)
 }
 
-#' @describeIn fscale
+#' @rdname fscale
 #'
 #' @param col.names character vector containing the names of columns or
 #'   variables to which to apply the scaling.
@@ -417,7 +417,7 @@ fscale.generic_spct <- function(x,
 
 # Collections of spectra --------------------------------------------------
 
-#' @describeIn fscale
+#' @rdname fscale
 #'
 #' @param .parallel	logical if TRUE, apply function in parallel, using parallel
 #'   backend provided by foreach.
@@ -454,7 +454,7 @@ fscale.source_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn fscale
+#' @rdname fscale
 #'
 #' @export
 #'
@@ -483,7 +483,7 @@ fscale.response_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn fscale
+#' @rdname fscale
 #'
 #' @export
 #'
@@ -512,7 +512,7 @@ fscale.filter_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn fscale
+#' @rdname fscale
 #'
 #' @export
 #'
@@ -540,7 +540,7 @@ fscale.reflector_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn fscale
+#' @rdname fscale
 #'
 #' @export
 #'
@@ -566,7 +566,7 @@ fscale.solute_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn fscale
+#' @rdname fscale
 #'
 #' @export
 #'
@@ -592,7 +592,7 @@ fscale.raw_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn fscale
+#' @rdname fscale
 #'
 #' @export
 #'
@@ -618,7 +618,7 @@ fscale.cps_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn fscale
+#' @rdname fscale
 #'
 #' @export
 #'
@@ -886,7 +886,7 @@ getScaling <- function(x) {
 #'
 setScaled <- function(x, ...) UseMethod("setScaled")
 
-#' @describeIn setScaled Default for generic function
+#' @rdname setScaled
 #'
 #' @export
 #'
@@ -897,7 +897,7 @@ setScaled.default <- function(x, ...) {
   return(x)
 }
 
-#' @describeIn setScaled Specialization for generic_spct
+#' @rdname setScaled
 #'
 #' @export
 #'
@@ -915,7 +915,7 @@ setScaled.generic_spct <- function(x, ..., scaled = FALSE) {
   invisible(x)
 }
 
-#' @describeIn setScaled Specialization for summary_generic_spct
+#' @rdname setScaled
 #'
 #' @export
 #'
@@ -923,7 +923,7 @@ setScaled.generic_spct <- function(x, ..., scaled = FALSE) {
 #'
 setScaled.summary_generic_spct <- setScaled.generic_spct
 
-#' @describeIn setScaled Specialization for generic_mspct
+#' @rdname setScaled
 #'
 #' @export
 #'

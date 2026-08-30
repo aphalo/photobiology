@@ -24,7 +24,7 @@ print("missing example")
 
 }
 \seealso{
-Other K attribute functions: 
-\code{\link{setKType}()}
+Other K attribute functions:
+\code{\link[=setKType]{setKType()}}
 }
 \concept{K attribute functions}

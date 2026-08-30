@@ -40,29 +40,18 @@ a new object of the same class as \code{x}.
 Function to write the "scaled" attribute of an existing generic_spct
 object.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{setScaled(default)}: Default for generic function
-
-\item \code{setScaled(generic_spct)}: Specialization for generic_spct
-
-\item \code{setScaled(summary_generic_spct)}: Specialization for summary_generic_spct
-
-\item \code{setScaled(generic_mspct)}: Specialization for generic_mspct
-
-}}
 \note{
 if x is not a \code{generic_spct} object, x is not modified.
 }
 \seealso{
-Other rescaling functions: 
-\code{\link{fscale}()},
-\code{\link{fshift}()},
-\code{\link{getNormalized}()},
-\code{\link{getScaled}()},
-\code{\link{is_normalized}()},
-\code{\link{is_scaled}()},
-\code{\link{normalize}()},
-\code{\link{setNormalized}()}
+Other rescaling functions:
+\code{\link[=fscale]{fscale()}},
+\code{\link[=fshift]{fshift()}},
+\code{\link[=getNormalized]{getNormalized()}},
+\code{\link[=getScaled]{getScaled()}},
+\code{\link[=is_normalized]{is_normalized()}},
+\code{\link[=is_scaled]{is_scaled()}},
+\code{\link[=normalize]{normalize()}},
+\code{\link[=setNormalized]{setNormalized()}}
 }
 \concept{rescaling functions}

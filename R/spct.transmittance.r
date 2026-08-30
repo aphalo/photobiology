@@ -46,7 +46,7 @@
 #'
 transmittance <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) UseMethod("transmittance")
 
-#' @describeIn transmittance Default method
+#' @rdname transmittance
 #'
 #' @export
 #'
@@ -54,7 +54,7 @@ transmittance.default <- function(spct, w.band, quantity, wb.trim, use.hinges, .
   return(NA)
 }
 
-#' @describeIn transmittance Method for filter spectra
+#' @rdname transmittance
 #'
 #' @export
 #'
@@ -90,7 +90,7 @@ transmittance.filter_spct <-
                        naming = naming)
   }
 
-#' @describeIn transmittance Method for object spectra
+#' @rdname transmittance
 #'
 #' @export
 #'
@@ -295,7 +295,7 @@ transmittance_spct <-
 
 # filter_mspct methods -----------------------------------------------
 
-#' @describeIn transmittance Calculates transmittance from a \code{filter_mspct}
+#' @rdname transmittance
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx character Name of the column with the names of the members of the
@@ -335,7 +335,8 @@ transmittance.filter_mspct <-
 
 # object_mspct methods -----------------------------------------------
 
-#' @describeIn transmittance Calculates transmittance from a \code{object_mspct}
+#' @rdname transmittance
+#'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
 #' @param .paropts a list of additional options passed into the foreach function

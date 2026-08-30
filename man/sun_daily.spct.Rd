@@ -59,7 +59,7 @@ Radiative Transfer Simulations. Photochemistry and Photobiology, 85:
 1233-1239
 }
 \seealso{
-Other Spectral data examples: 
+Other Spectral data examples:
 \code{\link{A.illuminant.spct}},
 \code{\link{D50.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},

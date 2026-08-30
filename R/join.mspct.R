@@ -42,7 +42,7 @@
 #'
 join_mspct <- function(x, type, ...) UseMethod("join_mspct")
 
-#' @describeIn join_mspct
+#' @rdname join_mspct
 #'
 #' @export
 #'
@@ -50,7 +50,7 @@ join_mspct.default <- function(x, type = "full", ...) {
   stop("'join_mspct()' is only implemented for some collections of spectra")
 }
 
-#' @describeIn join_mspct
+#' @rdname join_mspct
 #'
 #' @param col.name character, name of the column in the spectra to be preserved,
 #'   in addition to "w.length".
@@ -138,7 +138,7 @@ join_mspct.generic_mspct <- function(x,
   as.data.frame(z)
 }
 
-#' @describeIn join_mspct
+#' @rdname join_mspct
 #'
 #' @export
 #'
@@ -164,7 +164,7 @@ join_mspct.source_mspct <- function(x,
              ...)
 }
 
-#' @describeIn join_mspct
+#' @rdname join_mspct
 #'
 #' @export
 #'
@@ -190,7 +190,7 @@ join_mspct.response_mspct <- function(x,
              ...)
 }
 
-#' @describeIn join_mspct
+#' @rdname join_mspct
 #'
 #' @export
 #'
@@ -219,7 +219,7 @@ join_mspct.filter_mspct <- function(x,
              ...)
 }
 
-#' @describeIn join_mspct
+#' @rdname join_mspct
 #'
 #' @export
 #'
@@ -235,7 +235,7 @@ join_mspct.reflector_mspct <- function(x,
              ...)
 }
 
-#' @describeIn join_mspct
+#' @rdname join_mspct
 #'
 #' @export
 #'
@@ -253,7 +253,7 @@ join_mspct.object_mspct <- function(x,
   )
 }
 
-#' @describeIn join_mspct
+#' @rdname join_mspct
 #'
 #' @export
 #'

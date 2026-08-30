@@ -43,19 +43,6 @@ the wavelength range of objects of classes \code{waveband} or of class
 \code{generic_spct} or derived (or the midpoint from a \code{numeric}
 vector).
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{midpoint(default)}: Default method for generic function
-
-\item \code{midpoint(numeric)}: Default method for generic function
-
-\item \code{midpoint(waveband)}: Wavelength at center of a "waveband".
-
-\item \code{midpoint(generic_spct)}: Method for "generic_spct".
-
-\item \code{midpoint(generic_mspct)}: Method for "generic_mspct" objects.
-
-}}
 \examples{
 midpoint(10:20)
 midpoint(sun.spct)
@@ -65,19 +52,9 @@ midpoint(sun.spct)
 
 }
 \seealso{
-Other wavelength summaries: 
-\code{\link{wl_min}()},
-\code{\link{wl_range}()},
-\code{\link{wl_stepsize}()}
-
-Other wavelength summaries: 
-\code{\link{wl_min}()},
-\code{\link{wl_range}()},
-\code{\link{wl_stepsize}()}
-
-Other wavelength summaries: 
-\code{\link{wl_min}()},
-\code{\link{wl_range}()},
-\code{\link{wl_stepsize}()}
+Other wavelength summaries:
+\code{\link[=wl_min]{wl_min()}},
+\code{\link[=wl_range]{wl_range()}},
+\code{\link[=wl_stepsize]{wl_stepsize()}}
 }
 \concept{wavelength summaries}

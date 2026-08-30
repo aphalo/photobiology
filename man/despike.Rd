@@ -316,47 +316,6 @@ Spikes are detected based on a modified Z score calculated from the
   are searched for and replaced in each spectrum independently of other
   spectra.
 }
-\section{Methods (by class)}{
-\itemize{
-\item \code{despike(default)}: Default returning always NA.
-
-\item \code{despike(numeric)}: Default function usable on numeric vectors.
-
-\item \code{despike(data.frame)}: Method for "data.frame" objects.
-
-\item \code{despike(generic_spct)}: Method for "generic_spct" objects.
-
-\item \code{despike(source_spct)}: Method for "source_spct" objects.
-
-\item \code{despike(response_spct)}: Method for "response_spct" objects.
-
-\item \code{despike(filter_spct)}: Method for "filter_spct" objects.
-
-\item \code{despike(reflector_spct)}: Method for "reflector_spct" objects.
-
-\item \code{despike(solute_spct)}: Method for "solute_spct" objects.
-
-\item \code{despike(cps_spct)}: Method for "cps_spct" objects.
-
-\item \code{despike(raw_spct)}: Method for "raw_spct" objects.
-
-\item \code{despike(generic_mspct)}: Method for "generic_mspct" objects.
-
-\item \code{despike(source_mspct)}: Method for "source_mspct" objects.
-
-\item \code{despike(response_mspct)}: Method for "cps_mspct" objects.
-
-\item \code{despike(filter_mspct)}: Method for "filter_mspct" objects.
-
-\item \code{despike(reflector_mspct)}: Method for "reflector_mspct" objects.
-
-\item \code{despike(solute_mspct)}: Method for "solute_mspct" objects.
-
-\item \code{despike(cps_mspct)}: Method for "cps_mspct" objects.
-
-\item \code{despike(raw_mspct)}: Method for "raw_mspct" objects.
-
-}}
 \note{
 Current algorithm misidentifies steep smooth slopes as spikes, so
   manual inspection is needed together with adjustment by trial and error
