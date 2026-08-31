@@ -11,11 +11,18 @@ white_led.cps_spct <-
 white_led.source_spct <-
   s_irrad_corrected(led_desk201.raw_spct,
                     correction.method = MAYP11278_ylianttila.mthd)
+# check consistency
+when_measured(white_led.raw_spct)
+when_measured(white_led.cps_spct)
+when_measured(white_led.source_spct)
+autoplot(white_led.source_spct)
 
-white_led.source_spct <- despike(white_led.source_spct)
+# clean data
+# white_led.source_spct <- despike(white_led.source_spct)
 white_led.source_spct <- fshift(white_led.source_spct)
 white_led.source_spct <- smooth_spct(white_led.source_spct)
 white_led.source_spct <- clean(white_led.source_spct)
+autoplot(white_led.source_spct)
 
 trimInstrDesc(white_led.raw_spct, c("-", "w", "inst.calib"))
 trimInstrDesc(white_led.cps_spct, c("-", "w", "inst.calib"))
@@ -28,6 +35,10 @@ getInstrDesc(white_led.source_spct)
 getInstrSettings(white_led.raw_spct)
 getInstrSettings(white_led.cps_spct)
 getInstrSettings(white_led.source_spct)
+
+when_measured(white_led.raw_spct)
+when_measured(white_led.cps_spct)
+when_measured(white_led.source_spct)
 
 autoplot(white_led.raw_spct)
 autoplot(white_led.cps_spct)
