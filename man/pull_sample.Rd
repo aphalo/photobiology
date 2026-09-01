@@ -76,7 +76,9 @@ pull_sample(a.list, size = 8, replace = TRUE, keep.order = FALSE)
 pull_sample(a.list, size = 1)
 pull_sample(a.list, size = 1, simplify = TRUE)
 
+set.seed(12345678)
 pull_sample(sun_evening.spct, 2)
+set.seed(12345678)
 pull_sample(sun_evening.mspct, 2)
 
 }

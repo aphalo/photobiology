@@ -10,6 +10,7 @@ all_spct_attr.ls <-
     generic_spct = c("comment",
                      "instr.desc",
                      "instr.settings",
+                     "correction.method",
                      "when.measured",
                      "where.measured",
                      "what.measured",
@@ -373,8 +374,8 @@ subset_attributes.generic_spct <-
       warning("Duplicate values in 'to.keep' discarded.")
       to.keep <- unique(to.keep)
     }
-    if (length(to.keep) > getMultipleWl(x)) {
-      warning("Partial Subsetting! 'to.keep' too.long")
+    if (length(to.keep) != getMultipleWl(x)) {
+      warning("Bad Subsetting! 'to.keep' length mismatch")
     }
     if (length(target.attributes) == 0L) {
       return(x)

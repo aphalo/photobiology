@@ -534,6 +534,7 @@ subset.generic_spct <- function(x, subset, select, drop = FALSE, ...) {
   if (!is.na(id.factor)) {
     # drop unused levels
     z[[id.factor]] <- factor(z[[id.factor]])
+    multiple_wl(z) <- length(levels(z[[id.factor]]))
     # keep attributes matching remaining spectra
     z <- subset_attributes(z, to.keep = levels(z[[id.factor]]))
   }

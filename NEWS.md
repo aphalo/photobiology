@@ -11,6 +11,8 @@ editor_options:
 affecting the extraction operator `[` directly, and indirectly `pull_sample()`.
 Bug did not result in metadata loss, instead in some spurious metadata being
 printed in addition to the correct one.
+* Bug fix: `subset.generic_spct()` failed to update `multiple.wl` attribute
+when subsetting spectra in long form decreased the number of spectra.
 
 # photobiology 0.14.2
 

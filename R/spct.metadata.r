@@ -1763,8 +1763,9 @@ add_attr2tb <- function(tb = NULL,
                             tb = tb,
                             col.names = col.names["bswf.used"],
                             idx = idx),
-             {warning("Skipping unknown metada name: ", a);
-               tb})
+             correction.method = tb, # skipped!!
+             { warning("Skipping unknown metada name: ", a);
+               tb })
   }
   if (unnest) {
     list.cols <- colnames(tb)[sapply(tb, is.list)]
