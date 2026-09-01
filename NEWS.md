@@ -7,7 +7,10 @@ editor_options:
 
 # photobiology 0.14.3
 
-* Minor bug fix
+* Bug fix: `subset_attributes.generic_spct()` failed to subset the attributes
+affecting the extraction operator `[` directly, and indirectly `pull_sample()`.
+Bug did not result in metadata loss, instead in some spurious metadata being
+printed in addition to the correct one.
 
 # photobiology 0.14.2
 

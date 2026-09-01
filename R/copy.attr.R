@@ -373,8 +373,10 @@ subset_attributes.generic_spct <-
       warning("Duplicate values in 'to.keep' discarded.")
       to.keep <- unique(to.keep)
     }
-    if (length(target.attributes) == 0L ||
-          length(to.keep) == getMultipleWl(x)) {
+    if (length(to.keep) > getMultipleWl(x)) {
+      warning("Partial Subsetting! 'to.keep' too.long")
+    }
+    if (length(target.attributes) == 0L) {
       return(x)
     }
     all.attr <- attributes(x)

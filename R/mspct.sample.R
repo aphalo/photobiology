@@ -37,6 +37,11 @@
 #' pull_sample(a.list, size = 1)
 #' pull_sample(a.list, size = 1, simplify = TRUE)
 #'
+#' set.seed(12345678)
+#' pull_sample(sun_evening.spct, 2)
+#' set.seed(12345678)
+#' pull_sample(sun_evening.mspct, 2)
+#'
 #' @export
 #'
 pull_sample <- function(x, size, ...) {
@@ -98,7 +103,7 @@ pull_sample.generic_spct <- function(x,
 
   selector.idx <- sample(x = num.spectra, size = size, replace = replace)
   id.factor <- x[[getIdFactor(x)]]
-  pulled.ids <- unique(id.factor)[selector.idx]
+  pulled.ids <- as.character(unique(id.factor)[selector.idx])
 
   x[id.factor %in% pulled.ids, ]
 }

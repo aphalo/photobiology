@@ -76,6 +76,9 @@ pull_sample(a.list, size = 8, replace = TRUE, keep.order = FALSE)
 pull_sample(a.list, size = 1)
 pull_sample(a.list, size = 1, simplify = TRUE)
 
+pull_sample(sun_evening.spct, 2)
+pull_sample(sun_evening.mspct, 2)
+
 }
 \seealso{
 See \code{\link[base]{sample}} for the method used for
