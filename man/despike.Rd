@@ -23,12 +23,12 @@
 \alias{despike.raw_mspct}
 \title{Remove spikes from spectrum}
 \usage{
-despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
+despike(x, height.threshold, z.threshold, k, window.width, method, na.rm, ...)
 
 \method{despike}{default}(
   x,
   z.threshold = NA,
-  max.spike.width = NA,
+  k = NA,
   window.width = NA,
   method = "run.mean",
   na.rm = FALSE,
@@ -37,8 +37,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{numeric}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -47,8 +49,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{data.frame}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -59,8 +63,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{generic_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -71,8 +77,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{source_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -82,8 +90,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{response_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -93,8 +103,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{filter_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -104,8 +116,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{reflector_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -114,8 +128,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{solute_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -124,8 +140,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{cps_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -134,8 +152,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{raw_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -144,8 +164,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{generic_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -158,8 +180,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{source_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -171,8 +195,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{response_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -184,8 +210,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{filter_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -197,8 +225,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{reflector_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -209,8 +239,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{solute_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -221,8 +253,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{cps_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -233,8 +267,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{raw_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -244,25 +280,30 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 )
 }
 \arguments{
-\item{x}{an R object}
+\item{x}{numeric vector containing the data.}
 
-\item{z.threshold}{numeric Modified Z values larger than \code{z.threshold}
-are considered to correspond to spikes.}
+\item{height.threshold}{numeric The minimum height of spikes expressed
+relative to the median amplitude of the baseline local variation of
+\code{x}.}
 
-\item{max.spike.width}{integer Wider regions with high Z values are not detected as
-spikes.}
+\item{z.threshold}{numeric Modified local \eqn{Z} values larger than
+\code{z.threshold} are detected as boundaries of spikes.}
+
+\item{k}{integer width of median window used for smoothing; must be odd}
 
 \item{window.width}{integer. The full width of the window used for the
-running mean used as replacement.}
+running mean.}
 
 \item{method}{character The name of the method: \code{"run.mean"} is running
 mean as described in Whitaker and Hayes (2018); \code{"adj.mean"} is mean
 of adjacent neighbors (isolated bad pixels only).}
 
-\item{na.rm}{logical indicating whether \code{NA} values should be treated
-as spikes and replaced.}
+\item{na.rm}{logical indicating whether \code{NA} values should be stripped
+before searching for spikes.}
 
-\item{...}{Arguments passed by name to \code{find_spikes()}.}
+\item{spike.direction}{character One of \code{"up"}, \code{"down"},
+\code{"both"} or \code{"skip"}, indicating which spikes are to be returned,
+if any.}
 
 \item{var.name, y.var.name}{character Names of columns where to look
 for spikes to remove.}

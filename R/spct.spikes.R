@@ -1,73 +1,265 @@
- #' Find spikes
+#' Find spikes in vector
 #'
-#' This function finds spikes in a numeric vector using the algorithm of
+#' Find spikes in a numeric vector using the algorithm of
 #' Whitaker and Hayes (2018). Spikes are values in spectra that are unusually
 #' high or low compared to neighbours. They are usually individual values or very
 #' short runs of similar "unusual" values. Spikes caused by cosmic radiation are
 #' a frequent problem in Raman spectra. Another source of spikes are "hot
-#' pixels" in CCD and diode arrays. Other kinds of accidental "outliers" will
+#' pixels" in CCD and diode arrays. Other kinds of accidental "outliers" can
 #' be also detected.
 #'
-#' @details Spikes are detected based on a modified Z score calculated from the
-#'   differenced spectrum. The Z threshold used should be adjusted to the
-#'   characteristics of the input and desired sensitivity. The lower the
-#'   threshold the more stringent the test becomes, resulting in most cases in
-#'   more spikes being detected. A modified version of the algorithm is used if
-#'   a value different from \code{NULL} is passed as argument to
-#'   \code{max.spike.width}. In such a case, an additional step filters out
-#'   broader spikes (or falsely detected steep slopes) from the returned values.
+#' @details Spikes are detected based on a modified \eqn{Z} score calculated
+#'   from the differenced spectrum. The \eqn{Z} threshold used should be
+#'   adjusted to the characteristics of the input and desired sensitivity. The
+#'   lower the threshold the more stringent the test becomes, with shorter
+#'   spikes being detected.
 #'
-#' @param x numeric vector containing spectral data.
-#' @param x.is.delta logical Flag indicating if x contains already differences.
-#' @param z.threshold numeric Modified Z values larger than \code{z.threshold}
-#'   are considered to be spikes.
-#' @param max.spike.width integer Wider regions with high Z values are not detected as
-#'   spikes.
+#'   The algorithm uses running differences to detect abrupt changes in value,
+#'   compared to an estimate of the baseline variation of the differences,
+#'   approximating a baseline \eqn{Z} from MAD and a baseline value from the
+#'   median differences. Currently, a single estimate of MAD is used but running
+#'   medians, when possible, as baseline. This comparison detects running
+#'   differences that are unusually large, in most cases signalling a transition
+#'   between values near the baseline and far from it, in both directions.
+#'
+#'   Transitions into- and out of spikes are distinguished based on the median
+#'   of the non-differenced values, as a descriptor of the data baseline. As for
+#'   the median of the differences, a running median is used when possible.
+#'
+#'   This function thus detects the start and end of each spike, and
+#'   distinguishes upward and downward spikes.
+#'
+#'   \code{k} is the width in number of observations of the window used for
+#'   running median smoothing to extract the baseline. A value several times the
+#'   width of the broader spike but narrow enough to track broader peaks needs
+#'   to be manually set in most cases.
+#'
+#'   With \code{na.rm = TRUE}, \code{NA} values are omitted before searching for
+#'   spikes and set to \code{0L} in the returned vector.
+#'
+#'   If all spikes are guaranteed to be one observation-wide and either going up
+#'   or down from the baseline, it is possible to detect them based purely on
+#'   the \code{z.threshold} by passing \code{height.threshold = NA} and either
+#'   \code{spike.direction = "up"} or \code{spike.direction = "down"}, which
+#'   ensures very fast computation.
+#'
+#' @param x numeric vector containing the data.
+#' @param x.is.delta logical Flag indicating whether \code{x} contains
+#'   differences or original values.
+#' @param height.threshold numeric The minimum height of spikes expressed
+#'   relative to the median amplitude of the baseline local variation of
+#'   \code{x}.
+#' @param z.threshold numeric Modified local \eqn{Z} values larger than
+#'   \code{z.threshold} are detected as boundaries of spikes.
+#' @param k integer width of median window used for smoothing; must be odd
+#' @param spike.direction character One of \code{"up"}, \code{"down"},
+#'   \code{"both"} or \code{"skip"}, indicating which spikes are to be returned,
+#'   if any.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for spikes.
 #'
-#' @return A logical vector of the same length as \code{x}. Values that are TRUE
-#'   correspond to local spikes in the data.
+#' @return An integer vector of the same length as \code{x}. Values that are
+#'   \code{0}, \code{+1} or \code{-1} corresponding to no-spike, upwards-spike,
+#'   and downwards-spike in the data. Conversion to logical with
+#'   \code{as.logical()} results in a vector with \code{TRUE} for spikes and
+#'   \code{FALSE} otherwise.
 #'
 #' @references
 #' Whitaker, D. A.; Hayes, K. (2018) A simple algorithm for despiking Raman
 #' spectra. Chemometrics and Intelligent Laboratory Systems, 179, 82-84.
+#' \doi{10.1016/j.chemolab.2018.06.009}.
 #'
 #' @export
-#' @examples
-#'
-#' with(white_led.raw_spct,
-#'      which(find_spikes(counts_3, z.threshold = 30)))
 #'
 #' @family peaks and valleys functions
 #'
 find_spikes <-
   function(x,
            x.is.delta = FALSE,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            na.rm = FALSE) {
+    if (is.null(height.threshold)) {
+      height.threshold <- 10
+    } else if (!is.na(height.threshold) && height.threshold < 2) {
+      warning("'height.threshold < 2' set to 2")
+      height.threshold <- 2
+    }
+    if (is.null(k)) {
+      k <- 20
+    } else if (k %% 2 == 0) {
+      k <- k + 1
+    }
+    x.len.original <- length(x)
     if (na.rm) {
       na.idx <- which(is.na(x))
       x <- na.omit(x)
     }
     if (x.is.delta) {
       d.var <- x
+      x <- stats::diffinv(x)
     } else {
       d.var <- diff(x)
+      x <- x - x[1]
     }
-    z <- (d.var - stats::median(d.var)) / stats::mad(d.var) * 0.6745
-    outcomes <- abs(z) > z.threshold
-    if (!x.is.delta) {
-      # ensure same length as input
-      outcomes <- c(FALSE, outcomes)
+    # running median is used to detect spikes relative to the local baseline
+    if (k > length(x) / 2) {
+      x.median <- stats::median(x)
+      d.var.median <- stats::median(d.var)
+    } else {
+      x.median <- stats::runmed(x,
+                                k = k,
+                                na.action = "na.omit",
+                                endrule = "constant")
+      d.var.median <- stats::runmed(d.var,
+                                    k = k,
+                                    na.action = "na.omit",
+                                    endrule = "constant")
     }
-    if (!is.null(max.spike.width) && max.spike.width > 0) {
-      # ignore broad peaks using run length encoding
-      runs <- rle(outcomes)
-      runs[["values"]] <- ifelse(runs[["lengths"]] > max.spike.width, FALSE, runs[["values"]])
-      outcomes <- inverse.rle(runs)
+    z <- (d.var - d.var.median) / stats::mad(d.var) * 0.6745
+    outcomes.up <- c(FALSE, z > z.threshold)
+    outcomes.down <- c(FALSE, z < -z.threshold)
+
+    if (is.na(height.threshold)) {
+      spikes.up <- outcomes.up
+      spikes.down <- outcomes.down
+    } else {
+      scaled.threshold <- median(abs(d.var.median)) * height.threshold
+      if (spike.direction %in% c("up", "both")) {
+        outcomes.head.up <-
+          outcomes.up & x > x.median + scaled.threshold
+        temp <-
+          outcomes.down &
+          # near the baseline
+          x <= x.median + scaled.threshold &
+          x >= x.median - scaled.threshold
+        outcomes.tail.up <- logical(length(temp))
+        outcomes.tail.up[which(temp) - 1L] <- TRUE
+
+        # fill gaps
+        spk.starts <- which(outcomes.head.up)
+        spk.ends <- which(outcomes.tail.up)
+
+        if (length(spk.starts) > 1 && length(spk.ends) > 1) {
+          # check if data ends or starts in a spike
+          if (spk.ends[1] < spk.starts[1]) {
+            if (spk.ends[1] > 1) {
+              spk.starts <- c(1, spk.starts)
+            } else {
+              spk.ends <- spk.ends[-1L]
+            }
+          }
+          if (spk.starts[length(spk.starts)] > spk.ends[length(spk.ends)]) {
+            if (spk.ends[length(spk.ends)] < length(x)) {
+              spk.ends <- c(spk.ends, length(x))
+            } else {
+              spk.starts <- spk.starts[-length(spk.starts)]
+            }
+          }
+          outcomes.middle.up <- logical(length(x))
+          i <- j <- 0
+          i.max <- length(spk.starts)
+          j.max <- length(spk.ends)
+          while (i < i.max && j < j.max) {
+            i <- i + 1
+            j <- j + 1
+            # skip narrow spikes
+            while (spk.starts[i + 1] < spk.ends[j] && i < i.max) i <- i + 1
+            while (spk.ends[j + 1] < spk.starts[i + 1] && j < j.max) j <- j + 1
+            # fill in the middle of wide spikes
+            if (spk.starts[i] + 1 < spk.ends[j]) {
+              outcomes.middle.up[(spk.starts[i] + 1):(spk.ends[j] - 1)] <- TRUE
+            }
+          }
+          spikes.up <- outcomes.head.up | outcomes.tail.up | outcomes.middle.up
+        } else {
+          spikes.up <- outcomes.up
+        }
+        spikes.up <-
+          spikes.up & x > x.median + scaled.threshold
+      }
+
+      if (spike.direction %in% c("down", "both")) {
+        outcomes.head.down <-
+          outcomes.up & x < x.median - scaled.threshold
+        temp <-
+          outcomes.up &
+          # near the baseline
+          x <= x.median + scaled.threshold &
+          x >= x.median - scaled.threshold
+        outcomes.tail.down <- logical(length(temp))
+        outcomes.tail.down[which(temp) - 1L] <- TRUE
+
+        # fill gaps
+        spk.starts <- which(outcomes.head.down)
+        spk.ends <- which(outcomes.tail.down)
+
+        if (length(spk.starts) > 1 && length(spk.ends) > 1) {
+          # check if data ends or starts in a spike
+          if (spk.ends[1] < spk.starts[1]) {
+            if (spk.ends[1] > 1) {
+              spk.starts <- c(1, spk.starts)
+            } else {
+              spk.ends <- spk.ends[-1L]
+            }
+          }
+          if (spk.starts[length(spk.starts)] > spk.ends[length(spk.ends)]) {
+            if (spk.ends[length(spk.ends)] < length(x)) {
+              spk.ends <- c(spk.ends, length(x))
+            } else {
+              spk.starts <- spk.starts[-length(spk.starts)]
+            }
+          }
+          outcomes.middle.down <- logical(length(x))
+          i <- j <- 0
+          i.max <- length(spk.starts)
+          j.max <- length(spk.ends)
+          while (i < i.max && j < j.max) {
+            i <- i + 1
+            j <- j + 1
+            # skip narrow spikes
+            while (spk.starts[i + 1] < spk.ends[j] && i < i.max) i <- i + 1
+            while (spk.ends[j + 1] < spk.starts[i + 1] && j < j.max) j <- j + 1
+            # fill in the middle of wide spikes
+            if (spk.starts[i] + 1 < spk.ends[j]) {
+              outcomes.middle.down[(spk.starts[i] + 1):(spk.ends[j] - 1)] <- TRUE
+            }
+          }
+          spikes.down <- outcomes.head.down | outcomes.tail.down | outcomes.middle.down
+        } else {
+          spikes.down <- outcomes.down
+        }
+        spikes.down <-
+          spikes.down & x < x.median - scaled.threshold
+
+        temp <-
+          outcomes.up &
+          # near the baseline
+          x <= x.median + scaled.threshold&
+          x >= x.median - scaled.threshold
+        outcomes.tail.down <- logical(length(temp))
+        outcomes.tail.down[which(temp) - 1L] <- TRUE
+        spikes.down <- outcomes.down | outcomes.tail.down
+        spikes.down <-
+          spikes.down & x < x.median - scaled.threshold
+      }
     }
+
+    outcomes <-
+      switch(spike.direction,
+             "up" = spikes.up * 1L,
+             "down" = spikes.down * -1L,
+             "both" = spikes.up + spikes.down * -1L,
+             "skip" = integer(length(x)),
+             {
+               warning("'spike.direction' must be \"up\", \"down\", \"both\", or \"skip\", not \"",
+                       spike.direction, "\"")
+               integer(length(x))
+             }
+      )
+
     if (na.rm) {
       # restore length of logical vector
       for (i in na.idx) {
@@ -75,7 +267,7 @@ find_spikes <-
       }
     }
     # check assertion
-    stopifnot(length(outcomes) == length(x))
+    stopifnot(length(outcomes) == x.len.original)
     outcomes
   }
 
@@ -226,21 +418,10 @@ replace_bad_pixs <-
 #'   are searched for and replaced in each spectrum independently of other
 #'   spectra.
 #'
-#' @param x an R object
-#' @param z.threshold numeric Modified Z values larger than \code{z.threshold}
-#'   are considered to correspond to spikes.
-#' @param max.spike.width integer Wider regions with high Z values are not detected as
-#'   spikes.
-#' @param window.width integer. The full width of the window used for the
-#'   running mean used as replacement.
-#' @param method character The name of the method: \code{"run.mean"} is running
-#'  mean as described in Whitaker and Hayes (2018); \code{"adj.mean"} is mean
-#'  of adjacent neighbors (isolated bad pixels only).
-#' @param na.rm logical indicating whether \code{NA} values should be treated
-#'   as spikes and replaced.
+#' @inheritParams find_spikes
+#' @inheritParams replace_bad_pixs
 #' @param var.name,y.var.name character Names of columns where to look
 #'   for spikes to remove.
-#' @param ... Arguments passed by name to \code{find_spikes()}.
 #'
 #' @return A copy of the object passed as argument to \code{x} with values
 #'   detected as spikes replaced by a local average of adjacent neighbors
@@ -268,8 +449,9 @@ replace_bad_pixs <-
 #' @family despike and valleys functions
 #'
 despike <- function(x,
+                    height.threshold,
                     z.threshold,
-                    max.spike.width,
+                    k,
                     window.width,
                     method,
                     na.rm,
@@ -281,7 +463,7 @@ despike <- function(x,
 despike.default <-
   function(x,
            z.threshold = NA,
-           max.spike.width = NA,
+           k = NA,
            window.width = NA,
            method = "run.mean",
            na.rm = FALSE,
@@ -296,16 +478,22 @@ despike.default <-
 #' @export
 despike.numeric <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
            ...) {
    spike.idxs <- find_spikes(x = x,
+                             height.threshold = height.threshold,
                              z.threshold = z.threshold,
-                             max.spike.width = max.spike.width,
-                             na.rm = na.rm)
+                             k = k,
+                             spike.direction = spike.direction,
+                             na.rm = na.rm) |>
+     as.logical()
+
    replace_bad_pixs(x,
                     bad.pix.idx = spike.idxs,
                     window.width = window.width,
@@ -320,8 +508,10 @@ despike.numeric <-
 #'
 despike.data.frame <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
@@ -337,12 +527,14 @@ despike.data.frame <-
         next()
       }
       x[[col.name]] <- despike(x[[col.name]],
-                              z.threshold = z.threshold,
-                              max.spike.width = max.spike.width,
-                              window.width = window.width,
-                              method = method,
-                              na.rm = na.rm,
-                              ...
+                               height.threshold = height.threshold,
+                               z.threshold = z.threshold,
+                               k = k,
+                               spike.direction = spike.direction,
+                               window.width = window.width,
+                               method = method,
+                               na.rm = na.rm,
+                               ...
       )
     }
     x
@@ -354,8 +546,10 @@ despike.data.frame <-
 #'
 despike.generic_spct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
@@ -371,8 +565,10 @@ despike.generic_spct <-
                             drop.idx = FALSE)
       # call method on the collection
       mspct <- despike(x = mspct,
+                       height.threshold = height.threshold,
                        z.threshold = z.threshold,
-                       max.spike.width = max.spike.width,
+                       k = k,
+                       spike.direction = spike.direction,
                        window.width = window.width,
                        method = method,
                        na.rm = na.rm,
@@ -399,12 +595,14 @@ despike.generic_spct <-
         next()
       }
       x[[col.name]] <- despike(x[[col.name]],
-                              z.threshold = z.threshold,
-                              max.spike.width = max.spike.width,
-                              window.width = window.width,
-                              method = method,
-                              na.rm = na.rm,
-                              ...
+                               height.threshold = height.threshold,
+                               z.threshold = z.threshold,
+                               k = k,
+                               spike.direction = spike.direction,
+                               window.width = window.width,
+                               method = method,
+                               na.rm = na.rm,
+                               ...
       )
     }
     x
@@ -418,8 +616,10 @@ despike.generic_spct <-
 #'
 despike.source_spct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
@@ -435,8 +635,10 @@ despike.source_spct <-
                             drop.idx = FALSE)
       # call method on the collection
       mspct <- despike(x = mspct,
+                       height.threshold = height.threshold,
                        z.threshold = z.threshold,
-                       max.spike.width = max.spike.width,
+                       k = k,
+                       spike.direction = spike.direction,
                        window.width = window.width,
                        method = method,
                        na.rm = na.rm,
@@ -457,12 +659,14 @@ despike.source_spct <-
       stop("Unrecognized 'unit.out': ", unit.out)
     }
     z[[col.name]] <- despike(z[[col.name]],
-                            z.threshold = z.threshold,
-                            max.spike.width = max.spike.width,
-                            window.width = window.width,
-                            method = method,
-                            na.rm = na.rm,
-                            ...)
+                             height.threshold = height.threshold,
+                             z.threshold = z.threshold,
+                             k = k,
+                             spike.direction = spike.direction,
+                             window.width = window.width,
+                             method = method,
+                             na.rm = na.rm,
+                             ...)
     z
   }
 
@@ -472,8 +676,10 @@ despike.source_spct <-
 #'
 despike.response_spct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
@@ -489,8 +695,10 @@ despike.response_spct <-
                             drop.idx = FALSE)
       # call method on the collection
       mspct <- despike(x = mspct,
+                       height.threshold = height.threshold,
                        z.threshold = z.threshold,
-                       max.spike.width = max.spike.width,
+                       k = k,
+                       spike.direction = spike.direction,
                        window.width = window.width,
                        method = method,
                        na.rm = na.rm,
@@ -511,8 +719,10 @@ despike.response_spct <-
       stop("Unrecognized 'unit.out': ", unit.out)
     }
     z[[col.name]] <- despike(z[[col.name]],
+                             height.threshold = height.threshold,
                              z.threshold = z.threshold,
-                             max.spike.width = max.spike.width,
+                             k = k,
+                             spike.direction = spike.direction,
                              window.width = window.width,
                              method = method,
                              na.rm = na.rm,
@@ -528,8 +738,10 @@ despike.response_spct <-
 #'
 despike.filter_spct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
@@ -545,8 +757,10 @@ despike.filter_spct <-
                             drop.idx = FALSE)
       # call method on the collection
       mspct <- despike(x = mspct,
+                       height.threshold = height.threshold,
                        z.threshold = z.threshold,
-                       max.spike.width = max.spike.width,
+                       k = k,
+                       spike.direction = spike.direction,
                        window.width = window.width,
                        method = method,
                        na.rm = na.rm,
@@ -570,8 +784,10 @@ despike.filter_spct <-
       stop("Unrecognized 'filter.qty': ", filter.qty)
     }
     z[[col.name]] <- despike(z[[col.name]],
+                             height.threshold = height.threshold,
                              z.threshold = z.threshold,
-                             max.spike.width = max.spike.width,
+                             k = k,
+                             spike.direction = spike.direction,
                              window.width = window.width,
                              method = method,
                              na.rm = na.rm,
@@ -584,8 +800,10 @@ despike.filter_spct <-
 #' @export
 #'
 despike.reflector_spct <- function(x,
-                                   z.threshold = 9,
-                                   max.spike.width = 8,
+                                   height.threshold = 10,
+                                   z.threshold = 5,
+                                   k = 20,
+                                   spike.direction = "both",
                                    window.width = 11,
                                    method = "run.mean",
                                    na.rm = FALSE,
@@ -599,8 +817,10 @@ despike.reflector_spct <- function(x,
                           drop.idx = FALSE)
     # call method on the collection
     mspct <- despike(x = mspct,
+                     height.threshold = height.threshold,
                      z.threshold = z.threshold,
-                     max.spike.width = max.spike.width,
+                     k = k,
+                     spike.direction = spike.direction,
                      window.width = window.width,
                      method = method,
                      na.rm = na.rm,
@@ -613,8 +833,10 @@ despike.reflector_spct <- function(x,
   col.name <- "Rfr"
   x[[col.name]] <- despike(x[[col.name]],
                            z.threshold = z.threshold,
-                           max.spike.width = max.spike.width,
-                           window.width = window.width,
+                           height.threshold = height.threshold,
+                           z.threshold = z.threshold,
+                           k = k,
+                           spike.direction = spike.direction,
                            method = method,
                            na.rm = na.rm,
                            ...
@@ -628,8 +850,10 @@ despike.reflector_spct <- function(x,
 #'
 despike.solute_spct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
@@ -643,8 +867,10 @@ despike.solute_spct <-
                             drop.idx = FALSE)
       # call method on the collection
       mspct <- despike(x = mspct,
+                       height.threshold = height.threshold,
                        z.threshold = z.threshold,
-                       max.spike.width = max.spike.width,
+                       k = k,
+                       spike.direction = spike.direction,
                        window.width = window.width,
                        method = method,
                        na.rm = na.rm,
@@ -662,8 +888,10 @@ despike.solute_spct <-
       stop("Invalid number of columns found:", length(cols))
     }
     z[[col.name]] <- despike(z[[col.name]],
+                             height.threshold = height.threshold,
                              z.threshold = z.threshold,
-                             max.spike.width = max.spike.width,
+                             k = k,
+                             spike.direction = spike.direction,
                              window.width = window.width,
                              method = method,
                              na.rm = na.rm,
@@ -676,8 +904,10 @@ despike.solute_spct <-
 #' @export
 #'
 despike.cps_spct <- function(x,
-                             z.threshold = 9,
-                             max.spike.width = 8,
+                             height.threshold = 10,
+                             z.threshold = 5,
+                             k = 20,
+                             spike.direction = "both",
                              window.width = 11,
                              method = "run.mean",
                              na.rm = FALSE,
@@ -691,8 +921,10 @@ despike.cps_spct <- function(x,
                           drop.idx = FALSE)
     # call method on the collection
     mspct <- despike(x = mspct,
+                     height.threshold = height.threshold,
                      z.threshold = z.threshold,
-                     max.spike.width = max.spike.width,
+                     k = k,
+                     spike.direction = spike.direction,
                      window.width = window.width,
                      method = method,
                      na.rm = na.rm,
@@ -705,8 +937,10 @@ despike.cps_spct <- function(x,
   var.name <- grep("cps", colnames(x), value = TRUE)
   for (col.name in var.name) {
     x[[col.name]] <- despike(x[[col.name]],
+                             height.threshold = height.threshold,
                              z.threshold = z.threshold,
-                             max.spike.width = max.spike.width,
+                             k = k,
+                             spike.direction = spike.direction,
                              window.width = window.width,
                              method = method,
                              na.rm = na.rm,
@@ -721,8 +955,10 @@ despike.cps_spct <- function(x,
 #' @export
 #'
 despike.raw_spct <- function(x,
-                             z.threshold = 9,
-                             max.spike.width = 8,
+                             height.threshold = 10,
+                             z.threshold = 5,
+                             k = 20,
+                             spike.direction = "both",
                              window.width = 11,
                              method = "run.mean",
                              na.rm = FALSE,
@@ -736,8 +972,10 @@ despike.raw_spct <- function(x,
                           drop.idx = FALSE)
     # call method on the collection
     mspct <- despike(x = mspct,
+                     height.threshold = height.threshold,
                      z.threshold = z.threshold,
-                     max.spike.width = max.spike.width,
+                     k = k,
+                     spike.direction = spike.direction,
                      window.width = window.width,
                      method = method,
                      na.rm = na.rm,
@@ -750,8 +988,10 @@ despike.raw_spct <- function(x,
   var.name <- grep("counts", colnames(x), value = TRUE)
   for (col.name in var.name) {
     x[[col.name]] <- despike(x[[col.name]],
+                             height.threshold = height.threshold,
                              z.threshold = z.threshold,
-                             max.spike.width = max.spike.width,
+                             k = k,
+                             spike.direction = spike.direction,
                              window.width = window.width,
                              method = method,
                              na.rm = na.rm,
@@ -777,8 +1017,10 @@ despike.raw_spct <- function(x,
 #' @export
 #'
 despike.generic_mspct <- function(x,
-                                  z.threshold = 9,
-                                  max.spike.width = 8,
+                                  height.threshold = 10,
+                                  z.threshold = 5,
+                                  k = 20,
+                                  spike.direction = "both",
                                   window.width = 11,
                                   method = "run.mean",
                                   na.rm = FALSE,
@@ -792,8 +1034,10 @@ despike.generic_mspct <- function(x,
 
   msmsply(x,
           .fun = despike,
+          height.threshold = height.threshold,
           z.threshold = z.threshold,
-          max.spike.width = max.spike.width,
+          k = k,
+          spike.direction = spike.direction,
           window.width = window.width,
           method = method,
           na.rm = na.rm,
@@ -809,8 +1053,10 @@ despike.generic_mspct <- function(x,
 #'
 despike.source_mspct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
@@ -824,8 +1070,10 @@ despike.source_mspct <-
 
     msmsply(x,
             .fun = despike,
+            height.threshold = height.threshold,
             z.threshold = z.threshold,
-            max.spike.width = max.spike.width,
+            k = k,
+            spike.direction = spike.direction,
             window.width = window.width,
             method = method,
             na.rm = na.rm,
@@ -841,8 +1089,10 @@ despike.source_mspct <-
 #'
 despike.response_mspct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
@@ -856,8 +1106,10 @@ despike.response_mspct <-
 
     msmsply(x,
             .fun = despike,
+            height.threshold = height.threshold,
             z.threshold = z.threshold,
-            max.spike.width = max.spike.width,
+            k = k,
+            spike.direction = spike.direction,
             window.width = window.width,
             method = method,
             na.rm = na.rm,
@@ -873,8 +1125,10 @@ despike.response_mspct <-
 #'
 despike.filter_mspct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
@@ -888,8 +1142,10 @@ despike.filter_mspct <-
 
     msmsply(x,
             .fun = despike,
+            height.threshold = height.threshold,
             z.threshold = z.threshold,
-            max.spike.width = max.spike.width,
+            k = k,
+            spike.direction = spike.direction,
             window.width = window.width,
             method = method,
             filter.qty = filter.qty,
@@ -906,8 +1162,10 @@ despike.filter_mspct <-
 #'
 despike.reflector_mspct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
@@ -919,8 +1177,10 @@ despike.reflector_mspct <-
 
     msmsply(x,
             .fun = despike,
+            height.threshold = height.threshold,
             z.threshold = z.threshold,
-            max.spike.width = max.spike.width,
+            k = k,
+            spike.direction = spike.direction,
             window.width = window.width,
             method = method,
             na.rm = na.rm,
@@ -940,8 +1200,10 @@ despike.solute_mspct <- despike.reflector_mspct
 #' @export
 #'
 despike.cps_mspct <- function(x,
-                              z.threshold = 9,
-                              max.spike.width = 8,
+                              height.threshold = 10,
+                              z.threshold = 5,
+                              k = 20,
+                              spike.direction = "both",
                               window.width = 11,
                               method = "run.mean",
                               na.rm = FALSE,
@@ -953,8 +1215,10 @@ despike.cps_mspct <- function(x,
 
   msmsply(x,
           .fun = despike,
+          height.threshold = height.threshold,
           z.threshold = z.threshold,
-          max.spike.width = max.spike.width,
+          k = k,
+          spike.direction = spike.direction,
           window.width = window.width,
           method = method,
           na.rm = na.rm,
@@ -968,8 +1232,10 @@ despike.cps_mspct <- function(x,
 #' @export
 #'
 despike.raw_mspct <- function(x,
-                              z.threshold = 9,
-                              max.spike.width = 8,
+                              height.threshold = 10,
+                              z.threshold = 5,
+                              k = 20,
+                              spike.direction = "both",
                               window.width = 11,
                               method = "run.mean",
                               na.rm = FALSE,
@@ -981,8 +1247,10 @@ despike.raw_mspct <- function(x,
 
   msmsply(x,
           .fun = despike,
+          height.threshold = height.threshold,
           z.threshold = z.threshold,
-          max.spike.width = max.spike.width,
+          k = k,
+          spike.direction = spike.direction,
           window.width = window.width,
           method = method,
           na.rm = na.rm,
@@ -1014,13 +1282,7 @@ despike.raw_mspct <- function(x,
 #'   When the argument passed to \code{x} contains multiple spectra, the spikes
 #'   are searched for in each spectrum independently of other spectra.
 #'
-#' @param x an R object
-#' @param z.threshold numeric Modified Z values larger than \code{z.threshold}
-#'   are considered to correspond to spikes.
-#' @param max.spike.width integer Wider regions with high Z values are not
-#'   detected as spikes.
-#' @param na.rm logical indicating whether \code{NA} values should be stripped
-#'   before searching for spikes.
+#' @inheritParams find_spikes
 #' @param var.name,y.var.name character Name of column where to look
 #'   for spikes.
 #' @param ... ignored
@@ -1038,15 +1300,22 @@ despike.raw_mspct <- function(x,
 #'
 #' @family peaks and valleys functions
 #'
-spikes <- function(x, z.threshold, max.spike.width, na.rm, ...) UseMethod("spikes")
+spikes <- function(x,
+                   height.threshold,
+                   z.threshold,
+                   k,
+                   spike.direction,
+                   na.rm, ...) UseMethod("spikes")
 
 #' @rdname spikes
 #'
 #' @export
 spikes.default <-
   function(x,
+           height.threshold = NA,
            z.threshold = NA,
-           max.spike.width = 8,
+           k = NA,
+           spike.direction = NA,
            na.rm = FALSE,
            ...) {
     warning("Method 'spikes' not implemented for objects of class ",
@@ -1059,13 +1328,17 @@ spikes.default <-
 #' @export
 spikes.numeric <-
   function(x,
-           z.threshold = NA,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            na.rm = FALSE,
            ...) {
     x[find_spikes(x = x,
+                  height.threshold = height.threshold,
                   z.threshold = z.threshold,
-                  max.spike.width = max.spike.width,
+                  k = k,
+                  spike.direction = spike.direction,
                   na.rm = na.rm)]
   }
 
@@ -1075,8 +1348,10 @@ spikes.numeric <-
 #'
 spikes.data.frame <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            na.rm = FALSE,
            ...,
            y.var.name = NULL,
@@ -1087,8 +1362,10 @@ spikes.data.frame <-
     }
     spikes.idx <-
       which(find_spikes(x[[var.name]],
+                        height.threshold = height.threshold,
                         z.threshold = z.threshold,
-                        max.spike.width = max.spike.width,
+                        k = k,
+                        spike.direction = spike.direction,
                         na.rm = na.rm))
     x[spikes.idx,  , drop = FALSE]
   }
@@ -1099,8 +1376,10 @@ spikes.data.frame <-
 #'
 spikes.generic_spct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            na.rm = FALSE,
            var.name = NULL,
            ...) {
@@ -1113,8 +1392,10 @@ spikes.generic_spct <-
                             drop.idx = FALSE)
       # call method on the collection
       mspct <- spikes(x = mspct,
+                      height.threshold = height.threshold,
                       z.threshold = z.threshold,
-                      max.spike.width = max.spike.width,
+                      k = k,
+                      spike.direction = spike.direction,
                       na.rm = na.rm,
                       var.name = var.name,
                       ...)
@@ -1136,8 +1417,10 @@ spikes.generic_spct <-
     }
     spikes.idx <-
       which(find_spikes(x[[var.name]],
+                        height.threshold = height.threshold,
                         z.threshold = z.threshold,
-                        max.spike.width = max.spike.width,
+                        k = k,
+                        spike.direction = spike.direction,
                         na.rm = na.rm))
     x[spikes.idx,  , drop = FALSE]
   }
@@ -1150,8 +1433,10 @@ spikes.generic_spct <-
 #'
 spikes.source_spct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -1186,8 +1471,10 @@ spikes.source_spct <-
     }
     spikes.idx <-
       which(find_spikes(z[[col.name]],
+                        height.threshold = height.threshold,
                         z.threshold = z.threshold,
-                        max.spike.width = max.spike.width,
+                        k = k,
+                        spike.direction = spike.direction,
                         na.rm = na.rm))
     z[spikes.idx,  , drop = FALSE]
   }
@@ -1198,8 +1485,10 @@ spikes.source_spct <-
 #'
 spikes.response_spct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -1213,8 +1502,10 @@ spikes.response_spct <-
                             drop.idx = FALSE)
       # call method on the collection
       mspct <- spikes(x = mspct,
+                      height.threshold = height.threshold,
                       z.threshold = z.threshold,
-                      max.spike.width = max.spike.width,
+                      k = k,
+                      spike.direction = spike.direction,
                       na.rm = na.rm,
                       unit.out = unit.out,
                       ...)
@@ -1234,8 +1525,10 @@ spikes.response_spct <-
     }
     spikes.idx <-
       which(find_spikes(z[[col.name]],
-                        z.threshold = z.threshold,
-                        max.spike.width = max.spike.width,
+                        height.threshold = 10,
+                        z.threshold = 5,
+                        k = 20,
+                        spike.direction = "both",
                         na.rm = na.rm))
     z[spikes.idx,  , drop = FALSE]
   }
@@ -1248,8 +1541,10 @@ spikes.response_spct <-
 #'
 spikes.filter_spct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            na.rm = FALSE,
            filter.qty = getOption("photobiology.filter.qty",
                                   default = "transmittance"),
@@ -1263,8 +1558,10 @@ spikes.filter_spct <-
                             drop.idx = FALSE)
       # call method on the collection
       mspct <- spikes(x = mspct,
+                      height.threshold = height.threshold,
                       z.threshold = z.threshold,
-                      max.spike.width = max.spike.width,
+                      k = k,
+                      spike.direction = spike.direction,
                       na.rm = na.rm,
                       filter.qty = filter.qty,
                       ...)
@@ -1284,8 +1581,10 @@ spikes.filter_spct <-
     }
     spikes.idx <-
       which(find_spikes(z[[col.name]],
+                        height.threshold = height.threshold,
                         z.threshold = z.threshold,
-                        max.spike.width = max.spike.width,
+                        k = k,
+                        spike.direction = spike.direction,
                         na.rm = na.rm))
     z[spikes.idx,  , drop = FALSE]
   }
@@ -1295,8 +1594,10 @@ spikes.filter_spct <-
 #' @export
 #'
 spikes.reflector_spct <- function(x,
-                                  z.threshold = 9,
-                                  max.spike.width = 8,
+                                  height.threshold = 10,
+                                  z.threshold = 5,
+                                  k = 20,
+                                  spike.direction = "both",
                                   na.rm = FALSE,
                                   ...) {
 
@@ -1308,8 +1609,10 @@ spikes.reflector_spct <- function(x,
                           drop.idx = FALSE)
     # call method on the collection
     mspct <- spikes(x = mspct,
+                    height.threshold = height.threshold,
                     z.threshold = z.threshold,
-                    max.spike.width = max.spike.width,
+                    k = k,
+                    spike.direction = spike.direction,
                     na.rm = na.rm,
                     ...)
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
@@ -1320,8 +1623,10 @@ spikes.reflector_spct <- function(x,
   col.name <- "Rfr"
   spikes.idx <-
     which(find_spikes(x[[col.name]],
+                      height.threshold = height.threshold,
                       z.threshold = z.threshold,
-                      max.spike.width = max.spike.width,
+                      k = k,
+                      spike.direction = spike.direction,
                       na.rm = na.rm))
   x[spikes.idx,  , drop = FALSE]
 }
@@ -1332,8 +1637,10 @@ spikes.reflector_spct <- function(x,
 #'
 spikes.solute_spct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            na.rm = FALSE,
            ...) {
 
@@ -1345,8 +1652,10 @@ spikes.solute_spct <-
                             drop.idx = FALSE)
       # call method on the collection
       mspct <- spikes(x = mspct,
+                      height.threshold = height.threshold,
                       z.threshold = z.threshold,
-                      max.spike.width = max.spike.width,
+                      k = k,
+                      spike.direction = spike.direction,
                       na.rm = na.rm,
                       ...)
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
@@ -1363,8 +1672,10 @@ spikes.solute_spct <-
     }
     spikes.idx <-
       which(find_spikes(z[[col.name]],
+                        height.threshold = height.threshold,
                         z.threshold = z.threshold,
-                        max.spike.width = max.spike.width,
+                        k = k,
+                        spike.direction = spike.direction,
                         na.rm = na.rm))
     z[spikes.idx,  , drop = FALSE]
   }
@@ -1374,8 +1685,10 @@ spikes.solute_spct <-
 #' @export
 #'
 spikes.cps_spct <- function(x,
-                            z.threshold = 9,
-                            max.spike.width = 8,
+                            height.threshold = 10,
+                            z.threshold = 5,
+                            k = 20,
+                            spike.direction = "both",
                             na.rm = FALSE,
                             var.name = "cps",
                             ...) {
@@ -1388,8 +1701,10 @@ spikes.cps_spct <- function(x,
                           drop.idx = FALSE)
     # call method on the collection
     mspct <- spikes(x = mspct,
+                    height.threshold = height.threshold,
                     z.threshold = z.threshold,
-                    max.spike.width = max.spike.width,
+                    k = k,
+                    spike.direction = spike.direction,
                     na.rm = na.rm,
                     var.name = var.name,
                     ...)
@@ -1400,8 +1715,10 @@ spikes.cps_spct <- function(x,
 
   spikes.idx <-
     which(find_spikes(x[[var.name]],
+                      height.threshold = height.threshold,
                       z.threshold = z.threshold,
-                      max.spike.width = max.spike.width,
+                      k = k,
+                      spike.direction = spike.direction,
                       na.rm = na.rm))
   x[spikes.idx,  , drop = FALSE]
 }
@@ -1411,8 +1728,10 @@ spikes.cps_spct <- function(x,
 #' @export
 #'
 spikes.raw_spct <- function(x,
-                            z.threshold = 9,
-                            max.spike.width = 8,
+                            height.threshold = 10,
+                            z.threshold = 5,
+                            k = 20,
+                            spike.direction = "both",
                             na.rm = FALSE,
                             var.name = "counts",
                             ...) {
@@ -1425,8 +1744,10 @@ spikes.raw_spct <- function(x,
                           drop.idx = FALSE)
     # call method on the collection
     mspct <- spikes(x = mspct,
+                    height.threshold = height.threshold,
                     z.threshold = z.threshold,
-                    max.spike.width = max.spike.width,
+                    k = k,
+                    spike.direction = spike.direction,
                     na.rm = na.rm,
                     var.name = var.name,
                     ...)
@@ -1437,27 +1758,23 @@ spikes.raw_spct <- function(x,
 
   spikes.idx <-
     which(find_spikes(x[[var.name]],
+                      height.threshold = height.threshold,
                       z.threshold = z.threshold,
-                      max.spike.width = max.spike.width,
+                      k = k,
+                      spike.direction = spike.direction,
                       na.rm = na.rm))
   x[spikes.idx,  , drop = FALSE]
 }
 
 #' @rdname spikes
 #'
-#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
-#'   provided by foreach
-#' @param .paropts a list of additional options passed into the foreach function
-#'   when parallel computation is enabled. This is important if (for example)
-#'   your code relies on external data or packages: use the .export and
-#'   .packages arguments to supply them so that all cluster nodes have the
-#'   correct environment set up for computing.
-#'
 #' @export
 #'
 spikes.generic_mspct <- function(x,
-                                 z.threshold = 9,
-                                 max.spike.width = 8,
+                                 height.threshold = 10,
+                                 z.threshold = 5,
+                                 k = 20,
+                                 spike.direction = "both",
                                  na.rm = FALSE,
                                  ...,
                                  var.name = NULL,
@@ -1468,8 +1785,10 @@ spikes.generic_mspct <- function(x,
 
   msmsply(x,
           .fun = spikes,
+          height.threshold = height.threshold,
           z.threshold = z.threshold,
-          max.spike.width = max.spike.width,
+          k = k,
+          spike.direction = spike.direction,
           na.rm = na.rm,
           var.name = var.name,
           ...,
@@ -1483,8 +1802,10 @@ spikes.generic_mspct <- function(x,
 #'
 spikes.source_mspct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -1496,8 +1817,10 @@ spikes.source_mspct <-
 
     msmsply(x,
             .fun = spikes,
+            height.threshold = height.threshold,
             z.threshold = z.threshold,
-            max.spike.width = max.spike.width,
+            k = k,
+            spike.direction = spike.direction,
             unit.out = unit.out,
             na.rm = na.rm,
             ...,
@@ -1511,8 +1834,10 @@ spikes.source_mspct <-
 #'
 spikes.response_mspct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -1524,8 +1849,10 @@ spikes.response_mspct <-
 
     msmsply(x,
             .fun = spikes,
+            height.threshold = height.threshold,
             z.threshold = z.threshold,
-            max.spike.width = max.spike.width,
+            k = k,
+            spike.direction = spike.direction,
             unit.out = unit.out,
             na.rm = na.rm,
             ...,
@@ -1539,8 +1866,10 @@ spikes.response_mspct <-
 #'
 spikes.filter_mspct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            na.rm = FALSE,
            filter.qty = getOption("photobiology.filter.qty",
                                   default = "transmittance"),
@@ -1552,8 +1881,10 @@ spikes.filter_mspct <-
 
     msmsply(x,
             .fun = spikes,
+            height.threshold = height.threshold,
             z.threshold = z.threshold,
-            max.spike.width = max.spike.width,
+            k = k,
+            spike.direction = spike.direction,
             filter.qty = filter.qty,
             na.rm = na.rm,
             ...,
@@ -1568,8 +1899,10 @@ spikes.filter_mspct <-
 #'
 spikes.reflector_mspct <-
   function(x,
-           z.threshold = 9,
-           max.spike.width = 8,
+           height.threshold = 10,
+           z.threshold = 5,
+           k = 20,
+           spike.direction = "both",
            na.rm = FALSE,
            ...,
            .parallel = FALSE,
@@ -1579,8 +1912,10 @@ spikes.reflector_mspct <-
 
     msmsply(x,
             .fun = spikes,
+            height.threshold = height.threshold,
             z.threshold = z.threshold,
-            max.spike.width = max.spike.width,
+            k = k,
+            spike.direction = spike.direction,
             na.rm = na.rm,
             ...,
             .parallel = .parallel,
@@ -1599,8 +1934,10 @@ spikes.solute_mspct <- spikes.reflector_mspct
 #' @export
 #'
 spikes.cps_mspct <- function(x,
-                             z.threshold = 9,
-                             max.spike.width = 8,
+                             height.threshold = 10,
+                             z.threshold = 5,
+                             k = 20,
+                             spike.direction = "both",
                              na.rm = FALSE,
                              ...,
                              var.name = "cps",
@@ -1611,8 +1948,10 @@ spikes.cps_mspct <- function(x,
 
   msmsply(x,
           .fun = spikes,
+          height.threshold = height.threshold,
           z.threshold = z.threshold,
-          max.spike.width = max.spike.width,
+          k = k,
+          spike.direction = spike.direction,
           na.rm = na.rm,
           var.name = var.name,
           ...,
@@ -1625,8 +1964,10 @@ spikes.cps_mspct <- function(x,
 #' @export
 #'
 spikes.raw_mspct <- function(x,
-                             z.threshold = 9,
-                             max.spike.width = 8,
+                             height.threshold = 10,
+                             z.threshold = 5,
+                             k = 20,
+                             spike.direction = "both",
                              na.rm = FALSE,
                              ...,
                              var.name = "counts",
@@ -1637,8 +1978,10 @@ spikes.raw_mspct <- function(x,
 
   msmsply(x,
           .fun = spikes,
+          height.threshold = height.threshold,
           z.threshold = z.threshold,
-          max.spike.width = max.spike.width,
+          k = k,
+          spike.direction = spike.direction,
           na.rm = na.rm,
           var.name = var.name,
           ...,
