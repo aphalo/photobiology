@@ -52,9 +52,11 @@
 #' @param z.threshold numeric Modified local \eqn{Z} values larger than
 #'   \code{z.threshold} are detected as boundaries of spikes.
 #' @param k integer width of median window used for smoothing; must be odd
-#' @param spike.direction character One of \code{"up"}, \code{"down"},
-#'   \code{"both"} or \code{"skip"}, indicating which spikes are to be returned,
-#'   if any.
+#' @param spike.direction character Controls the direction of spikes to be
+#'   detected. Accepted arguments are \code{"up"}, \code{"down"},
+#'   \code{"both"}.
+#' @param return.numeric logical If \code{TRUE} a numeric vector is returned
+#'   and otherwise a logical one.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for spikes.
 #'
@@ -80,6 +82,7 @@ find_spikes <-
            z.threshold = 5,
            k = 20,
            spike.direction = "both",
+           return.numeric = FALSE,
            na.rm = FALSE) {
     if (is.null(height.threshold)) {
       height.threshold <- 10
@@ -166,8 +169,8 @@ find_spikes <-
             i <- i + 1
             j <- j + 1
             # skip narrow spikes
-            while (spk.starts[i + 1] < spk.ends[j] && i < i.max) i <- i + 1
-            while (spk.ends[j + 1] < spk.starts[i + 1] && j < j.max) j <- j + 1
+            while (i < i.max && spk.starts[i + 1] < spk.ends[j]) i <- i + 1
+            while (j < j.max && spk.ends[j + 1] < spk.starts[i]) j <- j + 1
             # fill in the middle of wide spikes
             if (spk.starts[i] + 1 < spk.ends[j]) {
               outcomes.middle.up[(spk.starts[i] + 1):(spk.ends[j] - 1)] <- TRUE
@@ -220,8 +223,8 @@ find_spikes <-
             i <- i + 1
             j <- j + 1
             # skip narrow spikes
-            while (spk.starts[i + 1] < spk.ends[j] && i < i.max) i <- i + 1
-            while (spk.ends[j + 1] < spk.starts[i + 1] && j < j.max) j <- j + 1
+            while (i < i.max && spk.starts[i + 1] < spk.ends[j]) i <- i + 1
+            while (j < j.max && spk.ends[j + 1] < spk.starts[i]) j <- j + 1
             # fill in the middle of wide spikes
             if (spk.starts[i] + 1 < spk.ends[j]) {
               outcomes.middle.down[(spk.starts[i] + 1):(spk.ends[j] - 1)] <- TRUE
@@ -268,7 +271,11 @@ find_spikes <-
     }
     # check assertion
     stopifnot(length(outcomes) == x.len.original)
-    outcomes
+    if (return.numeric) {
+      outcomes
+    } else {
+      as.logical(outcomes)
+    }
   }
 
 #' Replace bad pixels in a spectrum

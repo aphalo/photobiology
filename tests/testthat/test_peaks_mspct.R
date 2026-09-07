@@ -591,33 +591,29 @@ context("spikes")
 
 test_that("source_spct", {
 
-  my.spct <- sun.spct
+  spikes.spct <- spikes(sun.spct, height.threshold = 80)
+  expect_equal(nrow(spikes.spct), 3)
 
-  spikes.spct <- spikes(sun.spct, max.spike.width = 2)
-  expect_equal(nrow(spikes.spct), 2)
+  spikes.spct <- spikes(sun.spct, height.threshold = 10)
+  expect_equal(nrow(spikes.spct), 6)
 
-  spikes.spct <- spikes(sun.spct, max.spike.width = 5, z.threshold = 3.5)
-  expect_equal(nrow(spikes.spct), 13)
+  spikes.spct <- spikes(sun.spct, height.threshold = 10, z.threshold = 3.5)
+  expect_equal(nrow(spikes.spct), 8)
 
-  spikes.spct <- spikes(sun.spct, max.spike.width = 2)
-  expect_equal(nrow(spikes.spct), 2)
+  spikes.spct <- spikes(sun.spct, height.threshold = 10, z.threshold = 10)
+  expect_equal(nrow(spikes.spct), 0)
 
-  spikes.spct <- spikes(sun.spct, max.spike.width = 2)
-  expect_equal(nrow(spikes.spct), 2)
+  spikes.spct <- spikes(sun.spct, k = 5)
+  expect_equal(nrow(spikes.spct), 5)
 
 
   spikes.spct <- spikes(sun.spct)
-
-  expect_equal(nrow(spikes.spct), 2)
+  expect_equal(nrow(spikes.spct), 6)
   expect_equal(names(spikes.spct), c("w.length", "s.e.irrad"))
   expect_is(spikes.spct, "source_spct")
 
-  spikes.spct <- spikes(sun.spct, max.spike.width = 2, unit.out = "photon")
-  expect_equal(nrow(spikes.spct), 1)
-
-  spikes.spct <- spikes(my.spct, unit.out = "photon")
-
-  expect_equal(nrow(spikes.spct), 1)
+  spikes.spct <- spikes(sun.spct, unit.out = "photon")
+  expect_equal(nrow(spikes.spct), 4)
   expect_equal(names(spikes.spct), c("w.length", "s.q.irrad"))
   expect_is(spikes.spct, "source_spct")
 
