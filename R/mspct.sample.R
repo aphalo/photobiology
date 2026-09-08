@@ -31,6 +31,7 @@
 #' names(a.list) <- LETTERS
 #' set.seed(12345678)
 #' pull_sample(a.list, size = 8)
+#' pull_sample(a.list, size = 7, method = "equal.steps")
 #' pull_sample(a.list, size = 8, keep.order = FALSE)
 #' pull_sample(a.list, size = 8, replace = TRUE)
 #' pull_sample(a.list, size = 8, replace = TRUE, keep.order = FALSE)
@@ -65,15 +66,24 @@ pull_sample.list <- function(x,
                              size = 1,
                              replace = FALSE,
                              keep.order = TRUE,
+                             method = "random",
                              simplify = FALSE,
                              ...) {
+  size <- as.integer(size)
   if (length(x) <= size) {
     # nothing to do
     return(x)
   }
-  selector.idx <- sample(x = length(x), size = size, replace = replace)
-  if (keep.order) {
-    selector.idx <- sort(selector.idx)
+  if (method == "random") {
+    selector.idx <- sample(x = length(x), size = size, replace = replace)
+    if (keep.order) {
+      selector.idx <- sort(selector.idx)
+    }
+  } else if (method == "equal.steps") {
+    step <- length(x) %/% size
+    selector.idx <- seq(from = 1, by = step, length.out = size)
+  } else {
+    stop("Bad method: \"", method, "\" instead of \"random\" or \"equal.steps\"")
   }
   if (simplify && size == 1) {
     z <- x[[selector.idx]]
@@ -94,14 +104,25 @@ pull_sample.generic_spct <- function(x,
                                      size = 1,
                                      replace = FALSE,
                                      keep.order = TRUE,
+                                     method = "random",
                                      ...) {
+  size <- as.integer(size)
   num.spectra <- getMultipleWl(x)
   if (num.spectra <= size) {
     # nothing to do
     return(x)
   }
-
-  selector.idx <- sample(x = num.spectra, size = size, replace = replace)
+  if (method == "random") {
+    selector.idx <- sample(x = num.spectra, size = size, replace = replace)
+    if (keep.order) {
+      selector.idx <- sort(selector.idx)
+    }
+  } else if (method == "equal.steps") {
+    step <- length(x) %/% size
+    selector.idx <- seq(from = 1, by = step, length.out = size)
+  } else {
+    stop("Bad method: \"", method, "\" instead of \"random\" or \"equal.steps\"")
+  }
   id.factor <- x[[getIdFactor(x)]]
   pulled.ids <- as.character(unique(id.factor)[selector.idx])
 
@@ -115,21 +136,29 @@ pull_sample.generic_spct <- function(x,
 pull_sample.generic_mspct <- function(x,
                                       size = 1,
                                       replace = FALSE,
-                                      recursive = FALSE,
                                       keep.order = TRUE,
+                                      method = "random",
+                                      recursive = FALSE,
                                       simplify = FALSE,
                                       ...) {
-  if (length(x) <= size) {
-    # nothing to do
-    return(x)
-  }
   if (recursive) {
     # separate multiple spectra within individual members
     x <- subset2mspct(x)
   }
-  selector.idx <- sample(x = length(x), size = size, replace = replace)
-  if (keep.order) {
-    selector.idx <- sort(selector.idx)
+  if (length(x) <= size) {
+    # nothing to do
+    return(x)
+  }
+  if (method == "random") {
+    selector.idx <- sample(x = length(x), size = size, replace = replace)
+    if (keep.order) {
+      selector.idx <- sort(selector.idx)
+    }
+  } else if (method == "equal.steps") {
+    step <- length(x) %/% size
+    selector.idx <- seq(from = 1, by = step, length.out = size)
+  } else {
+    stop("Bad method: \"", method, "\" instead of \"random\" or \"equal.steps\"")
   }
   if (simplify && size == 1) {
     z <- x[[selector.idx]]
