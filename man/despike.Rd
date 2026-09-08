@@ -301,9 +301,11 @@ of adjacent neighbors (isolated bad pixels only).}
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before searching for spikes.}
 
-\item{spike.direction}{character One of \code{"up"}, \code{"down"},
-\code{"both"} or \code{"skip"}, indicating which spikes are to be returned,
-if any.}
+\item{...}{passed in recursive calls.}
+
+\item{spike.direction}{character Controls the direction of spikes to be
+detected. Accepted arguments are \code{"up"}, \code{"down"},
+\code{"both"}.}
 
 \item{var.name, y.var.name}{character Names of columns where to look
 for spikes to remove.}

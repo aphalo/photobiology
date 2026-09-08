@@ -129,7 +129,7 @@ find_spikes <-
       spikes.up <- outcomes.up
       spikes.down <- outcomes.down
     } else {
-      scaled.threshold <- median(abs(d.var.median)) * height.threshold
+      scaled.threshold <- stats::median(abs(d.var.median)) * height.threshold
       if (spike.direction %in% c("up", "both")) {
         outcomes.head.up <-
           outcomes.up & x > x.median + scaled.threshold
@@ -429,6 +429,7 @@ replace_bad_pixs <-
 #' @inheritParams replace_bad_pixs
 #' @param var.name,y.var.name character Names of columns where to look
 #'   for spikes to remove.
+#' @param ... passed in recursive calls.
 #'
 #' @return A copy of the object passed as argument to \code{x} with values
 #'   detected as spikes replaced by a local average of adjacent neighbors
@@ -839,7 +840,6 @@ despike.reflector_spct <- function(x,
 
   col.name <- "Rfr"
   x[[col.name]] <- despike(x[[col.name]],
-                           z.threshold = z.threshold,
                            height.threshold = height.threshold,
                            z.threshold = z.threshold,
                            k = k,

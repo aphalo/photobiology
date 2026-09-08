@@ -12,9 +12,19 @@
 #'   before sampling.
 #' @param keep.order logical Return the spectra ordered as in \code{x} or in
 #'   random order.
+#' @param method character Use \code{"random"} for random sampling or
+#'   \code{"equal.steps"} for systematic sampling.
 #' @param simplify logical If \code{size = 1}, and \code{x} is a collection
 #'   return the spectrum object instead of a collection with it as only member.
 #' @param ... currently ignored.
+#'
+#' @details
+#' This function calls \code{\link[base]{sample}()} to generate a random set of
+#' indexes, or a regular sequence, and uses it to extract members from lists or
+#' collections. Method \code{"equal.steps"} is most useful for time series
+#' of spectra. With \code{recursive = TRUE} lists and list-like collections
+#' are first flattened, and with \code{recursive = FALSE} sampling is applied
+#' to the topmost level only.
 #'
 #' @return If \code{x} is an spectrum object, such as a
 #'   \code{"filter_spct"} object, the returned object is of the same class but

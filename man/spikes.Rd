@@ -257,9 +257,9 @@ relative to the median amplitude of the baseline local variation of
 
 \item{k}{integer width of median window used for smoothing; must be odd}
 
-\item{spike.direction}{character One of \code{"up"}, \code{"down"},
-\code{"both"} or \code{"skip"}, indicating which spikes are to be returned,
-if any.}
+\item{spike.direction}{character Controls the direction of spikes to be
+detected. Accepted arguments are \code{"up"}, \code{"down"},
+\code{"both"}.}
 
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before searching for spikes.}
