@@ -56,12 +56,20 @@ a frequent problem in Raman spectra. Another source of spikes are "hot
 pixels" in CCD and diode arrays. Other kinds of accidental "outliers" can
 be also detected.
 }
-\details{
-Spikes are detected based on a modified \eqn{Z} score calculated
+\section{Spike detection}{
+
+  Spikes are detected based on a modified \eqn{Z} score calculated
   from the differenced spectrum. The \eqn{Z} threshold used should be
   adjusted to the characteristics of the input and desired sensitivity. The
   lower the threshold the more stringent the test becomes, with shorter
   spikes being detected.
+
+  \strong{The algorithms assume a consistent step size for the underlying
+  independent variable, e.g., wavelength or time, and should not be applied
+  if the data do not fulfil this assumption, at least approximately. As
+  \code{find_spkikes()} operates on a single vector, checking this remains
+  the responsibility of calling functions or methods such as
+  \code{\link{spikes}()} and \code{\link{despike}()}.}
 
   The algorithm uses running differences to detect abrupt changes in value,
   compared to an estimate of the baseline variation of the differences,
@@ -91,7 +99,13 @@ Spikes are detected based on a modified \eqn{Z} score calculated
   the \code{z.threshold} by passing \code{height.threshold = NA} and either
   \code{spike.direction = "up"} or \code{spike.direction = "down"}, which
   ensures very fast computation.
+
+  Parameters of the algorithm need to be adjusted depending on the data, so
+  inspection of returned values is needed together with adjustment by trial
+  and error of suitable values for \code{z.threshold},
+  \code{height.threshold}, and \code{k}.
 }
+
 \references{
 Whitaker, D. A.; Hayes, K. (2018) A simple algorithm for despiking Raman
 spectra. Chemometrics and Intelligent Laboratory Systems, 179, 82-84.

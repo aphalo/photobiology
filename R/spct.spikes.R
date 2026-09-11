@@ -8,11 +8,19 @@
 #' pixels" in CCD and diode arrays. Other kinds of accidental "outliers" can
 #' be also detected.
 #'
-#' @details Spikes are detected based on a modified \eqn{Z} score calculated
+#' @section Spike detection:
+#'   Spikes are detected based on a modified \eqn{Z} score calculated
 #'   from the differenced spectrum. The \eqn{Z} threshold used should be
 #'   adjusted to the characteristics of the input and desired sensitivity. The
 #'   lower the threshold the more stringent the test becomes, with shorter
 #'   spikes being detected.
+#'
+#'   \strong{The algorithms assume a consistent step size for the underlying
+#'   independent variable, e.g., wavelength or time, and should not be applied
+#'   if the data do not fulfil this assumption, at least approximately. As
+#'   \code{find_spkikes()} operates on a single vector, checking this remains
+#'   the responsibility of calling functions or methods such as
+#'   \code{\link{spikes}()} and \code{\link{despike}()}.}
 #'
 #'   The algorithm uses running differences to detect abrupt changes in value,
 #'   compared to an estimate of the baseline variation of the differences,
@@ -42,6 +50,11 @@
 #'   the \code{z.threshold} by passing \code{height.threshold = NA} and either
 #'   \code{spike.direction = "up"} or \code{spike.direction = "down"}, which
 #'   ensures very fast computation.
+#'
+#'   Parameters of the algorithm need to be adjusted depending on the data, so
+#'   inspection of returned values is needed together with adjustment by trial
+#'   and error of suitable values for \code{z.threshold},
+#'   \code{height.threshold}, and \code{k}.
 #'
 #' @param x numeric vector containing the data.
 #' @param x.is.delta logical Flag indicating whether \code{x} contains
@@ -283,15 +296,27 @@ find_spikes <-
 #' This function replaces data for bad pixels by a local estimate, by either
 #' simple interpolation or using the algorithm of Whitaker and Hayes (2018).
 #'
-#' @details
-#' Simple interpolation replaces values of isolated bad pixels by the mean of
-#' their two closest neighbors. The running mean approach allows the replacement
-#' of short runs of bad pixels by the running mean of neighboring pixels within
-#' a window of user-specified width. The first approach works well for spectra
+#' @section Replacement values:
+#' Simple interpolation enabled by \code{method = "adj.mean"} replaces values of
+#' isolated bad pixels by the mean of their two closest neighbours. The running
+#' mean approach enabled by \code{method = "run.mean"} allows the replacement of
+#' short runs of bad pixels by the running mean of neighboring pixels within a
+#' window of user-specified width. The first approach works well for spectra
 #' from array spectrometers to correct for hot and dead pixels in an instrument.
 #' The second approach is most suitable for Raman spectra in which spikes
 #' triggered by radiation are wider than a single pixel but usually not more
 #' than five pixels wide.
+#'
+#' Simple interpolation can replace spikes at any position in \code{x}, using
+#' a single neighbour as replacement at the extremes of \code{x} instead of the
+#' mean of two neighbours. The
+#' running mean approach does not replace those pixels whose distance to the
+#' first or last member of \code{x} is less than half the window used for the
+#' running mean, issuing a warning.
+#'
+#' When \code{na.rm = TRUE}, \code{NA} values are considered "bad pixels" and
+#' replaced as such rather than discarded with no replacement. This is the
+#' default behaviour.
 #'
 #' @param x numeric vector containing spectral data.
 #' @param bad.pix.idx logical vector or integer. Index into bad pixels in
@@ -306,7 +331,9 @@ find_spikes <-
 #'
 #' @note In the current implementation \code{NA} values are not removed, and
 #'   if they are in the neighborhood of bad pixels, they will result in the
-#'   generation of additional \code{NA}s during their replacement.
+#'   generation of additional \code{NA}s during their replacement. On the other
+#'   hand if the \code{NA}s locations are listed in \code{bad.pix.idx} they
+#'   will be replaced as any other bad pixel.
 #'
 #' @return A logical vector of the same length as \code{x}. Values that are TRUE
 #'   correspond to local spikes in the data.
@@ -317,8 +344,33 @@ find_spikes <-
 #'
 #' @examples
 #' # in a vector
-#' replace_bad_pixs(c(1, 1, 45, 1, 1), bad.pix.idx = 3)
+#' replace_bad_pixs(c(1, 2, NA, 4, 5))
 #'
+#' # in a vector
+#' replace_bad_pixs(c(1, 2, 100, 4, 5),
+#'                  method = "adj.mean",
+#'                  bad.pix.idx = c(FALSE, FALSE, TRUE, FALSE, FALSE))
+#'
+#' replace_bad_pixs(c(1, 2, 100, 4, 5),
+#'                  method = "adj.mean",
+#'                  bad.pix.idx = 3)
+#'
+#' # in a vector
+#' replace_bad_pixs(c(0, 1, 2, 100, 4, 5, 6),
+#'                  method = "run.mean",
+#'                  bad.pix.idx = 4)
+#'
+#' # in a vector
+#' replace_bad_pixs(c(1, 1, NA, 1, 1),
+#'                  method = "run.mean",
+#'                  bad.pix.idx = 3)
+#'
+#' # in a vector
+#' replace_bad_pixs(c(1, 1, NA, 1, 1),
+#'                  method = "run.mean",
+#'                  bad.pix.idx = 1, na.rm = FALSE)
+#'
+#' # In spectrum
 #' # before replacement
 #' white_led.raw_spct$counts_3[120:125]
 #'
@@ -333,12 +385,18 @@ find_spikes <-
 replace_bad_pixs <-
   function(x,
            bad.pix.idx = FALSE,
-           window.width = 11,
+           window.width =  min(11, length(x) - 1),
            method = "run.mean",
            na.rm = TRUE) {
     if (is.logical(bad.pix.idx)) {
       if (length(bad.pix.idx) == length(x)) {
          bad.pix.idx <- which(bad.pix.idx)
+      } else if (length(bad.pix.idx) == 1L) {
+        if (bad.pix.idx) {
+          return(rep(NA_real_, length(x)))
+        } else {
+          bad.pix.idx <- integer(0)
+        }
       } else {
         stop("Logical 'bad.pix.idx' has wrong length.")
       }
@@ -357,8 +415,11 @@ replace_bad_pixs <-
     n <- length(x)
     z <- x
     if (method == "run.mean") {
-      bad.pix.idx <- unique(c(1L, bad.pix.idx, n))
-      max.spike.width <- max(rle(diff(bad.pix.idx))[["lengths"]]) + 1L
+      if (length(bad.pix.idx) > 1L) {
+        max.spike.width <- max(rle(diff(bad.pix.idx))[["lengths"]] + 1L)
+      } else {
+        max.spike.width <- 1L
+      }
       needed.window.width <- 2L * max.spike.width + 1L
       if (window.width < needed.window.width) {
         if (window.width > 0L) {
@@ -374,20 +435,24 @@ replace_bad_pixs <-
         window.idx <- seq(max(1 , i - half.window.width),
                           min(n, i + half.window.width))
         window.idx <- setdiff(window.idx, bad.pix.idx)
+        if (any(window.idx < 1 | window.idx > n)) {
+          warning("Bad pixel at position ", i,
+                  "not replaced! Too near edge.")
+        }
         z[i] = mean(x[window.idx])
       }
     } else if (method == "adj.mean") {
       # simple mean of neighbors, for isolated bad pixels.
-      x[bad.pix.idx] <- NA_integer_
+      z[bad.pix.idx] <- NA_integer_
       if (1L %in% bad.pix.idx) {
-        x[1L] <- x[2L]
+        z[1L] <- z[2L]
         bad.pix.idx <- setdiff(bad.pix.idx, 1L)
       }
       if (n %in% bad.pix.idx) {
-        x[n] <- x[n - 1L]
+        z[n] <- z[n - 1L]
         bad.pix.idx <- setdiff(bad.pix.idx, n)
       }
-      x[bad.pix.idx] <- (x[bad.pix.idx - 1] + x[bad.pix.idx + 1]) / 2
+      z[bad.pix.idx] <- (z[bad.pix.idx - 1] + z[bad.pix.idx + 1]) / 2
     }
     z
   }
@@ -399,31 +464,11 @@ replace_bad_pixs <-
 #' Function that returns an R object with observations corresponding to spikes
 #' replaced by values computed from neighboring pixels. Spikes are values in
 #' spectra that are unusually high compared to neighbors. They are usually
-#' individual values or very short runs of similar "unusual" values. Spikes
-#' caused by cosmic radiation are a frequent problem in Raman spectra. Another
-#' source of spikes are "hot pixels" in CCD and diode array detectors.
+#' individual values or very short runs of similar "unusual" values.
 #'
-#' @details Spikes are detected based on a modified Z score calculated from the
-#'   differenced spectrum. The Z threshold used should be adjusted to the
-#'   characteristics of the input and desired sensitivity. The lower the
-#'   threshold the more stringent the test becomes, resulting in most cases in
-#'   more spikes being detected. A modified version of the algorithm is used if
-#'   a value different from \code{NULL} is passed as argument to
-#'   \code{max.spike.width}. In such a case, an additional step filters out
-#'   broader spikes (or falsely detected steep slopes) from the returned values.
+#' @inheritSection find_spikes Spike detection
 #'
-#'   Simple interpolation replaces values of isolated bad pixels by the mean of
-#'   their two closest neighbors. The running mean approach allows the
-#'   replacement of short runs of bad pixels by the running mean of neighboring
-#'   pixels within a window of user-specified width. The first approach works
-#'   well for spectra from array spectrometers to correct for hot and dead
-#'   pixels in an instrument. The second approach is most suitable for Raman
-#'   spectra in which spikes triggered by radiation are wider than a single
-#'   pixel but usually not more than five pixels wide.
-#'
-#'   When the argument passed to \code{x} contains multiple spectra, the spikes
-#'   are searched for and replaced in each spectrum independently of other
-#'   spectra.
+#' @inheritSection replace_bad_pixs Replacement values
 #'
 #' @inheritParams find_spikes
 #' @inheritParams replace_bad_pixs
@@ -432,16 +477,13 @@ replace_bad_pixs <-
 #' @param ... passed in recursive calls.
 #'
 #' @return A copy of the object passed as argument to \code{x} with values
-#'   detected as spikes replaced by a local average of adjacent neighbors
+#'   detected as spikes replaced by a local average of neighbours
 #'   outside the spike.
 #'
-#' @note Current algorithm misidentifies steep smooth slopes as spikes, so
-#'   manual inspection is needed together with adjustment by trial and error
-#'   of a suitable argument value for \code{z.threshold}.
-#'
-#' @seealso See the documentation for \code{\link{find_spikes}} and
-#'   \code{\link{replace_bad_pixs}} for details of the algorithm and
-#'   implementation.
+#' @seealso See \code{\link{find_spikes}()} for locating spikes in a vector,
+#'   \code{\link{spikes}()} for extracting/detecting spikes in spectra and
+#'   and \code{\link{replace_bad_pixs}()} for replacing by interpolation
+#'   missing or bad values in a vector.
 #'
 #' @export
 #'
@@ -451,8 +493,13 @@ replace_bad_pixs <-
 #'
 #' # find and replace spike at 245.93 nm
 #' despike(white_led.raw_spct,
-#'         z.threshold = 10,
-#'         window.width = 25)[120:125, ]
+#'         z.threshold = 5,
+#'         window.width = 7)[120:125, ]
+#'
+#' # A high z.threshold value detects more extreme spikes
+#' despike(white_led.raw_spct,
+#'         z.threshold = 50,
+#'         window.width = 7)[120:125, ]
 #'
 #' @family despike and valleys functions
 #'
@@ -460,6 +507,7 @@ despike <- function(x,
                     height.threshold,
                     z.threshold,
                     k,
+                    spike.direction,
                     window.width,
                     method,
                     na.rm,
@@ -470,8 +518,10 @@ despike <- function(x,
 #' @export
 despike.default <-
   function(x,
+           height.threshold,
            z.threshold = NA,
            k = NA,
+           spike.direction = NA,
            window.width = NA,
            method = "run.mean",
            na.rm = FALSE,
@@ -586,7 +636,10 @@ despike.generic_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x, span = 15, min.stepsize = 3)
+    if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
+      warning("Despike skipped!")
+      return(x)
+    }
 
     if (is.null(var.name)) {
       # find target variable
@@ -655,8 +708,6 @@ despike.source_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x, span = 15, min.stepsize = 3)
-
     if (unit.out == "energy") {
       z <- q2e(x, action = "replace", byref = FALSE)
       col.name <- "s.e.irrad"
@@ -666,6 +717,12 @@ despike.source_spct <-
     } else {
       stop("Unrecognized 'unit.out': ", unit.out)
     }
+
+    if (!check_wl_stepsize(z, span = 15, min.stepsize = 3)) {
+      warning("Despike skipped!")
+      return(z)
+    }
+
     z[[col.name]] <- despike(z[[col.name]],
                              height.threshold = height.threshold,
                              z.threshold = z.threshold,
@@ -715,8 +772,6 @@ despike.response_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x, span = 15, min.stepsize = 3)
-
     if (unit.out == "energy") {
       z <- q2e(x, action = "replace", byref = FALSE)
       col.name <- "s.e.response"
@@ -726,6 +781,12 @@ despike.response_spct <-
     } else {
       stop("Unrecognized 'unit.out': ", unit.out)
     }
+
+    if (!check_wl_stepsize(z, span = 15, min.stepsize = 3)) {
+      warning("Despike skipped!")
+      return(z)
+    }
+
     z[[col.name]] <- despike(z[[col.name]],
                              height.threshold = height.threshold,
                              z.threshold = z.threshold,
@@ -777,8 +838,6 @@ despike.filter_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x, span = 15, min.stepsize = 3)
-
     if (filter.qty == "transmittance") {
       z <- A2T(x, action = "replace", byref = FALSE)
       col.name <- "Tfr"
@@ -791,6 +850,12 @@ despike.filter_spct <-
     } else {
       stop("Unrecognized 'filter.qty': ", filter.qty)
     }
+
+    if (!check_wl_stepsize(z, span = 15, min.stepsize = 3)) {
+      warning("Despike skipped!")
+      return(z)
+    }
+
     z[[col.name]] <- despike(z[[col.name]],
                              height.threshold = height.threshold,
                              z.threshold = z.threshold,
@@ -836,7 +901,9 @@ despike.reflector_spct <- function(x,
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
-  check_wl_stepsize(x, span = 15, min.stepsize = 3)
+  if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
+    warning("Despike skipped!")
+  }
 
   col.name <- "Rfr"
   x[[col.name]] <- despike(x[[col.name]],
@@ -885,7 +952,9 @@ despike.solute_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x, span = 15, min.stepsize = 3)
+    if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
+      warning("Despike skipped!")
+    }
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
     if (length(cols) == 1) {
@@ -939,7 +1008,9 @@ despike.cps_spct <- function(x,
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
-  check_wl_stepsize(x, span = 15, min.stepsize = 3)
+  if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
+    warning("Despike skipped!")
+  }
 
   var.name <- grep("cps", colnames(x), value = TRUE)
   for (col.name in var.name) {
@@ -990,7 +1061,9 @@ despike.raw_spct <- function(x,
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
-  check_wl_stepsize(x, span = 15, min.stepsize = 3)
+  if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
+    warning("Despike skipped!")
+  }
 
   var.name <- grep("counts", colnames(x), value = TRUE)
   for (col.name in var.name) {
@@ -1273,21 +1346,9 @@ despike.raw_mspct <- function(x,
 #' Function that returns a subset of an R object with observations corresponding
 #' to spikes. Spikes are values in spectra that are unusually high compared to
 #' neighbors. They are usually individual values or very short runs of similar
-#' "unusual" values. Spikes caused by cosmic radiation are a frequent problem in
-#' Raman spectra. Another source of spikes are "hot pixels" in CCD and diode
-#' arrays.
+#' "unusual" values.
 #'
-#' @details Spikes are detected based on a modified Z score calculated from the
-#'   differenced spectrum. The Z threshold used should be adjusted to the
-#'   characteristics of the input and desired sensitivity. The lower the
-#'   threshold the more stringent the test becomes, resulting in most cases in
-#'   more spikes being detected. A modified version of the algorithm is used if
-#'   a value different from \code{NULL} is passed as argument to
-#'   \code{max.spike.width}. In such a case, an additional step filters out
-#'   broader spikes (or falsely detected steep slopes) from the returned values.
-#'
-#'   When the argument passed to \code{x} contains multiple spectra, the spikes
-#'   are searched for in each spectrum independently of other spectra.
+#' @inheritSection find_spikes Spike detection
 #'
 #' @inheritParams find_spikes
 #' @param var.name,y.var.name character Name of column where to look
@@ -1297,8 +1358,10 @@ despike.raw_mspct <- function(x,
 #' @return A subset of the object passed as argument to \code{x} with rows
 #'   corresponding to spikes.
 #'
-#' @seealso See the documentation for \code{\link{find_spikes}} for details of
-#'   the algorithm and implementation.
+#' @seealso See \code{\link{find_spikes}()} for locating spikes in a vector,
+#'   \code{\link{despike}()} for replacement of spikes by interpolation in
+#'   spectra and and \code{\link{replace_bad_pixs}()} for replacing by
+#'   interpolation missing or bad values in a vector.
 #'
 #' @export
 #'
@@ -1409,7 +1472,9 @@ spikes.generic_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x, span = 15, min.stepsize = 3)
+    if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
+      warning("Detection of spikes in unreliable!")
+    }
 
     if (is.null(var.name)) {
       # find target variable
@@ -1457,15 +1522,19 @@ spikes.source_spct <-
                             drop.idx = FALSE)
       # call method on the collection
       mspct <- spikes(x = mspct,
+                      height.threshold = height.threshold,
                       z.threshold = z.threshold,
-                      max.spike.width = max.spike.width,
+                      k = k,
+                      spike.direction = spike.direction,
                       na.rm = na.rm,
                       unit.out = unit.out,
                       ...)
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x, span = 15, min.stepsize = 3)
+    if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
+      warning("Detection of spikes in unreliable!")
+    }
 
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
@@ -1519,7 +1588,9 @@ spikes.response_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x, span = 15, min.stepsize = 3)
+    if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
+      warning("Detection of spikes in unreliable!")
+    }
 
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
@@ -1575,7 +1646,9 @@ spikes.filter_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x, span = 15, min.stepsize = 3)
+    if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
+      warning("Detection of spikes in unreliable!")
+    }
 
     if (filter.qty == "transmittance") {
       z <- A2T(x, "replace", FALSE)
@@ -1625,7 +1698,9 @@ spikes.reflector_spct <- function(x,
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
-  check_wl_stepsize(x, span = 15, min.stepsize = 3)
+  if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
+    warning("Detection of spikes in unreliable!")
+  }
 
   col.name <- "Rfr"
   spikes.idx <-
@@ -1668,7 +1743,9 @@ spikes.solute_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x, span = 15, min.stepsize = 3)
+    if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
+      warning("Detection of spikes in unreliable!")
+    }
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
     if (length(cols) == 1) {
@@ -1718,7 +1795,9 @@ spikes.cps_spct <- function(x,
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
-  check_wl_stepsize(x, span = 15, min.stepsize = 3)
+  if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
+    warning("Detection of spikes in unreliable!")
+  }
 
   spikes.idx <-
     which(find_spikes(x[[var.name]],
@@ -1804,6 +1883,14 @@ spikes.generic_mspct <- function(x,
 }
 
 #' @rdname spikes
+#'
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'

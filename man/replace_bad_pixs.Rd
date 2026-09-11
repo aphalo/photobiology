@@ -7,7 +7,7 @@
 replace_bad_pixs(
   x,
   bad.pix.idx = FALSE,
-  window.width = 11,
+  window.width = min(11, length(x) - 1),
   method = "run.mean",
   na.rm = TRUE
 )
@@ -36,25 +36,66 @@ A logical vector of the same length as \code{x}. Values that are TRUE
 This function replaces data for bad pixels by a local estimate, by either
 simple interpolation or using the algorithm of Whitaker and Hayes (2018).
 }
-\details{
-Simple interpolation replaces values of isolated bad pixels by the mean of
-their two closest neighbors. The running mean approach allows the replacement
-of short runs of bad pixels by the running mean of neighboring pixels within
-a window of user-specified width. The first approach works well for spectra
+\note{
+In the current implementation \code{NA} values are not removed, and
+  if they are in the neighborhood of bad pixels, they will result in the
+  generation of additional \code{NA}s during their replacement. On the other
+  hand if the \code{NA}s locations are listed in \code{bad.pix.idx} they
+  will be replaced as any other bad pixel.
+}
+\section{Replacement values}{
+
+Simple interpolation enabled by \code{method = "adj.mean"} replaces values of
+isolated bad pixels by the mean of their two closest neighbours. The running
+mean approach enabled by \code{method = "run.mean"} allows the replacement of
+short runs of bad pixels by the running mean of neighboring pixels within a
+window of user-specified width. The first approach works well for spectra
 from array spectrometers to correct for hot and dead pixels in an instrument.
 The second approach is most suitable for Raman spectra in which spikes
 triggered by radiation are wider than a single pixel but usually not more
 than five pixels wide.
+
+Simple interpolation can replace spikes at any position in \code{x}, using
+a single neighbour as replacement at the extremes of \code{x} instead of the
+mean of two neighbours. The
+running mean approach does not replace those pixels whose distance to the
+first or last member of \code{x} is less than half the window used for the
+running mean, issuing a warning.
+
+When \code{na.rm = TRUE}, \code{NA} values are considered "bad pixels" and
+replaced as such rather than discarded with no replacement. This is the
+default behaviour.
 }
-\note{
-In the current implementation \code{NA} values are not removed, and
-  if they are in the neighborhood of bad pixels, they will result in the
-  generation of additional \code{NA}s during their replacement.
-}
+
 \examples{
 # in a vector
-replace_bad_pixs(c(1, 1, 45, 1, 1), bad.pix.idx = 3)
+replace_bad_pixs(c(1, 2, NA, 4, 5))
 
+# in a vector
+replace_bad_pixs(c(1, 2, 100, 4, 5),
+                 method = "adj.mean",
+                 bad.pix.idx = c(FALSE, FALSE, TRUE, FALSE, FALSE))
+
+replace_bad_pixs(c(1, 2, 100, 4, 5),
+                 method = "adj.mean",
+                 bad.pix.idx = 3)
+
+# in a vector
+replace_bad_pixs(c(0, 1, 2, 100, 4, 5, 6),
+                 method = "run.mean",
+                 bad.pix.idx = 4)
+
+# in a vector
+replace_bad_pixs(c(1, 1, NA, 1, 1),
+                 method = "run.mean",
+                 bad.pix.idx = 3)
+
+# in a vector
+replace_bad_pixs(c(1, 1, NA, 1, 1),
+                 method = "run.mean",
+                 bad.pix.idx = 1, na.rm = FALSE)
+
+# In spectrum
 # before replacement
 white_led.raw_spct$counts_3[120:125]
 
