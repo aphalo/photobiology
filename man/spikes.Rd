@@ -23,16 +23,34 @@
 \alias{spikes.raw_mspct}
 \title{Spikes}
 \usage{
-spikes(x, z.threshold, max.spike.width, na.rm, ...)
+spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
 
-\method{spikes}{default}(x, z.threshold = NA, max.spike.width = 8, na.rm = FALSE, ...)
+\method{spikes}{default}(
+  x,
+  height.threshold = NA,
+  z.threshold = NA,
+  k = NA,
+  spike.direction = NA,
+  na.rm = FALSE,
+  ...
+)
 
-\method{spikes}{numeric}(x, z.threshold = NA, max.spike.width = 8, na.rm = FALSE, ...)
+\method{spikes}{numeric}(
+  x,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
+  na.rm = FALSE,
+  ...
+)
 
 \method{spikes}{data.frame}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   na.rm = FALSE,
   ...,
   y.var.name = NULL,
@@ -41,8 +59,10 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
 
 \method{spikes}{generic_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   na.rm = FALSE,
   var.name = NULL,
   ...
@@ -50,8 +70,10 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
 
 \method{spikes}{source_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   na.rm = FALSE,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...
@@ -59,8 +81,10 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
 
 \method{spikes}{response_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   na.rm = FALSE,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...
@@ -68,21 +92,41 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
 
 \method{spikes}{filter_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   na.rm = FALSE,
   filter.qty = getOption("photobiology.filter.qty", default = "transmittance"),
   ...
 )
 
-\method{spikes}{reflector_spct}(x, z.threshold = 9, max.spike.width = 8, na.rm = FALSE, ...)
+\method{spikes}{reflector_spct}(
+  x,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
+  na.rm = FALSE,
+  ...
+)
 
-\method{spikes}{solute_spct}(x, z.threshold = 9, max.spike.width = 8, na.rm = FALSE, ...)
+\method{spikes}{solute_spct}(
+  x,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
+  na.rm = FALSE,
+  ...
+)
 
 \method{spikes}{cps_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   na.rm = FALSE,
   var.name = "cps",
   ...
@@ -90,8 +134,10 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
 
 \method{spikes}{raw_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   na.rm = FALSE,
   var.name = "counts",
   ...
@@ -99,8 +145,10 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
 
 \method{spikes}{generic_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   na.rm = FALSE,
   ...,
   var.name = NULL,
@@ -110,8 +158,10 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
 
 \method{spikes}{source_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   na.rm = FALSE,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...,
@@ -121,8 +171,10 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
 
 \method{spikes}{response_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   na.rm = FALSE,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...,
@@ -132,8 +184,10 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
 
 \method{spikes}{filter_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   na.rm = FALSE,
   filter.qty = getOption("photobiology.filter.qty", default = "transmittance"),
   ...,
@@ -143,8 +197,10 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
 
 \method{spikes}{reflector_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   na.rm = FALSE,
   ...,
   .parallel = FALSE,
@@ -153,8 +209,10 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
 
 \method{spikes}{solute_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   na.rm = FALSE,
   ...,
   .parallel = FALSE,
@@ -163,8 +221,10 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
 
 \method{spikes}{cps_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   na.rm = FALSE,
   ...,
   var.name = "cps",
@@ -174,8 +234,10 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
 
 \method{spikes}{raw_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   na.rm = FALSE,
   ...,
   var.name = "counts",
@@ -184,13 +246,20 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
 )
 }
 \arguments{
-\item{x}{an R object}
+\item{x}{numeric vector containing the data.}
 
-\item{z.threshold}{numeric Modified Z values larger than \code{z.threshold}
-are considered to correspond to spikes.}
+\item{height.threshold}{numeric The minimum height of spikes expressed
+relative to the median amplitude of the baseline local variation of
+\code{x}.}
 
-\item{max.spike.width}{integer Wider regions with high Z values are not
-detected as spikes.}
+\item{z.threshold}{numeric Modified local \eqn{Z} values larger than
+\code{z.threshold} are detected as boundaries of spikes.}
+
+\item{k}{integer width of median window used for smoothing; must be odd}
+
+\item{spike.direction}{character Controls the direction of spikes to be
+detected. Accepted arguments are \code{"up"}, \code{"down"},
+\code{"both"}.}
 
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before searching for spikes.}
@@ -221,30 +290,67 @@ A subset of the object passed as argument to \code{x} with rows
 Function that returns a subset of an R object with observations corresponding
 to spikes. Spikes are values in spectra that are unusually high compared to
 neighbors. They are usually individual values or very short runs of similar
-"unusual" values. Spikes caused by cosmic radiation are a frequent problem in
-Raman spectra. Another source of spikes are "hot pixels" in CCD and diode
-arrays.
+"unusual" values.
 }
-\details{
-Spikes are detected based on a modified Z score calculated from the
-  differenced spectrum. The Z threshold used should be adjusted to the
-  characteristics of the input and desired sensitivity. The lower the
-  threshold the more stringent the test becomes, resulting in most cases in
-  more spikes being detected. A modified version of the algorithm is used if
-  a value different from \code{NULL} is passed as argument to
-  \code{max.spike.width}. In such a case, an additional step filters out
-  broader spikes (or falsely detected steep slopes) from the returned values.
+\section{Spike detection}{
 
-  When the argument passed to \code{x} contains multiple spectra, the spikes
-  are searched for in each spectrum independently of other spectra.
+  Spikes are detected based on a modified \eqn{Z} score calculated
+  from the differenced spectrum. The \eqn{Z} threshold used should be
+  adjusted to the characteristics of the input and desired sensitivity. The
+  lower the threshold the more stringent the test becomes, with shorter
+  spikes being detected.
+
+  \strong{The algorithms assume a consistent step size for the underlying
+  independent variable, e.g., wavelength or time, and should not be applied
+  if the data do not fulfil this assumption, at least approximately. As
+  \code{find_spkikes()} operates on a single vector, checking this remains
+  the responsibility of calling functions or methods such as
+  \code{\link{spikes}()} and \code{\link{despike}()}.}
+
+  The algorithm uses running differences to detect abrupt changes in value,
+  compared to an estimate of the baseline variation of the differences,
+  approximating a baseline \eqn{Z} from MAD and a baseline value from the
+  median differences. Currently, a single estimate of MAD is used but running
+  medians, when possible, as baseline. This comparison detects running
+  differences that are unusually large, in most cases signalling a transition
+  between values near the baseline and far from it, in both directions.
+
+  Transitions into- and out of spikes are distinguished based on the median
+  of the non-differenced values, as a descriptor of the data baseline. As for
+  the median of the differences, a running median is used when possible.
+
+  This function thus detects the start and end of each spike, and
+  distinguishes upward and downward spikes.
+
+  \code{k} is the width in number of observations of the window used for
+  running median smoothing to extract the baseline. A value several times the
+  width of the broader spike but narrow enough to track broader peaks needs
+  to be manually set in most cases.
+
+  With \code{na.rm = TRUE}, \code{NA} values are omitted before searching for
+  spikes and set to \code{0L} in the returned vector.
+
+  If all spikes are guaranteed to be one observation-wide and either going up
+  or down from the baseline, it is possible to detect them based purely on
+  the \code{z.threshold} by passing \code{height.threshold = NA} and either
+  \code{spike.direction = "up"} or \code{spike.direction = "down"}, which
+  ensures very fast computation.
+
+  Parameters of the algorithm need to be adjusted depending on the data, so
+  inspection of returned values is needed together with adjustment by trial
+  and error of suitable values for \code{z.threshold},
+  \code{height.threshold}, and \code{k}.
 }
+
 \examples{
 spikes(sun.spct)
 
 }
 \seealso{
-See the documentation for \code{\link{find_spikes}} for details of
-  the algorithm and implementation.
+See \code{\link{find_spikes}()} for locating spikes in a vector,
+  \code{\link{despike}()} for replacement of spikes by interpolation in
+  spectra and and \code{\link{replace_bad_pixs}()} for replacing by
+  interpolation missing or bad values in a vector.
 
 Other peaks and valleys functions:
 \code{\link[=find_peaks]{find_peaks()}},

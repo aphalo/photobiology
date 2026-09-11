@@ -23,12 +23,24 @@
 \alias{despike.raw_mspct}
 \title{Remove spikes from spectrum}
 \usage{
-despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
+despike(
+  x,
+  height.threshold,
+  z.threshold,
+  k,
+  spike.direction,
+  window.width,
+  method,
+  na.rm,
+  ...
+)
 
 \method{despike}{default}(
   x,
+  height.threshold,
   z.threshold = NA,
-  max.spike.width = NA,
+  k = NA,
+  spike.direction = NA,
   window.width = NA,
   method = "run.mean",
   na.rm = FALSE,
@@ -37,8 +49,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{numeric}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -47,8 +61,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{data.frame}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -59,8 +75,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{generic_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -71,8 +89,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{source_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -82,8 +102,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{response_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -93,8 +115,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{filter_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -104,8 +128,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{reflector_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -114,8 +140,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{solute_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -124,8 +152,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{cps_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -134,8 +164,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{raw_spct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -144,8 +176,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{generic_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -158,8 +192,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{source_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -171,8 +207,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{response_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -184,8 +222,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{filter_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -197,8 +237,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{reflector_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -209,8 +251,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{solute_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -221,8 +265,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{cps_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -233,8 +279,10 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 
 \method{despike}{raw_mspct}(
   x,
-  z.threshold = 9,
-  max.spike.width = 8,
+  height.threshold = 10,
+  z.threshold = 5,
+  k = 20,
+  spike.direction = "both",
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
@@ -244,25 +292,32 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
 )
 }
 \arguments{
-\item{x}{an R object}
+\item{x}{numeric vector containing the data.}
 
-\item{z.threshold}{numeric Modified Z values larger than \code{z.threshold}
-are considered to correspond to spikes.}
+\item{height.threshold}{numeric The minimum height of spikes expressed
+relative to the median amplitude of the baseline local variation of
+\code{x}.}
 
-\item{max.spike.width}{integer Wider regions with high Z values are not detected as
-spikes.}
+\item{z.threshold}{numeric Modified local \eqn{Z} values larger than
+\code{z.threshold} are detected as boundaries of spikes.}
+
+\item{k}{integer width of median window used for smoothing; must be odd}
+
+\item{spike.direction}{character Controls the direction of spikes to be
+detected. Accepted arguments are \code{"up"}, \code{"down"},
+\code{"both"}.}
 
 \item{window.width}{integer. The full width of the window used for the
-running mean used as replacement.}
+running mean.}
 
 \item{method}{character The name of the method: \code{"run.mean"} is running
 mean as described in Whitaker and Hayes (2018); \code{"adj.mean"} is mean
 of adjacent neighbors (isolated bad pixels only).}
 
-\item{na.rm}{logical indicating whether \code{NA} values should be treated
-as spikes and replaced.}
+\item{na.rm}{logical indicating whether \code{NA} values should be stripped
+before searching for spikes.}
 
-\item{...}{Arguments passed by name to \code{find_spikes()}.}
+\item{...}{passed in recursive calls.}
 
 \item{var.name, y.var.name}{character Names of columns where to look
 for spikes to remove.}
@@ -282,58 +337,108 @@ correct environment set up for computing.}
 }
 \value{
 A copy of the object passed as argument to \code{x} with values
-  detected as spikes replaced by a local average of adjacent neighbors
+  detected as spikes replaced by a local average of neighbours
   outside the spike.
 }
 \description{
 Function that returns an R object with observations corresponding to spikes
 replaced by values computed from neighboring pixels. Spikes are values in
 spectra that are unusually high compared to neighbors. They are usually
-individual values or very short runs of similar "unusual" values. Spikes
-caused by cosmic radiation are a frequent problem in Raman spectra. Another
-source of spikes are "hot pixels" in CCD and diode array detectors.
+individual values or very short runs of similar "unusual" values.
 }
-\details{
-Spikes are detected based on a modified Z score calculated from the
-  differenced spectrum. The Z threshold used should be adjusted to the
-  characteristics of the input and desired sensitivity. The lower the
-  threshold the more stringent the test becomes, resulting in most cases in
-  more spikes being detected. A modified version of the algorithm is used if
-  a value different from \code{NULL} is passed as argument to
-  \code{max.spike.width}. In such a case, an additional step filters out
-  broader spikes (or falsely detected steep slopes) from the returned values.
+\section{Spike detection}{
 
-  Simple interpolation replaces values of isolated bad pixels by the mean of
-  their two closest neighbors. The running mean approach allows the
-  replacement of short runs of bad pixels by the running mean of neighboring
-  pixels within a window of user-specified width. The first approach works
-  well for spectra from array spectrometers to correct for hot and dead
-  pixels in an instrument. The second approach is most suitable for Raman
-  spectra in which spikes triggered by radiation are wider than a single
-  pixel but usually not more than five pixels wide.
+  Spikes are detected based on a modified \eqn{Z} score calculated
+  from the differenced spectrum. The \eqn{Z} threshold used should be
+  adjusted to the characteristics of the input and desired sensitivity. The
+  lower the threshold the more stringent the test becomes, with shorter
+  spikes being detected.
 
-  When the argument passed to \code{x} contains multiple spectra, the spikes
-  are searched for and replaced in each spectrum independently of other
-  spectra.
+  \strong{The algorithms assume a consistent step size for the underlying
+  independent variable, e.g., wavelength or time, and should not be applied
+  if the data do not fulfil this assumption, at least approximately. As
+  \code{find_spkikes()} operates on a single vector, checking this remains
+  the responsibility of calling functions or methods such as
+  \code{\link{spikes}()} and \code{\link{despike}()}.}
+
+  The algorithm uses running differences to detect abrupt changes in value,
+  compared to an estimate of the baseline variation of the differences,
+  approximating a baseline \eqn{Z} from MAD and a baseline value from the
+  median differences. Currently, a single estimate of MAD is used but running
+  medians, when possible, as baseline. This comparison detects running
+  differences that are unusually large, in most cases signalling a transition
+  between values near the baseline and far from it, in both directions.
+
+  Transitions into- and out of spikes are distinguished based on the median
+  of the non-differenced values, as a descriptor of the data baseline. As for
+  the median of the differences, a running median is used when possible.
+
+  This function thus detects the start and end of each spike, and
+  distinguishes upward and downward spikes.
+
+  \code{k} is the width in number of observations of the window used for
+  running median smoothing to extract the baseline. A value several times the
+  width of the broader spike but narrow enough to track broader peaks needs
+  to be manually set in most cases.
+
+  With \code{na.rm = TRUE}, \code{NA} values are omitted before searching for
+  spikes and set to \code{0L} in the returned vector.
+
+  If all spikes are guaranteed to be one observation-wide and either going up
+  or down from the baseline, it is possible to detect them based purely on
+  the \code{z.threshold} by passing \code{height.threshold = NA} and either
+  \code{spike.direction = "up"} or \code{spike.direction = "down"}, which
+  ensures very fast computation.
+
+  Parameters of the algorithm need to be adjusted depending on the data, so
+  inspection of returned values is needed together with adjustment by trial
+  and error of suitable values for \code{z.threshold},
+  \code{height.threshold}, and \code{k}.
 }
-\note{
-Current algorithm misidentifies steep smooth slopes as spikes, so
-  manual inspection is needed together with adjustment by trial and error
-  of a suitable argument value for \code{z.threshold}.
+
+\section{Replacement values}{
+
+Simple interpolation enabled by \code{method = "adj.mean"} replaces values of
+isolated bad pixels by the mean of their two closest neighbours. The running
+mean approach enabled by \code{method = "run.mean"} allows the replacement of
+short runs of bad pixels by the running mean of neighboring pixels within a
+window of user-specified width. The first approach works well for spectra
+from array spectrometers to correct for hot and dead pixels in an instrument.
+The second approach is most suitable for Raman spectra in which spikes
+triggered by radiation are wider than a single pixel but usually not more
+than five pixels wide.
+
+Simple interpolation can replace spikes at any position in \code{x}, using
+a single neighbour as replacement at the extremes of \code{x} instead of the
+mean of two neighbours. The
+running mean approach does not replace those pixels whose distance to the
+first or last member of \code{x} is less than half the window used for the
+running mean, issuing a warning.
+
+When \code{na.rm = TRUE}, \code{NA} values are considered "bad pixels" and
+replaced as such rather than discarded with no replacement. This is the
+default behaviour.
 }
+
 \examples{
 
 white_led.raw_spct[120:125, ]
 
 # find and replace spike at 245.93 nm
 despike(white_led.raw_spct,
-        z.threshold = 10,
-        window.width = 25)[120:125, ]
+        z.threshold = 5,
+        window.width = 7)[120:125, ]
+
+# A high z.threshold value detects more extreme spikes
+despike(white_led.raw_spct,
+        z.threshold = 50,
+        window.width = 7)[120:125, ]
 
 }
 \seealso{
-See the documentation for \code{\link{find_spikes}} and
-  \code{\link{replace_bad_pixs}} for details of the algorithm and
-  implementation.
+See \code{\link{find_spikes}()} for locating spikes in a vector,
+  \code{\link{spikes}()} for extracting/detecting spikes in spectra and
+  and \code{\link{replace_bad_pixs}()} for replacing by interpolation
+  missing or bad values in a vector.
 }
 \concept{despike and valleys functions}

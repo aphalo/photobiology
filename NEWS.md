@@ -7,12 +7,20 @@ editor_options:
 
 # photobiology 0.14.3
 
+* Add support for sampling systematically at equal steps with `pull_sample()`.
+Default behaviour is unchanged.
 * Bug fix: `subset_attributes.generic_spct()` failed to subset the attributes
 affecting the extraction operator `[` directly, and indirectly `pull_sample()`.
 Bug did not result in metadata loss, instead in some spurious metadata being
 printed in addition to the correct one.
 * Bug fix: `subset.generic_spct()` failed to update `multiple.wl` attribute
 when subsetting spectra in long form decreased the number of spectra.
+* Bug fix (breaking): Reimplement `find_spikes()` and update `spikes()` and
+`despike()` methods.
+* Bug fix: `replace_bad_pixs()` would fail with very short vectors, or with
+bad pixels at locations too near either end of the vector with 
+`method = "run.mean"`. In other cases it could silently skip the replacement
+of bad pixels with `method = "adj.mean"`.
 
 # photobiology 0.14.2
 
