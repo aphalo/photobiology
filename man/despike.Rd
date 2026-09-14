@@ -32,6 +32,7 @@ despike(
   window.width,
   method,
   na.rm,
+  max.spike.width,
   ...
 )
 
@@ -44,6 +45,7 @@ despike(
   window.width = NA,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...
 )
 
@@ -56,6 +58,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...
 )
 
@@ -68,6 +71,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...,
   y.var.name = NULL,
   var.name = y.var.name
@@ -82,9 +86,10 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
+  ...,
   y.var.name = NULL,
-  var.name = y.var.name,
-  ...
+  var.name = y.var.name
 )
 
 \method{despike}{source_spct}(
@@ -96,6 +101,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...
 )
@@ -109,6 +115,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...
 )
@@ -122,6 +129,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   filter.qty = getOption("photobiology.filter.qty", default = "transmittance"),
   ...
 )
@@ -135,6 +143,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...
 )
 
@@ -147,6 +156,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...
 )
 
@@ -159,6 +169,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...
 )
 
@@ -171,6 +182,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...
 )
 
@@ -183,6 +195,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...,
   y.var.name = NULL,
   var.name = y.var.name,
@@ -199,6 +212,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...,
   .parallel = FALSE,
@@ -214,6 +228,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...,
   .parallel = FALSE,
@@ -229,6 +244,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   filter.qty = getOption("photobiology.filter.qty", default = "transmittance"),
   ...,
   .parallel = FALSE,
@@ -244,6 +260,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...,
   .parallel = FALSE,
   .paropts = NULL
@@ -258,6 +275,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...,
   .parallel = FALSE,
   .paropts = NULL
@@ -272,6 +290,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...,
   .parallel = FALSE,
   .paropts = NULL
@@ -286,6 +305,7 @@ despike(
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...,
   .parallel = FALSE,
   .paropts = NULL
@@ -316,6 +336,9 @@ of adjacent neighbors (isolated bad pixels only).}
 
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before searching for spikes.}
+
+\item{max.spike.width}{integer The width of the widest spike to be detected,
+\code{NA} puts no limit.}
 
 \item{...}{passed in recursive calls.}
 
@@ -394,6 +417,10 @@ individual values or very short runs of similar "unusual" values.
   inspection of returned values is needed together with adjustment by trial
   and error of suitable values for \code{z.threshold},
   \code{height.threshold}, and \code{k}.
+
+  Parameter \code{max.spike.width} searches for too wide spikes in the
+  output of the algorithms described above and ignores them. This is
+  possibly redundant, but maintained for partial backwards compatibility.
 }
 
 \section{Replacement values}{

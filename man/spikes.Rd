@@ -23,7 +23,16 @@
 \alias{spikes.raw_mspct}
 \title{Spikes}
 \usage{
-spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
+spikes(
+  x,
+  height.threshold,
+  z.threshold,
+  k,
+  spike.direction,
+  na.rm,
+  max.spike.width,
+  ...
+)
 
 \method{spikes}{default}(
   x,
@@ -32,6 +41,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = NA,
   spike.direction = NA,
   na.rm = FALSE,
+  max.spike.width = NA,
   ...
 )
 
@@ -42,6 +52,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...
 )
 
@@ -52,6 +63,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...,
   y.var.name = NULL,
   var.name = y.var.name
@@ -64,6 +76,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   var.name = NULL,
   ...
 )
@@ -75,6 +88,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...
 )
@@ -86,6 +100,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...
 )
@@ -97,6 +112,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   filter.qty = getOption("photobiology.filter.qty", default = "transmittance"),
   ...
 )
@@ -108,6 +124,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...
 )
 
@@ -118,6 +135,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...
 )
 
@@ -128,6 +146,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   var.name = "cps",
   ...
 )
@@ -139,6 +158,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   var.name = "counts",
   ...
 )
@@ -150,6 +170,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...,
   var.name = NULL,
   .parallel = FALSE,
@@ -163,6 +184,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...,
   .parallel = FALSE,
@@ -176,6 +198,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...,
   .parallel = FALSE,
@@ -189,6 +212,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   filter.qty = getOption("photobiology.filter.qty", default = "transmittance"),
   ...,
   .parallel = FALSE,
@@ -202,6 +226,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...,
   .parallel = FALSE,
   .paropts = NULL
@@ -214,6 +239,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...,
   .parallel = FALSE,
   .paropts = NULL
@@ -226,6 +252,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...,
   var.name = "cps",
   .parallel = FALSE,
@@ -239,6 +266,7 @@ spikes(x, height.threshold, z.threshold, k, spike.direction, na.rm, ...)
   k = 20,
   spike.direction = "both",
   na.rm = FALSE,
+  max.spike.width = NA,
   ...,
   var.name = "counts",
   .parallel = FALSE,
@@ -263,6 +291,9 @@ detected. Accepted arguments are \code{"up"}, \code{"down"},
 
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before searching for spikes.}
+
+\item{max.spike.width}{integer The width of the widest spike to be detected,
+\code{NA} puts no limit.}
 
 \item{...}{ignored}
 
@@ -340,6 +371,10 @@ neighbors. They are usually individual values or very short runs of similar
   inspection of returned values is needed together with adjustment by trial
   and error of suitable values for \code{z.threshold},
   \code{height.threshold}, and \code{k}.
+
+  Parameter \code{max.spike.width} searches for too wide spikes in the
+  output of the algorithms described above and ignores them. This is
+  possibly redundant, but maintained for partial backwards compatibility.
 }
 
 \examples{

@@ -56,6 +56,10 @@
 #'   and error of suitable values for \code{z.threshold},
 #'   \code{height.threshold}, and \code{k}.
 #'
+#'   Parameter \code{max.spike.width} searches for too wide spikes in the
+#'   output of the algorithms described above and ignores them. This is
+#'   possibly redundant, but maintained for partial backwards compatibility.
+#'
 #' @param x numeric vector containing the data.
 #' @param x.is.delta logical Flag indicating whether \code{x} contains
 #'   differences or original values.
@@ -72,6 +76,8 @@
 #'   and otherwise a logical one.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for spikes.
+#' @param max.spike.width integer The width of the widest spike to be detected,
+#'   \code{NA} puts no limit.
 #'
 #' @return An integer vector of the same length as \code{x}. Values that are
 #'   \code{0}, \code{+1} or \code{-1} corresponding to no-spike, upwards-spike,
@@ -96,7 +102,8 @@ find_spikes <-
            k = 20,
            spike.direction = "both",
            return.numeric = FALSE,
-           na.rm = FALSE) {
+           na.rm = FALSE,
+           max.spike.width = NA) {
     if (is.null(height.threshold)) {
       height.threshold <- 10
     } else if (!is.na(height.threshold) && height.threshold < 2) {
@@ -197,6 +204,12 @@ find_spikes <-
           spikes.up & x > x.median + scaled.threshold
       }
 
+      if (!is.null(max.spike.width) && !is.na(max.spike.width)) {
+        widths <- rle(spikes.up)
+        widths$values[which(widths$lengths > max.spike.width)] <- FALSE
+        spikes.up <- inverse.rle(widths)
+      }
+
       if (spike.direction %in% c("down", "both")) {
         outcomes.head.down <-
           outcomes.up & x < x.median - scaled.threshold
@@ -261,6 +274,12 @@ find_spikes <-
         spikes.down <-
           spikes.down & x < x.median - scaled.threshold
       }
+    }
+
+    if (!is.null(max.spike.width) && !is.na(max.spike.width)) {
+      widths <- rle(spikes.down)
+      widths$values[which(widths$lengths > max.spike.width)] <- FALSE
+      spikes.down <- inverse.rle(widths)
     }
 
     outcomes <-
@@ -511,6 +530,7 @@ despike <- function(x,
                     window.width,
                     method,
                     na.rm,
+                    max.spike.width,
                     ...) UseMethod("despike")
 
 #' @rdname despike
@@ -525,6 +545,7 @@ despike.default <-
            window.width = NA,
            method = "run.mean",
            na.rm = FALSE,
+           max.spike.width = NA,
            ...) {
     warning("Method 'despike' not implemented for objects of class ",
             class(x)[1])
@@ -543,13 +564,15 @@ despike.numeric <-
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
+           max.spike.width = NA,
            ...) {
    spike.idxs <- find_spikes(x = x,
                              height.threshold = height.threshold,
                              z.threshold = z.threshold,
                              k = k,
                              spike.direction = spike.direction,
-                             na.rm = na.rm) |>
+                             na.rm = na.rm,
+                             max.spike.width = max.spike.width) |>
      as.logical()
 
    replace_bad_pixs(x,
@@ -573,6 +596,7 @@ despike.data.frame <-
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
+           max.spike.width = NA,
            ...,
            y.var.name = NULL,
            var.name = y.var.name) {
@@ -592,8 +616,8 @@ despike.data.frame <-
                                window.width = window.width,
                                method = method,
                                na.rm = na.rm,
-                               ...
-      )
+                               max.spike.width = max.spike.width,
+                               ...)
     }
     x
   }
@@ -611,9 +635,10 @@ despike.generic_spct <-
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
+           max.spike.width = NA,
+           ...,
            y.var.name = NULL,
-           var.name = y.var.name,
-           ...) {
+           var.name = y.var.name) {
 
     # we look for multiple spectra in long form
     if (getMultipleWl(x) > 1) {
@@ -630,6 +655,7 @@ despike.generic_spct <-
                        window.width = window.width,
                        method = method,
                        na.rm = na.rm,
+                       max.spike.width = max.spike.width,
                        y.var.name = y.var.name,
                        var.name = var.name,
                        ...)
@@ -663,6 +689,7 @@ despike.generic_spct <-
                                window.width = window.width,
                                method = method,
                                na.rm = na.rm,
+                               max.spike.width = max.spike.width,
                                ...
       )
     }
@@ -684,6 +711,7 @@ despike.source_spct <-
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
+           max.spike.width = NA,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
            ...) {
@@ -703,6 +731,7 @@ despike.source_spct <-
                        window.width = window.width,
                        method = method,
                        na.rm = na.rm,
+                       max.spike.width = max.spike.width,
                        unit.out = unit.out,
                        ...)
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
@@ -731,6 +760,7 @@ despike.source_spct <-
                              window.width = window.width,
                              method = method,
                              na.rm = na.rm,
+                             max.spike.width = max.spike.width,
                              ...)
     z
   }
@@ -748,6 +778,7 @@ despike.response_spct <-
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
+           max.spike.width = NA,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
            ...) {
@@ -767,6 +798,7 @@ despike.response_spct <-
                        window.width = window.width,
                        method = method,
                        na.rm = na.rm,
+                       max.spike.width = max.spike.width,
                        unit.out = unit.out,
                        ...)
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
@@ -795,6 +827,7 @@ despike.response_spct <-
                              window.width = window.width,
                              method = method,
                              na.rm = na.rm,
+                             max.spike.width = max.spike.width,
                              ...)
     z
   }
@@ -814,6 +847,7 @@ despike.filter_spct <-
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
+           max.spike.width = NA,
            filter.qty = getOption("photobiology.filter.qty",
                                   default = "transmittance"),
            ...) {
@@ -833,6 +867,7 @@ despike.filter_spct <-
                        window.width = window.width,
                        method = method,
                        na.rm = na.rm,
+                       max.spike.width = max.spike.width,
                        filter.qty = filter.qty,
                        ...)
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
@@ -864,6 +899,7 @@ despike.filter_spct <-
                              window.width = window.width,
                              method = method,
                              na.rm = na.rm,
+                             max.spike.width = max.spike.width,
                              ...)
     z
   }
@@ -880,6 +916,7 @@ despike.reflector_spct <- function(x,
                                    window.width = 11,
                                    method = "run.mean",
                                    na.rm = FALSE,
+                                   max.spike.width = NA,
                                    ...) {
 
   # we look for multiple spectra in long form
@@ -897,6 +934,7 @@ despike.reflector_spct <- function(x,
                      window.width = window.width,
                      method = method,
                      na.rm = na.rm,
+                     max.spike.width = max.spike.width,
                      ...)
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
@@ -913,6 +951,7 @@ despike.reflector_spct <- function(x,
                            spike.direction = spike.direction,
                            method = method,
                            na.rm = na.rm,
+                           max.spike.width = max.spike.width,
                            ...
   )
   x
@@ -931,6 +970,7 @@ despike.solute_spct <-
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
+           max.spike.width = NA,
            ...) {
 
     # we look for multiple spectra in long form
@@ -948,6 +988,7 @@ despike.solute_spct <-
                        window.width = window.width,
                        method = method,
                        na.rm = na.rm,
+                       max.spike.width = max.spike.width,
                        ...)
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
@@ -971,6 +1012,7 @@ despike.solute_spct <-
                              window.width = window.width,
                              method = method,
                              na.rm = na.rm,
+                             max.spike.width = max.spike.width,
                              ...)
     z
   }
@@ -987,6 +1029,7 @@ despike.cps_spct <- function(x,
                              window.width = 11,
                              method = "run.mean",
                              na.rm = FALSE,
+                             max.spike.width = NA,
                              ...) {
 
   # we look for multiple spectra in long form
@@ -1004,6 +1047,7 @@ despike.cps_spct <- function(x,
                      window.width = window.width,
                      method = method,
                      na.rm = na.rm,
+                     max.spike.width = max.spike.width,
                      ...)
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
@@ -1022,6 +1066,7 @@ despike.cps_spct <- function(x,
                              window.width = window.width,
                              method = method,
                              na.rm = na.rm,
+                             max.spike.width = max.spike.width,
                              ...
     )
   }
@@ -1040,6 +1085,7 @@ despike.raw_spct <- function(x,
                              window.width = 11,
                              method = "run.mean",
                              na.rm = FALSE,
+                             max.spike.width = NA,
                              ...) {
 
   # we look for multiple spectra in long form
@@ -1057,6 +1103,7 @@ despike.raw_spct <- function(x,
                      window.width = window.width,
                      method = method,
                      na.rm = na.rm,
+                     max.spike.width = max.spike.width,
                      ...)
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
@@ -1075,6 +1122,7 @@ despike.raw_spct <- function(x,
                              window.width = window.width,
                              method = method,
                              na.rm = na.rm,
+                             max.spike.width = max.spike.width,
                              ...
     )
   }
@@ -1104,6 +1152,7 @@ despike.generic_mspct <- function(x,
                                   window.width = 11,
                                   method = "run.mean",
                                   na.rm = FALSE,
+                                  max.spike.width = NA,
                                   ...,
                                   y.var.name = NULL,
                                   var.name = y.var.name,
@@ -1140,6 +1189,7 @@ despike.source_mspct <-
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
+           max.spike.width = NA,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
            ...,
@@ -1176,6 +1226,7 @@ despike.response_mspct <-
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
+           max.spike.width = NA,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
            ...,
@@ -1212,6 +1263,7 @@ despike.filter_mspct <-
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
+           max.spike.width = NA,
            filter.qty = getOption("photobiology.filter.qty",
                                   default = "transmittance"),
            ...,
@@ -1249,6 +1301,7 @@ despike.reflector_mspct <-
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
+           max.spike.width = NA,
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
@@ -1287,6 +1340,7 @@ despike.cps_mspct <- function(x,
                               window.width = 11,
                               method = "run.mean",
                               na.rm = FALSE,
+                              max.spike.width = NA,
                               ...,
                               .parallel = FALSE,
                               .paropts = NULL) {
@@ -1319,6 +1373,7 @@ despike.raw_mspct <- function(x,
                               window.width = 11,
                               method = "run.mean",
                               na.rm = FALSE,
+                              max.spike.width = NA,
                               ...,
                               .parallel = FALSE,
                               .paropts = NULL) {
@@ -1375,7 +1430,9 @@ spikes <- function(x,
                    z.threshold,
                    k,
                    spike.direction,
-                   na.rm, ...) UseMethod("spikes")
+                   na.rm,
+                   max.spike.width,
+                   ...) UseMethod("spikes")
 
 #' @rdname spikes
 #'
@@ -1387,6 +1444,7 @@ spikes.default <-
            k = NA,
            spike.direction = NA,
            na.rm = FALSE,
+           max.spike.width = NA,
            ...) {
     warning("Method 'spikes' not implemented for objects of class ",
             class(x)[1])
@@ -1403,13 +1461,15 @@ spikes.numeric <-
            k = 20,
            spike.direction = "both",
            na.rm = FALSE,
+           max.spike.width = NA,
            ...) {
     x[find_spikes(x = x,
                   height.threshold = height.threshold,
                   z.threshold = z.threshold,
                   k = k,
                   spike.direction = spike.direction,
-                  na.rm = na.rm)]
+                  na.rm = na.rm,
+                  max.spike.width = max.spike.width)]
   }
 
 #' @rdname spikes
@@ -1423,6 +1483,7 @@ spikes.data.frame <-
            k = 20,
            spike.direction = "both",
            na.rm = FALSE,
+           max.spike.width = NA,
            ...,
            y.var.name = NULL,
            var.name = y.var.name) {
@@ -1436,7 +1497,8 @@ spikes.data.frame <-
                         z.threshold = z.threshold,
                         k = k,
                         spike.direction = spike.direction,
-                        na.rm = na.rm))
+                        na.rm = na.rm,
+                        max.spike.width = max.spike.width))
     x[spikes.idx,  , drop = FALSE]
   }
 
@@ -1451,6 +1513,7 @@ spikes.generic_spct <-
            k = 20,
            spike.direction = "both",
            na.rm = FALSE,
+           max.spike.width = NA,
            var.name = NULL,
            ...) {
 
@@ -1467,6 +1530,7 @@ spikes.generic_spct <-
                       k = k,
                       spike.direction = spike.direction,
                       na.rm = na.rm,
+                      max.spike.width = max.spike.width,
                       var.name = var.name,
                       ...)
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
@@ -1493,7 +1557,8 @@ spikes.generic_spct <-
                         z.threshold = z.threshold,
                         k = k,
                         spike.direction = spike.direction,
-                        na.rm = na.rm))
+                        na.rm = na.rm,
+                        max.spike.width = max.spike.width))
     x[spikes.idx,  , drop = FALSE]
   }
 
@@ -1510,6 +1575,7 @@ spikes.source_spct <-
            k = 20,
            spike.direction = "both",
            na.rm = FALSE,
+           max.spike.width = NA,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
            ...) {
@@ -1527,6 +1593,7 @@ spikes.source_spct <-
                       k = k,
                       spike.direction = spike.direction,
                       na.rm = na.rm,
+                      max.spike.width = max.spike.width,
                       unit.out = unit.out,
                       ...)
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
@@ -1551,7 +1618,8 @@ spikes.source_spct <-
                         z.threshold = z.threshold,
                         k = k,
                         spike.direction = spike.direction,
-                        na.rm = na.rm))
+                        na.rm = na.rm,
+                        max.spike.width = max.spike.width))
     z[spikes.idx,  , drop = FALSE]
   }
 
@@ -1566,6 +1634,7 @@ spikes.response_spct <-
            k = 20,
            spike.direction = "both",
            na.rm = FALSE,
+           max.spike.width = NA,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
            ...) {
@@ -1583,6 +1652,7 @@ spikes.response_spct <-
                       k = k,
                       spike.direction = spike.direction,
                       na.rm = na.rm,
+                      max.spike.width = max.spike.width,
                       unit.out = unit.out,
                       ...)
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
@@ -1607,7 +1677,8 @@ spikes.response_spct <-
                         z.threshold = 5,
                         k = 20,
                         spike.direction = "both",
-                        na.rm = na.rm))
+                        na.rm = na.rm,
+                        max.spike.width = max.spike.width))
     z[spikes.idx,  , drop = FALSE]
   }
 
@@ -1624,6 +1695,7 @@ spikes.filter_spct <-
            k = 20,
            spike.direction = "both",
            na.rm = FALSE,
+           max.spike.width = NA,
            filter.qty = getOption("photobiology.filter.qty",
                                   default = "transmittance"),
            ...) {
@@ -1641,6 +1713,7 @@ spikes.filter_spct <-
                       k = k,
                       spike.direction = spike.direction,
                       na.rm = na.rm,
+                      max.spike.width = max.spike.width,
                       filter.qty = filter.qty,
                       ...)
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
@@ -1665,7 +1738,8 @@ spikes.filter_spct <-
                         z.threshold = z.threshold,
                         k = k,
                         spike.direction = spike.direction,
-                        na.rm = na.rm))
+                        na.rm = na.rm,
+                        max.spike.width = max.spike.width))
     z[spikes.idx,  , drop = FALSE]
   }
 
@@ -1679,6 +1753,7 @@ spikes.reflector_spct <- function(x,
                                   k = 20,
                                   spike.direction = "both",
                                   na.rm = FALSE,
+                                  max.spike.width = NA,
                                   ...) {
 
   # we look for multiple spectra in long form
@@ -1694,6 +1769,7 @@ spikes.reflector_spct <- function(x,
                     k = k,
                     spike.direction = spike.direction,
                     na.rm = na.rm,
+                    max.spike.width = max.spike.width,
                     ...)
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
@@ -1724,6 +1800,7 @@ spikes.solute_spct <-
            k = 20,
            spike.direction = "both",
            na.rm = FALSE,
+           max.spike.width = NA,
            ...) {
 
     # we look for multiple spectra in long form
@@ -1739,6 +1816,7 @@ spikes.solute_spct <-
                       k = k,
                       spike.direction = spike.direction,
                       na.rm = na.rm,
+                      max.spike.width = max.spike.width,
                       ...)
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
@@ -1760,7 +1838,8 @@ spikes.solute_spct <-
                         z.threshold = z.threshold,
                         k = k,
                         spike.direction = spike.direction,
-                        na.rm = na.rm))
+                        na.rm = na.rm,
+                        max.spike.width = max.spike.width))
     z[spikes.idx,  , drop = FALSE]
   }
 
@@ -1774,6 +1853,7 @@ spikes.cps_spct <- function(x,
                             k = 20,
                             spike.direction = "both",
                             na.rm = FALSE,
+                            max.spike.width = NA,
                             var.name = "cps",
                             ...) {
 
@@ -1790,6 +1870,7 @@ spikes.cps_spct <- function(x,
                     k = k,
                     spike.direction = spike.direction,
                     na.rm = na.rm,
+                    max.spike.width = max.spike.width,
                     var.name = var.name,
                     ...)
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
@@ -1805,7 +1886,8 @@ spikes.cps_spct <- function(x,
                       z.threshold = z.threshold,
                       k = k,
                       spike.direction = spike.direction,
-                      na.rm = na.rm))
+                      na.rm = na.rm,
+                      max.spike.width = max.spike.width))
   x[spikes.idx,  , drop = FALSE]
 }
 
@@ -1819,6 +1901,7 @@ spikes.raw_spct <- function(x,
                             k = 20,
                             spike.direction = "both",
                             na.rm = FALSE,
+                            max.spike.width = NA,
                             var.name = "counts",
                             ...) {
 
@@ -1835,6 +1918,7 @@ spikes.raw_spct <- function(x,
                     k = k,
                     spike.direction = spike.direction,
                     na.rm = na.rm,
+                    max.spike.width = max.spike.width,
                     var.name = var.name,
                     ...)
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
@@ -1848,7 +1932,8 @@ spikes.raw_spct <- function(x,
                       z.threshold = z.threshold,
                       k = k,
                       spike.direction = spike.direction,
-                      na.rm = na.rm))
+                      na.rm = na.rm,
+                      max.spike.width = max.spike.width))
   x[spikes.idx,  , drop = FALSE]
 }
 
@@ -1862,6 +1947,7 @@ spikes.generic_mspct <- function(x,
                                  k = 20,
                                  spike.direction = "both",
                                  na.rm = FALSE,
+                                 max.spike.width = NA,
                                  ...,
                                  var.name = NULL,
                                  .parallel = FALSE,
@@ -1901,6 +1987,7 @@ spikes.source_mspct <-
            k = 20,
            spike.direction = "both",
            na.rm = FALSE,
+           max.spike.width = NA,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
            ...,
@@ -1933,6 +2020,7 @@ spikes.response_mspct <-
            k = 20,
            spike.direction = "both",
            na.rm = FALSE,
+           max.spike.width = NA,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
            ...,
@@ -1965,6 +2053,7 @@ spikes.filter_mspct <-
            k = 20,
            spike.direction = "both",
            na.rm = FALSE,
+           max.spike.width = NA,
            filter.qty = getOption("photobiology.filter.qty",
                                   default = "transmittance"),
            ...,
@@ -1998,6 +2087,7 @@ spikes.reflector_mspct <-
            k = 20,
            spike.direction = "both",
            na.rm = FALSE,
+           max.spike.width = NA,
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
@@ -2033,6 +2123,7 @@ spikes.cps_mspct <- function(x,
                              k = 20,
                              spike.direction = "both",
                              na.rm = FALSE,
+                             max.spike.width = NA,
                              ...,
                              var.name = "cps",
                              .parallel = FALSE,
@@ -2063,6 +2154,7 @@ spikes.raw_mspct <- function(x,
                              k = 20,
                              spike.direction = "both",
                              na.rm = FALSE,
+                             max.spike.width = NA,
                              ...,
                              var.name = "counts",
                              .parallel = FALSE,

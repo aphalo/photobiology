@@ -12,7 +12,8 @@ find_spikes(
   k = 20,
   spike.direction = "both",
   return.numeric = FALSE,
-  na.rm = FALSE
+  na.rm = FALSE,
+  max.spike.width = NA
 )
 }
 \arguments{
@@ -39,6 +40,9 @@ and otherwise a logical one.}
 
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before searching for spikes.}
+
+\item{max.spike.width}{integer The width of the widest spike to be detected,
+\code{NA} puts no limit.}
 }
 \value{
 An integer vector of the same length as \code{x}. Values that are
@@ -104,6 +108,10 @@ be also detected.
   inspection of returned values is needed together with adjustment by trial
   and error of suitable values for \code{z.threshold},
   \code{height.threshold}, and \code{k}.
+
+  Parameter \code{max.spike.width} searches for too wide spikes in the
+  output of the algorithms described above and ignores them. This is
+  possibly redundant, but maintained for partial backwards compatibility.
 }
 
 \references{
