@@ -56,9 +56,10 @@
 #'   and error of suitable values for \code{z.threshold},
 #'   \code{height.threshold}, and \code{k}.
 #'
-#'   Parameter \code{max.spike.width} searches for too wide spikes in the
-#'   output of the algorithms described above and ignores them. This is
-#'   possibly redundant, but maintained for partial backwards compatibility.
+#'   The argument to parameter \code{max.spike.width} is used in a final stage
+#'   to discard spikes detected by the algorithms described above but considered
+#'   to be too wide (as a run of successive observations, i.e., detector pixels
+#'   in the case of array spectrometers).
 #'
 #' @param x numeric vector containing the data.
 #' @param x.is.delta logical Flag indicating whether \code{x} contains
@@ -76,8 +77,8 @@
 #'   and otherwise a logical one.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for spikes.
-#' @param max.spike.width integer The width of the widest spike to be detected,
-#'   \code{NA} puts no limit.
+#' @param max.spike.width integer Sets an upper limit to the width in "pixels"
+#'   of the features detected as spikes. \code{NA}, the default, sets no limit.
 #'
 #' @return An integer vector of the same length as \code{x}. Values that are
 #'   \code{0}, \code{+1} or \code{-1} corresponding to no-spike, upwards-spike,

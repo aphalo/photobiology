@@ -337,8 +337,8 @@ of adjacent neighbors (isolated bad pixels only).}
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before searching for spikes.}
 
-\item{max.spike.width}{integer The width of the widest spike to be detected,
-\code{NA} puts no limit.}
+\item{max.spike.width}{integer Sets an upper limit to the width in "pixels"
+of the features detected as spikes. \code{NA}, the default, sets no limit.}
 
 \item{...}{passed in recursive calls.}
 
@@ -418,9 +418,10 @@ individual values or very short runs of similar "unusual" values.
   and error of suitable values for \code{z.threshold},
   \code{height.threshold}, and \code{k}.
 
-  Parameter \code{max.spike.width} searches for too wide spikes in the
-  output of the algorithms described above and ignores them. This is
-  possibly redundant, but maintained for partial backwards compatibility.
+  The argument to parameter \code{max.spike.width} is used in a final stage
+  to discard spikes detected by the algorithms described above but considered
+  to be too wide (as a run of successive observations, i.e., detector pixels
+  in the case of array spectrometers).
 }
 
 \section{Replacement values}{
