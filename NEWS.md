@@ -5,6 +5,13 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.14.4
+
+* Add function `wlbind()` for combining rows from two spectra into single
+spectrum. Can be used to insert fitted peaks into a spectrum or to combine 
+peaks and FWHM, or peaks and valleys extracted from the same spectrum.
+* Add method `spctbind()` as a synonym for `rbindspct()`.
+
 # photobiology 0.14.3
 
 * Add support for sampling systematically at equal steps with `pull_sample()`.
