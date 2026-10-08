@@ -4,7 +4,23 @@
 \alias{wlbind}
 \title{Row bind spectra by wavelength}
 \usage{
-wlbind(x, y, ids = c(x = "x", y = "y"), strict.wls = FALSE)
+wlbind(x, y, ids = c(x = "x", y = "y"), strict.wls = FALSE, fill = TRUE)
+}
+\arguments{
+\item{x, y}{generic_spct or of the same derived class, containing each
+data for a single spectrum.}
+
+\item{ids}{character Named vector with the names to use to identify
+the origin of the rows.}
+
+\item{strict.wls}{logical If \code{TRUE} the presence of the same
+wavelengths in \code{x} and \code{y} triggers an error. I \code{FALSE}
+a message is issued and when a wavelength is both \code{x} and in \code{y},
+the row from \code{y} prevails.}
+
+\item{fill}{logical If \code{TRUE} fills missing columns with NAs. By default
+\code{TRUE}. When \code{TRUE}, \code{use.names} has also to be \code{TRUE},
+and all items of the input list have to have non-null column names.}
 }
 \value{
 An object of the same class as \code{x} and \code{y} with data for
@@ -15,15 +31,16 @@ Row bind spectra maintaining wavelength values sorted by interspersing the
 rows as needed.
 }
 \details{
-Two objects belonging to the same class, and containing each data for a
-single spectrum and no common wavelengths are row bound keeping the combined
-wavelengths sorted.
+Two objects belonging to the same class, and containing each data
+  for a single spectrum are row bound keeping wavelengths sorted. Only
+  columns present in both \code{x} and \code{y} are preserved if \code{fill =
+  FALSE} and otherwise missing values are filled with \code{NA}.
 }
 \examples{
 wlbind(sun.spct[-(1:3), ], sun.spct[1:3, ])
-wlbindspct(peaks(white_led.source_spct, span = NULL),
-                 wls_at_target(white_led.source_spct),
-                 ids = c(x = "peak", y = "fwhm"))
+wlbind(peaks(white_led.source_spct, span = NULL),
+             wls_at_target(white_led.source_spct),
+             ids = c(x = "peak", y = "fwhm"))
 
 }
 \seealso{

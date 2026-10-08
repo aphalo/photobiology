@@ -489,9 +489,20 @@ spctbind <- rbindspct
 #' Row bind spectra maintaining wavelength values sorted by interspersing the
 #' rows as needed.
 #'
-#' @details Two objects belonging to the same class, and containing each data for a
-#' single spectrum and no common wavelengths are row bound keeping the combined
-#' wavelengths sorted.
+#' @details Two objects belonging to the same class, and containing each data
+#'   for a single spectrum are row bound keeping wavelengths sorted. Only
+#'   columns present in both \code{x} and \code{y} are preserved if \code{fill =
+#'   FALSE} and otherwise missing values are filled with \code{NA}.
+#'
+#' @param x,y generic_spct or of the same derived class, containing each
+#'   data for a single spectrum.
+#' @param ids character Named vector with the names to use to identify
+#'   the origin of the rows.
+#' @param strict.wls logical If \code{TRUE} the presence of the same
+#'   wavelengths in \code{x} and \code{y} triggers an error. I \code{FALSE}
+#'   a message is issued and when a wavelength is both \code{x} and in \code{y},
+#'   the row from \code{y} prevails.
+#' @inheritParams rbindspct fill
 #'
 #' @return An object of the same class as \code{x} and \code{y} with data for
 #' columns shared by \code{x} and \code{y} based on names.
@@ -509,7 +520,8 @@ spctbind <- rbindspct
 wlbind <- function(x,
                    y,
                    ids = c(x = "x", y = "y"),
-                   strict.wls = FALSE) {
+                   strict.wls = FALSE,
+                   fill = TRUE) {
   stopifnot(is.any_spct(x) && is.any_spct(y))
   stopifnot(getMultipleWl(x) == 1 && getMultipleWl(y) == 1)
   stopifnot(class_spct(x) == class_spct(y))
@@ -518,16 +530,18 @@ wlbind <- function(x,
   shared.wls <- intersect(x[["w.length"]], y[["w.length"]])
   if (length(shared.wls)) {
     if (strict.wls) {
-      stop("Same 'w.length' value in 'x' and 'y'.")
+      stop("Same 'w.length' value(s) in 'x' and 'y': ",
+           paste(round(shared.wls, 2), collapse = ", "))
     } else {
       x <- x[!x[["w.length"]] %in% shared.wls, ]
       message("Replacing ", length(shared.wls),
               " rows from 'x' with rows from 'y' at ",
-              "wavelength(s): ", paste(shared.wls, collapse = ", "))
+              "wavelength(s): ",
+              paste(round(shared.wls, 2), collapse = ", "))
     }
   }
   shared.cols <- intersect(colnames(x), colnames(y))
-  if (length(colnames(x)) > length(shared.cols)) {
+  if (!fill && length(colnames(x)) > length(shared.cols)) {
     x.droped.cols <- setdiff(colnames(x), shared.cols)
     x <- x[ , shared.cols]
     if (!is.na(id_factor(x)) && id_factor(x) %in% x.droped.cols) {
@@ -535,7 +549,7 @@ wlbind <- function(x,
     }
     message("Columns dropped from 'x': ", paste(x.droped.cols, collapse = ", "))
   }
-  if (length(colnames(y)) > length(shared.cols)) {
+  if (!fill && length(colnames(y)) > length(shared.cols)) {
     y.droped.cols <- setdiff(colnames(y), shared.cols)
     y <- y[ , shared.cols]
     if (!is.na(id_factor(y)) && id_factor(y) %in% y.droped.cols) {
@@ -546,7 +560,10 @@ wlbind <- function(x,
   x[["id"]] <- ids[["x"]]
   y[["id"]] <- ids[["y"]]
   old.setting <- disable_check_spct()
-  z <- rbindspct(list(x, y), idfactor = FALSE, attrs.simplify = TRUE)
+  z <- rbindspct(list(x, y),
+                 fill = fill,
+                 idfactor = FALSE,
+                 attrs.simplify = TRUE)
   z <- z[order(z[["w.length"]]), ]
   set_check_spct(old.setting)
   check_spct(z)
