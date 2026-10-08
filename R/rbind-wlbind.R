@@ -269,11 +269,7 @@ rbindspct <- function(l,
     }
 
     when.measured <- lapply(l[idxs], getWhenMeasured)
-    if (attrs.simplify && length(unique(when.measured)) == 1) {
-      when.measured <- when.measured[[1]]
-    } else {
-      names(when.measured) <- names.spct[idxs]
-    }
+    names(when.measured) <- names.spct[idxs]
 
     where.measured <- lapply(l[idxs], getWhereMeasured)
     if (attrs.simplify &&
@@ -514,8 +510,8 @@ spctbind <- rbindspct
 #' @examples
 #' wlbind(sun.spct[-(1:3), ], sun.spct[1:3, ])
 #' wlbind(peaks(white_led.source_spct, span = NULL),
-#'              wls_at_target(white_led.source_spct),
-#'              ids = c(x = "peak", y = "fwhm"))
+#'        wls_at_target(white_led.source_spct),
+#'        ids = c(x = "peak", y = "fwhm"))
 #'
 wlbind <- function(x,
                    y,
@@ -565,6 +561,8 @@ wlbind <- function(x,
                  idfactor = FALSE,
                  attrs.simplify = TRUE)
   z <- z[order(z[["w.length"]]), ]
+  when_measured(z) <- unique(when_measured(z))
+  multiple_wl(z) <- 1
   set_check_spct(old.setting)
   check_spct(z)
 }

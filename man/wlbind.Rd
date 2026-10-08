@@ -39,8 +39,8 @@ Two objects belonging to the same class, and containing each data
 \examples{
 wlbind(sun.spct[-(1:3), ], sun.spct[1:3, ])
 wlbind(peaks(white_led.source_spct, span = NULL),
-             wls_at_target(white_led.source_spct),
-             ids = c(x = "peak", y = "fwhm"))
+       wls_at_target(white_led.source_spct),
+       ids = c(x = "peak", y = "fwhm"))
 
 }
 \seealso{
