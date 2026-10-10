@@ -7,10 +7,10 @@ editor_options:
 
 # photobiology 0.14.4
 
-* Add function `wlbind()` for combining rows from two spectra into single
+* Add function `spct_rmerge()` for combining rows from two spectra into single
 spectrum. Can be used to insert fitted peaks into a spectrum or to combine 
 peaks and FWHM, or peaks and valleys extracted from the same spectrum.
-* Add method `spctbind()` as a synonym for `rbindspct()`.
+* Add method `spct_bind()` as a synonym for `rbindspct()`.
 
 # photobiology 0.14.3
 

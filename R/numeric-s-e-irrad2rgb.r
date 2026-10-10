@@ -77,7 +77,7 @@ s_e_irrad2rgb <-
       }
       sens[["s.e.irrad"]] <-
         interpolate_spectrum(w.length,
-                             s.e.irrad, sens[["w.length"]], 
+                             s.e.irrad, sens[["w.length"]],
                              fill = 0.0)
       sens[["s.e.irrad.norm"]] <-
         with(sens,

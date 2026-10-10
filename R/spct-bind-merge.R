@@ -1,9 +1,11 @@
-# rbind -------------------------------------------------------------------
+# Row bind spectra---------------------------------------------------------
 
 #' Row-bind spectra
 #'
-#' A wrapper on \code{dplyr::rbind_fill} that preserves class and other
-#' attributes of spectral objects.
+#' Row bind spectra into a similar object with multiple spectra stored in
+#' long form in an object of the most derived shared class, preserving metadata
+#' attributes of individual spectra, and adding a factor distinguishing
+#' individual spectra.
 #'
 #' @param l A \code{source_mspct}, \code{filter_mspct}, \code{reflector_mspct},
 #'   \code{response_mspct}, \code{chroma_mspct}, \code{cps_mspct},
@@ -36,10 +38,10 @@
 #'   a single copy of the value.
 #'
 #' @details Each item of \code{l} should be a spectrum, including \code{NULL}
-#'   (skipped) or an empty object (0 rows). \code{rbindspc} is most useful when
-#'   there are a variable number of (potentially many) objects to stack.
-#'   \code{rbindspct} always returns at least a \code{generic_spct} as long as
-#'   all elements in l are spectra.
+#'   (skipped) or an empty object (0 rows). \code{spct_rbind()} is most useful
+#'   when there are a variable number of (potentially many) objects to stack.
+#'   \code{spct_rbind()} always returns at least a \code{generic_spct} as long
+#'   as all elements in l are spectra.
 #'
 #' @note Note that any additional 'user added' attributes that might exist on
 #'   individual items of the input list will not be preserved in the result.
@@ -57,47 +59,50 @@
 #' @details
 #'  \code{dplyr::rbind_fill} is called internally and the result returned is
 #'   the highest class in the inheritance hierarchy which is common to all
-#'   elements in the list. If not all members of the list belong to one of the
-#'   \code{_spct} classes, an error is triggered. The function sets all data in
-#'   \code{source_spct} and \code{response_spct} objects supplied as arguments
-#'   into energy-based quantities, and all data in \code{filter_spct} objects
-#'   into transmittance before the row binding is done. If any member spectrum
-#'   is tagged, it is untagged before row binding.
+#'   elements in the list of spectra or collection of spectra passed as argument
+#'   to \code{l}. If not all members of \code{l} belong to one of the
+#'   \code{_spct} classes, an error is triggered. If not all spectra in \code{l}
+#'   are expressed on the same base or as the same physical quantity, they are
+#'   converted for \code{source_spct} and \code{response_spct} objects
+#'   into energy-based quantities, and for \code{filter_spct} objects
+#'   into transmittance. If any member spectrum is tagged with colour
+#'   information, it is untagged before row binding.
 #'
-#'   \code{spctbind()} is another name for \code{rbindspct()}.
+#'   \code{rbindspct()} is another name for \code{spct_rbind()}, retained for
+#'   backwards compatibility.
 #'
 #' @family Methods for row-binding spectra
 #'
 #' @examples
 #' # default, adds factor 'spct.idx' with letters as levels
-#' spct <- rbindspct(list(sun.spct, sun.spct))
+#' spct <- spct_rbind(list(sun.spct, sun.spct))
 #' spct
 #' class(spct)
 #'
 #' # adds factor 'spct.idx' with letters as levels
-#' spct <- rbindspct(list(sun.spct, sun.spct), idfactor = TRUE)
+#' spct <- spct_rbind(list(sun.spct, sun.spct), idfactor = TRUE)
 #' head(spct)
 #' class(spct)
 #'
 #' # adds factor 'spct.idx' with the names given to the spectra in the list
 #' # supplied as formal argument 'l' as levels
-#' spct <- rbindspct(list(one = sun.spct, two = sun.spct), idfactor = TRUE)
+#' spct <- spct_rbind(list(one = sun.spct, two = sun.spct), idfactor = TRUE)
 #' head(spct)
 #' class(spct)
 #'
 #' # adds factor 'ID' with the names given to the spectra in the list
 #' # supplied as formal argument 'l' as levels
-#' spct <- rbindspct(list(one = sun.spct, two = sun.spct),
-#'                   idfactor = "ID")
+#' spct <- spct_rbind(list(one = sun.spct, two = sun.spct),
+#'                    idfactor = "ID")
 #' head(spct)
 #' class(spct)
 #'
-rbindspct <- function(l,
-                      use.names = TRUE,
-                      fill = TRUE,
-                      idfactor = TRUE,
-                      attrs.source = NULL,
-                      attrs.simplify = FALSE) {
+spct_rbind <- function(l,
+                       use.names = TRUE,
+                       fill = TRUE,
+                       idfactor = TRUE,
+                       attrs.source = NULL,
+                       attrs.simplify = FALSE) {
   if (is.null(l) || !is.list(l) || length(l) < 1) {
     # _mspct classes are derived from "list"
     warning("Argument 'l' should be a non-empty list or ",
@@ -473,17 +478,19 @@ rbindspct <- function(l,
   ans
 }
 
-#' @rdname rbindspct
+#' @rdname spct_rbind
 #'
-spctbind <- rbindspct
-
-
-# wlbind ------------------------------------------------------------------
-
-#' Row bind spectra by wavelength
+#' @export
 #'
-#' Row bind spectra maintaining wavelength values sorted by interspersing the
-#' rows as needed.
+rbindspct <- spct_rbind
+
+
+# Row merge spectra ------------------------------------------------------
+
+#' Row merge spectra
+#'
+#' Merge two spectra into a single spectrum of the same class interspersing
+#' rows to sort wavelength values.
 #'
 #' @details Two objects belonging to the same class, and containing each data
 #'   for a single spectrum are row bound keeping wavelengths sorted. Only
@@ -498,7 +505,7 @@ spctbind <- rbindspct
 #'   wavelengths in \code{x} and \code{y} triggers an error. I \code{FALSE}
 #'   a message is issued and when a wavelength is both \code{x} and in \code{y},
 #'   the row from \code{y} prevails.
-#' @inheritParams rbindspct fill
+#' @inheritParams spct_rbind fill
 #'
 #' @return An object of the same class as \code{x} and \code{y} with data for
 #' columns shared by \code{x} and \code{y} based on names.
@@ -508,16 +515,16 @@ spctbind <- rbindspct
 #' @family Methods for row-binding spectra
 #'
 #' @examples
-#' wlbind(sun.spct[-(1:3), ], sun.spct[1:3, ])
-#' wlbind(peaks(white_led.source_spct, span = NULL),
-#'        wls_at_target(white_led.source_spct),
-#'        ids = c(x = "peak", y = "fwhm"))
+#' spct_rmerge(sun.spct[-(1:3), ], sun.spct[1:3, ])
+#' spct_rmerge(peaks(white_led.source_spct, span = NULL),
+#'             wls_at_target(white_led.source_spct),
+#'             ids = c(x = "peak", y = "fwhm"))
 #'
-wlbind <- function(x,
-                   y,
-                   ids = c(x = "x", y = "y"),
-                   strict.wls = FALSE,
-                   fill = TRUE) {
+spct_rmerge <- function(x,
+                        y,
+                        ids = c(x = "x", y = "y"),
+                        strict.wls = FALSE,
+                        fill = TRUE) {
   stopifnot(is.any_spct(x) && is.any_spct(y))
   stopifnot(getMultipleWl(x) == 1 && getMultipleWl(y) == 1)
   stopifnot(class_spct(x) == class_spct(y))

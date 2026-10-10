@@ -16,8 +16,8 @@
 #'
 #' @examples
 #' diffraction_single_slit(w.length = 550,
-#'                              slit.width = 1e-5,
-#'                              angle = 0)
+#'                         slit.width = 1e-5,
+#'                         angle = 0)
 #'
 #' # use odd number for length.out so that 0 is in the sequence
 #' angles <- pi * seq(from = -1/2, to = 1/2, length.out = 501)
