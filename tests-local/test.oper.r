@@ -25,7 +25,7 @@ Rprof(NULL)
 summaryRprof()
 
 Rprof(interval = 0.0001)
-z <- spct_rbind(list(test, test))
+z <- rbind_spct(list(test, test))
 Rprof(NULL)
 summaryRprof()
 

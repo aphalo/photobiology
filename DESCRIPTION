@@ -52,5 +52,5 @@ URL: https://docs.r4photobiology.info/photobiology/,
 BugReports: https://github.com/aphalo/photobiology/issues
 Encoding: UTF-8
 VignetteBuilder: knitr
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1
 Config/Needs/website: rmarkdown

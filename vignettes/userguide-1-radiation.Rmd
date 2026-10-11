@@ -943,7 +943,7 @@ default name `spct.idx` is used for the `idfactor` unless an argument is
 passed to parameter `idfactor`.
 
 ```{r, bind-1}
-sun_evening_12.spct <- spct_rbind(sun_evening.mspct[1:2])
+sun_evening_12.spct <- rbind_spct(sun_evening.mspct[1:2])
 sun_evening_12.spct
 ```
 
@@ -953,7 +953,7 @@ collection, is implemented in method `subset2mspct`. In this case,
 metadata is set for the individual spectra if it is available in the
 object being subset. What metadata is automatically stored depends on
 the version of this package used when creating the long form spectrum
-object by means of `spct_rbind()`. Versions 0.9.14 and later preserve
+object by means of `rbind_spct()`. Versions 0.9.14 and later preserve
 most of the metadata.
 
 ```{r, bind-1a}
@@ -2171,8 +2171,8 @@ character value is supplied to as `idfactor` argument, this is used as
 name for the factor.
 
 ```{r, manip-2}
-spct_rbind(list(sun.spct, shade.spct))
-spct_rbind(list(A = sun.spct, B = shade.spct), idfactor = "site")
+rbind_spct(list(sun.spct, shade.spct))
+rbind_spct(list(A = sun.spct, B = shade.spct), idfactor = "site")
 ```
 
 The name of the ID factor is stored as metadata in attribute

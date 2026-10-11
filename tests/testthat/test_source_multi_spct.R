@@ -475,7 +475,7 @@ test_that("source_mspct", {
 
   # constructor methods for 'long' spct objects -----------------------------
 
-  my_long.spct <- spct_rbind(spct.l)
+  my_long.spct <- rbind_spct(spct.l)
   my3_df.mspct <- subset2mspct(my_long.spct)
 
   expect_equal(paste("spct", 1:5, sep = "_"), names(my3_df.mspct))
@@ -489,7 +489,7 @@ test_that("source_mspct", {
   # constructor methods for 'long' spct objects embedded in mspct collection -
 
   # long is last
-  my_long.spct <- spct_rbind(spct.l)
+  my_long.spct <- rbind_spct(spct.l)
   my_long.mspct <- my.mspct
   my_long.mspct[["spct_6"]] <- my_long.spct
   my4_df.mspct <- subset2mspct(my_long.mspct)
@@ -509,7 +509,7 @@ test_that("source_mspct", {
   expect_equal(class(my4_df.mspct[[10]])[1:2], c("source_spct", "generic_spct") )
 
   # long is first
-  my_long.spct <- spct_rbind(spct.l)
+  my_long.spct <- rbind_spct(spct.l)
 
   my_long.mspct <- source_mspct(c(list(my_long.spct), spct.l))
 
@@ -530,7 +530,7 @@ test_that("source_mspct", {
   expect_equal(class(my5_df.mspct[[10]])[1:2], c("source_spct", "generic_spct") )
 
   # long in the middle
-  my_long.spct <- spct_rbind(spct.l)
+  my_long.spct <- rbind_spct(spct.l)
 
   my_long.mspct <- source_mspct(c(spct.l[1:2], list(my_long.spct), spct.l[3:5]))
 

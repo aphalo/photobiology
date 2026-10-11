@@ -58,7 +58,7 @@ test_that("raw_spct", {
   expect_is(getInstrSettings(my.mspct[["two"]]), "instr_settings")
 
   ## long form
-  long.spct <- spct_rbind(my.mspct)
+  long.spct <- rbind_spct(my.mspct)
 
   expect_named(getWhenMeasured(long.spct), c("one", "two"))
   expect_named(getWhatMeasured(long.spct), c("one", "two"))
@@ -169,7 +169,7 @@ test_that("cps_spct", {
   expect_is(getInstrSettings(my.mspct[["two"]]), "instr_settings")
 
   ## long form
-  long.spct <- spct_rbind(my.mspct)
+  long.spct <- rbind_spct(my.mspct)
 
   expect_named(getWhenMeasured(long.spct), c("one", "two"))
   expect_named(getWhatMeasured(long.spct), c("one", "two"))
@@ -285,7 +285,7 @@ test_that("source_spct", {
   expect_is(getInstrSettings(my.mspct[["two"]]), "instr_settings")
 
   ## long form
-  long.spct <- spct_rbind(my.mspct)
+  long.spct <- rbind_spct(my.mspct)
 
   expect_named(getWhenMeasured(long.spct), c("one", "two"))
   expect_named(getWhatMeasured(long.spct), c("one", "two"))
@@ -317,13 +317,13 @@ test_that("source_spct", {
   expect_is(getInstrSettings(long.spct)[["two"]], "instr_settings")
 
   ## attributes
-  zz <- spct_rbind(sun_evening.mspct, attrs.simplify = TRUE)
+  zz <- rbind_spct(sun_evening.mspct, attrs.simplify = TRUE)
   expect_equal(length(comment(zz)), 1L)
   expect_equal(nrow(where_measured(zz)), 1L)
   expect_equal(length(what_measured(zz)), 1L)
   expect_equal(length(how_measured(zz)), 1L)
   expect_equal(length(when_measured(zz)), length(sun_evening.mspct))
-  zz <- spct_rbind(sun_evening.mspct, attrs.simplify = FALSE)
+  zz <- rbind_spct(sun_evening.mspct, attrs.simplify = FALSE)
   expect_equal(length(comment(zz)), 1L)
   expect_equal(nrow(where_measured(zz)), length(sun_evening.mspct))
   expect_equal(length(what_measured(zz)), length(sun_evening.mspct))
@@ -331,11 +331,11 @@ test_that("source_spct", {
   expect_equal(length(when_measured(zz)), length(sun_evening.mspct))
 
   ## idfactor
-  zz <- spct_rbind(sun_evening.mspct, idfactor = FALSE, attrs.simplify = FALSE)
+  zz <- rbind_spct(sun_evening.mspct, idfactor = FALSE, attrs.simplify = FALSE)
   expect_equal(colnames(zz), c( "w.length", "s.e.irrad"))
   expect_true(setequal(colnames(where_measured(zz)), c("spct.idx", "lat", "lon", "address")))
 
-  zz <- spct_rbind(sun_evening.mspct, idfactor = TRUE, attrs.simplify = FALSE)
+  zz <- rbind_spct(sun_evening.mspct, idfactor = TRUE, attrs.simplify = FALSE)
   expect_equal(colnames(zz), c( "w.length", "s.e.irrad", "spct.idx"))
   expect_true(setequal(colnames(where_measured(zz)), c("spct.idx", "lat", "lon", "address", "spct.idx")))
 
@@ -405,7 +405,7 @@ test_that("source_spct", {
   expect_is(getInstrSettings(expanded.mspct[["b"]]), "instr_settings")
 
   ## build long spctrum from mixed collection
-  long3.spct <- spct_rbind(mixed.mspct)
+  long3.spct <- rbind_spct(mixed.mspct)
 
   spct.idx.rle <- rle(as.character(long3.spct$spct.idx))
   expect_equal(spct.idx.rle$lengths, rep(1421L, 3L))
@@ -468,7 +468,7 @@ test_that("object_spct", {
   expect_equal(getRfrType(my.mspct[["two"]]), Rfr.type.test)
 
   ## long form
-  long.spct <- spct_rbind(my.mspct)
+  long.spct <- rbind_spct(my.mspct)
 
   expect_equal(getTfrType(long.spct), Tfr.type.test)
   expect_equal(getRfrType(long.spct), Rfr.type.test)
@@ -505,7 +505,7 @@ test_that("filter_spct", {
   expect_equal(getTfrType(my.mspct[["two"]]), Tfr.type.test)
 
   ## long form
-  long.spct <- spct_rbind(my.mspct)
+  long.spct <- rbind_spct(my.mspct)
 
   expect_equal(getTfrType(long.spct), Tfr.type.test)
 
@@ -544,7 +544,7 @@ test_that("reflector_spct", {
   expect_equal(getRfrType(my.mspct[["two"]]), Rfr.type.test)
 
   ## long form
-  long.spct <- spct_rbind(my.mspct)
+  long.spct <- rbind_spct(my.mspct)
 
    expect_equal(getRfrType(long.spct), Rfr.type.test)
 

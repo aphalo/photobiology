@@ -147,7 +147,7 @@ head(dimnames(two_suns.row_mat)$spct)
 head(attr(two_suns.row_mat, "w.length"))
 
 ## ----bind-1-------------------------------------------------------------------
-sun_evening_12.spct <- spct_rbind(sun_evening.mspct[1:2])
+sun_evening_12.spct <- rbind_spct(sun_evening.mspct[1:2])
 sun_evening_12.spct
 
 ## ----bind-1a------------------------------------------------------------------
@@ -513,8 +513,8 @@ using_energy(sun.spct * UVB.wb)
 shade.spct <- sun.spct
 
 ## ----manip-2------------------------------------------------------------------
-spct_rbind(list(sun.spct, shade.spct))
-spct_rbind(list(A = sun.spct, B = shade.spct), idfactor = "site")
+rbind_spct(list(sun.spct, shade.spct))
+rbind_spct(list(A = sun.spct, B = shade.spct), idfactor = "site")
 
 ## ----manip-3------------------------------------------------------------------
 sun.spct[1:10, ]

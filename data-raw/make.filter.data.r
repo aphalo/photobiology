@@ -26,7 +26,7 @@ yellow_gel.spct <- rosco.mspct$Rosco_Canary_Supergel_no312
 
 two_filters.mspct <- filter_mspct(list(polyester.spct, yellow_gel.spct))
 
-two_filters.spct <- spct_rbind(list(polyester.spct, yellow_gel.spct))
+two_filters.spct <- rbind_spct(list(polyester.spct, yellow_gel.spct))
 
 save(clear.spct, opaque.spct, polyester.spct, yellow_gel.spct,
      two_filters.spct, two_filters.mspct, file = "data/filter-data.rda")

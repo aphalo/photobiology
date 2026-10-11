@@ -207,7 +207,7 @@ test_that("solute_mspct", {
 
 # constructor methods for 'long' spct objects -----------------------------
 
-  my_long.spct <- spct_rbind(spct.l)
+  my_long.spct <- rbind_spct(spct.l)
   my3_df.mspct <- subset2mspct(my_long.spct)
 
   expect_equal(paste("spct", 1:5, sep = "_"), names(my3_df.mspct))
@@ -373,7 +373,7 @@ test_that("solute_mspct_absorption", {
 
   # constructor methods for 'long' spct objects -----------------------------
 
-  my_long.spct <- spct_rbind(spct.l)
+  my_long.spct <- rbind_spct(spct.l)
   my3_df.mspct <- subset2mspct(my_long.spct)
 
   expect_equal(paste("spct", 1:5, sep = "_"), names(my3_df.mspct))

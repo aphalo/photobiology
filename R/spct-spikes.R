@@ -660,7 +660,7 @@ despike.generic_spct <-
                        y.var.name = y.var.name,
                        var.name = var.name,
                        ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
@@ -735,7 +735,7 @@ despike.source_spct <-
                        max.spike.width = max.spike.width,
                        unit.out = unit.out,
                        ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (unit.out == "energy") {
@@ -802,7 +802,7 @@ despike.response_spct <-
                        max.spike.width = max.spike.width,
                        unit.out = unit.out,
                        ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (unit.out == "energy") {
@@ -871,7 +871,7 @@ despike.filter_spct <-
                        max.spike.width = max.spike.width,
                        filter.qty = filter.qty,
                        ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (filter.qty == "transmittance") {
@@ -937,7 +937,7 @@ despike.reflector_spct <- function(x,
                      na.rm = na.rm,
                      max.spike.width = max.spike.width,
                      ...)
-    return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+    return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
@@ -991,7 +991,7 @@ despike.solute_spct <-
                        na.rm = na.rm,
                        max.spike.width = max.spike.width,
                        ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
@@ -1050,7 +1050,7 @@ despike.cps_spct <- function(x,
                      na.rm = na.rm,
                      max.spike.width = max.spike.width,
                      ...)
-    return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+    return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
@@ -1106,7 +1106,7 @@ despike.raw_spct <- function(x,
                      na.rm = na.rm,
                      max.spike.width = max.spike.width,
                      ...)
-    return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+    return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
@@ -1534,7 +1534,7 @@ spikes.generic_spct <-
                       max.spike.width = max.spike.width,
                       var.name = var.name,
                       ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
@@ -1597,7 +1597,7 @@ spikes.source_spct <-
                       max.spike.width = max.spike.width,
                       unit.out = unit.out,
                       ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
@@ -1656,7 +1656,7 @@ spikes.response_spct <-
                       max.spike.width = max.spike.width,
                       unit.out = unit.out,
                       ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
@@ -1717,7 +1717,7 @@ spikes.filter_spct <-
                       max.spike.width = max.spike.width,
                       filter.qty = filter.qty,
                       ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
@@ -1772,7 +1772,7 @@ spikes.reflector_spct <- function(x,
                     na.rm = na.rm,
                     max.spike.width = max.spike.width,
                     ...)
-    return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+    return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
@@ -1819,7 +1819,7 @@ spikes.solute_spct <-
                       na.rm = na.rm,
                       max.spike.width = max.spike.width,
                       ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
@@ -1874,7 +1874,7 @@ spikes.cps_spct <- function(x,
                     max.spike.width = max.spike.width,
                     var.name = var.name,
                     ...)
-    return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+    return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   if (!check_wl_stepsize(x, span = 15, min.stepsize = 3)) {
@@ -1922,7 +1922,7 @@ spikes.raw_spct <- function(x,
                     max.spike.width = max.spike.width,
                     var.name = var.name,
                     ...)
-    return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+    return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   check_wl_stepsize(x, span = 15, min.stepsize = 3)

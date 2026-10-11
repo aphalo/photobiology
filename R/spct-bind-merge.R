@@ -38,9 +38,9 @@
 #'   a single copy of the value.
 #'
 #' @details Each item of \code{l} should be a spectrum, including \code{NULL}
-#'   (skipped) or an empty object (0 rows). \code{spct_rbind()} is most useful
+#'   (skipped) or an empty object (0 rows). \code{rbind_spct()} is most useful
 #'   when there are a variable number of (potentially many) objects to stack.
-#'   \code{spct_rbind()} always returns at least a \code{generic_spct} as long
+#'   \code{rbind_spct()} always returns at least a \code{generic_spct} as long
 #'   as all elements in l are spectra.
 #'
 #' @note Note that any additional 'user added' attributes that might exist on
@@ -68,36 +68,36 @@
 #'   into transmittance. If any member spectrum is tagged with colour
 #'   information, it is untagged before row binding.
 #'
-#'   \code{rbindspct()} is another name for \code{spct_rbind()}, retained for
+#'   \code{rbindspct()} is another name for \code{rbind_spct()}, retained for
 #'   backwards compatibility.
 #'
 #' @family Methods for row-binding spectra
 #'
 #' @examples
 #' # default, adds factor 'spct.idx' with letters as levels
-#' spct <- spct_rbind(list(sun.spct, sun.spct))
+#' spct <- rbind_spct(list(sun.spct, sun.spct))
 #' spct
 #' class(spct)
 #'
 #' # adds factor 'spct.idx' with letters as levels
-#' spct <- spct_rbind(list(sun.spct, sun.spct), idfactor = TRUE)
+#' spct <- rbind_spct(list(sun.spct, sun.spct), idfactor = TRUE)
 #' head(spct)
 #' class(spct)
 #'
 #' # adds factor 'spct.idx' with the names given to the spectra in the list
 #' # supplied as formal argument 'l' as levels
-#' spct <- spct_rbind(list(one = sun.spct, two = sun.spct), idfactor = TRUE)
+#' spct <- rbind_spct(list(one = sun.spct, two = sun.spct), idfactor = TRUE)
 #' head(spct)
 #' class(spct)
 #'
 #' # adds factor 'ID' with the names given to the spectra in the list
 #' # supplied as formal argument 'l' as levels
-#' spct <- spct_rbind(list(one = sun.spct, two = sun.spct),
+#' spct <- rbind_spct(list(one = sun.spct, two = sun.spct),
 #'                    idfactor = "ID")
 #' head(spct)
 #' class(spct)
 #'
-spct_rbind <- function(l,
+rbind_spct <- function(l,
                        use.names = TRUE,
                        fill = TRUE,
                        idfactor = TRUE,
@@ -478,11 +478,11 @@ spct_rbind <- function(l,
   ans
 }
 
-#' @rdname spct_rbind
+#' @rdname rbind_spct
 #'
 #' @export
 #'
-rbindspct <- spct_rbind
+rbindspct <- rbind_spct
 
 
 # Row merge spectra ------------------------------------------------------
@@ -505,7 +505,7 @@ rbindspct <- spct_rbind
 #'   wavelengths in \code{x} and \code{y} triggers an error. I \code{FALSE}
 #'   a message is issued and when a wavelength is both \code{x} and in \code{y},
 #'   the row from \code{y} prevails.
-#' @inheritParams spct_rbind fill
+#' @inheritParams rbind_spct fill
 #'
 #' @return An object of the same class as \code{x} and \code{y} with data for
 #' columns shared by \code{x} and \code{y} based on names.
@@ -515,12 +515,12 @@ rbindspct <- spct_rbind
 #' @family Methods for row-binding spectra
 #'
 #' @examples
-#' spct_rmerge(sun.spct[-(1:3), ], sun.spct[1:3, ])
-#' spct_rmerge(peaks(white_led.source_spct, span = NULL),
+#' rmerge_spct(sun.spct[-(1:3), ], sun.spct[1:3, ])
+#' rmerge_spct(peaks(white_led.source_spct, span = NULL),
 #'             wls_at_target(white_led.source_spct),
 #'             ids = c(x = "peak", y = "fwhm"))
 #'
-spct_rmerge <- function(x,
+rmerge_spct <- function(x,
                         y,
                         ids = c(x = "x", y = "y"),
                         strict.wls = FALSE,
@@ -563,7 +563,7 @@ spct_rmerge <- function(x,
   x[["id"]] <- ids[["x"]]
   y[["id"]] <- ids[["y"]]
   old.setting <- disable_check_spct()
-  z <- spct_rbind(list(x, y),
+  z <- rbind_spct(list(x, y),
                  fill = fill,
                  idfactor = FALSE,
                  attrs.simplify = TRUE)

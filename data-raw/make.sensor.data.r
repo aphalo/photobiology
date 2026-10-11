@@ -42,7 +42,7 @@ setSensorProperties(ccd.spct,
 two_sensors.mspct <- response_mspct(list(photodiode = photodiode.spct,
                                          ccd = ccd.spct))
 
-two_sensors.spct <- spct_rbind(two_sensors.mspct)
+two_sensors.spct <- rbind_spct(two_sensors.mspct)
 
 save(photodiode.spct, ccd.spct, two_sensors.mspct, two_sensors.spct,
      file = "data/response-data.rda")

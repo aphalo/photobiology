@@ -388,7 +388,7 @@ trim_wl.generic_spct <- function(x,
                  use.hinges = use.hinges,
                  fill = fill,
                  ...)
-    return(spct_rbind(z, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbind_spct(z, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
   if (is.null(range)) {

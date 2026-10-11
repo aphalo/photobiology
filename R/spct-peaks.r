@@ -636,7 +636,7 @@ peaks.generic_spct <-
                      refine.wl = refine.wl,
                      method = method,
                      ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     check_wl_stepsize(x = x, span = span, na.rm = TRUE, min.stepsize = 3)
@@ -713,7 +713,7 @@ peaks.source_spct <-
                      refine.wl = refine.wl,
                      method = method,
                      ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     check_wl_stepsize(x = x, span = span, na.rm = TRUE, min.stepsize = 3)
@@ -784,7 +784,7 @@ peaks.response_spct <-
                      refine.wl = refine.wl,
                      method = method,
                      ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     check_wl_stepsize(x = x, span = span, na.rm = TRUE, min.stepsize = 3)
@@ -858,7 +858,7 @@ peaks.filter_spct <-
                      refine.wl = refine.wl,
                      method = method,
                      ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     check_wl_stepsize(x = x, span = span, na.rm = TRUE, min.stepsize = 3)
@@ -926,7 +926,7 @@ peaks.reflector_spct <- function(x,
                    refine.wl = refine.wl,
                    method = method,
                    ...)
-    return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+    return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   check_wl_stepsize(x = x, span = span, na.rm = TRUE, min.stepsize = 3)
@@ -987,7 +987,7 @@ peaks.solute_spct <-
                      refine.wl = refine.wl,
                      method = method,
                      ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     check_wl_stepsize(x = x, span = span, na.rm = TRUE, min.stepsize = 3)
@@ -1055,7 +1055,7 @@ peaks.cps_spct <- function(x,
                    refine.wl = refine.wl,
                    method = method,
                    ...)
-    return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+    return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   check_wl_stepsize(x = x, span = span, na.rm = TRUE, min.stepsize = 3)
@@ -1115,7 +1115,7 @@ peaks.raw_spct <- function(x, span = 5,
                    refine.wl = refine.wl,
                    method = method,
                    ...)
-    return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+    return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   check_wl_stepsize(x = x, span = span, na.rm = TRUE, min.stepsize = 3)
@@ -1606,7 +1606,7 @@ valleys.generic_spct <-
                        refine.wl = refine.wl,
                        method = method,
                        ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     check_wl_stepsize(x = x, span = span, na.rm = TRUE, min.stepsize = 3)
@@ -1683,7 +1683,7 @@ valleys.source_spct <-
                        refine.wl = refine.wl,
                        method = method,
                        ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     check_wl_stepsize(x = x, span = span, na.rm = TRUE, min.stepsize = 3)
@@ -1754,7 +1754,7 @@ valleys.response_spct <-
                        refine.wl = refine.wl,
                        method = method,
                        ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     check_wl_stepsize(x = x, span = span, na.rm = TRUE, min.stepsize = 3)
@@ -1827,7 +1827,7 @@ valleys.filter_spct <-
                        refine.wl = refine.wl,
                        method = method,
                        ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     check_wl_stepsize(x = x, span = span, na.rm = TRUE, min.stepsize = 3)
@@ -1896,7 +1896,7 @@ valleys.reflector_spct <-
                        refine.wl = refine.wl,
                        method = method,
                        ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     check_wl_stepsize(x = x, span = span, na.rm = TRUE, min.stepsize = 3)
@@ -1957,7 +1957,7 @@ valleys.solute_spct <-
                        refine.wl = refine.wl,
                        method = method,
                        ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     check_wl_stepsize(x = x, span = span, na.rm = TRUE, min.stepsize = 3)
@@ -2026,7 +2026,7 @@ valleys.cps_spct <-
                        refine.wl = refine.wl,
                        method = method,
                        ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     check_wl_stepsize(x = x, span = span, na.rm = TRUE, min.stepsize = 3)
@@ -2086,7 +2086,7 @@ valleys.raw_spct <- function(x, span = 5,
                      refine.wl = refine.wl,
                      method = method,
                      ...)
-    return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+    return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   check_wl_stepsize(x = x, span = span, na.rm = TRUE, min.stepsize = 3)
@@ -2587,7 +2587,7 @@ find_wls <- function(x,
     collector.ls[[1L]] <- x[NULL, ]
   }
   if (is.any_spct(x)) {
-    zz <- spct_rbind(collector.ls,
+    zz <- rbind_spct(collector.ls,
                     fill = FALSE,
                     idfactor = FALSE,
                     attrs.source = 1L)
@@ -2740,7 +2740,7 @@ wls_at_target.generic_spct <-
                              col.name = col.name,
                              y.var.name = y.var.name,
                              ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     find_wls(x,
@@ -2781,7 +2781,7 @@ wls_at_target.source_spct <-
                              na.rm = na.rm,
                              unit.out = unit.out,
                              ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (unit.out == "energy") {
@@ -2829,7 +2829,7 @@ wls_at_target.response_spct <-
                              na.rm = na.rm,
                              unit.out = unit.out,
                              ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (unit.out == "energy") {
@@ -2879,7 +2879,7 @@ wls_at_target.filter_spct <-
                              na.rm = na.rm,
                              filter.qty = filter.qty,
                              ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (filter.qty == "transmittance") {
@@ -2924,7 +2924,7 @@ wls_at_target.reflector_spct <-
                              idfactor = idfactor,
                              na.rm = na.rm,
                              ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     find_wls(x,
@@ -2960,7 +2960,7 @@ wls_at_target.solute_spct <-
                              idfactor = idfactor,
                              na.rm = na.rm,
                              ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
@@ -3003,7 +3003,7 @@ wls_at_target.cps_spct <-
                              idfactor = idfactor,
                              na.rm = na.rm,
                              ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     find_wls(x,
@@ -3040,7 +3040,7 @@ wls_at_target.raw_spct <-
                              idfactor = idfactor,
                              na.rm = na.rm,
                              ...)
-      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(rbind_spct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     find_wls(x,
@@ -3088,3 +3088,8 @@ wls_at_target.generic_mspct <- function(x,
           .parallel = .parallel,
           .paropts = .paropts)
 }
+
+
+# FWHM --------------------------------------------------------------------
+
+
