@@ -13,7 +13,7 @@ Raman.mspct <- hyperSpec2mspct(test_data,
                                member.class = "response_spct",
                                spct.data.var = "s.e.response")
 
-rbindspct(Raman.mspct)
+rbind_spct(Raman.mspct)
 comment(Raman.mspct[[1]])
 
 autoplot(Raman.mspct[1:5])

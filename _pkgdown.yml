@@ -39,7 +39,7 @@ reference:
     - as.object_spct
     - as.chroma_spct
     - setGenericSpct
-    - generic_mspct
+    - generic_spct
     - class_spct
     - spct_classes
     - rmDerivedSpct
@@ -252,7 +252,8 @@ reference:
     - Extract_mspct
     - Subset
     - c
-    - rbindspct
+    - rbind_spct
+    - rmerge_spct
     - merge2object_spct
     - split2mspct
     - subset2mspct

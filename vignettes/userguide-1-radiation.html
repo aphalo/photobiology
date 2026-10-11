@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2026-08-30" />
+<meta name="date" content="2026-10-10" />
 
 <title>User Guide: 1 Radiation</title>
 
@@ -340,9 +340,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">User Guide: 1 Radiation</h1>
-<h3 class="subtitle">Package ‘photobiology’ 0.14.2.9000</h3>
+<h3 class="subtitle">Package ‘photobiology’ 0.14.3.9100</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2026-08-30</h4>
+<h4 class="date">2026-10-10</h4>
 
 
 <div id="TOC">
@@ -2247,7 +2247,7 @@ retained as named lists or multi-row data frames. We use a time series
 of sunlight spectra. The default name <code>spct.idx</code> is used for
 the <code>idfactor</code> unless an argument is passed to parameter
 <code>idfactor</code>.</p>
-<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" tabindex="-1"></a>sun_evening_12.spct <span class="ot">&lt;-</span> <span class="fu">rbindspct</span>(sun_evening.mspct[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" tabindex="-1"></a>sun_evening_12.spct <span class="ot">&lt;-</span> <span class="fu">rbind_spct</span>(sun_evening.mspct[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span>
 <span id="cb104-2"><a href="#cb104-2" tabindex="-1"></a>sun_evening_12.spct</span></code></pre></div>
 <pre><code>## Object: source_spct [3,186 x 3]
 ## containing 2 spectra in long form
@@ -2276,8 +2276,8 @@ storing them as a collection, is implemented in method
 individual spectra if it is available in the object being subset. What
 metadata is automatically stored depends on the version of this package
 used when creating the long form spectrum object by means of
-<code>rbindspct()</code>. Versions 0.9.14 and later preserve most of the
-metadata.</p>
+<code>rbind_spct()</code>. Versions 0.9.14 and later preserve most of
+the metadata.</p>
 <div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" tabindex="-1"></a><span class="fu">subset2mspct</span>(sun_evening_12.spct)</span></code></pre></div>
 <pre><code>## Object: source_mspct [2 x 1]
 ## --- Member: time.01 ---
@@ -2991,10 +2991,7 @@ generator to ensure repeatability). First from a collection.</p>
 ## containing  2  spectra in long form
 ## Wavelength range 290-1000 nm, step 0.34-0.47 nm
 ## Label:  cosine.hour.9 
-## time.01 measured on 2023-06-12 18:38:00.379657 UTC
 ## time.02 measured on 2023-06-12 18:39:00.797266 UTC
-## time.03 measured on 2023-06-12 18:40:00.714554 UTC
-## time.04 measured on 2023-06-12 18:41:00.768459 UTC
 ## time.05 measured on 2023-06-12 18:42:00.769065 UTC 
 ## Measured at 60.227 N, 24.018 E; Viikki, Helsinki, FI 
 ## Variables:
@@ -6063,7 +6060,7 @@ identify the source of the observations after the binding. If the
 supplied list has named members, then these names are used as factor
 levels. If a character value is supplied to as <code>idfactor</code>
 argument, this is used as name for the factor.</p>
-<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="#cb342-1" tabindex="-1"></a><span class="fu">rbindspct</span>(<span class="fu">list</span>(sun.spct, shade.spct))</span></code></pre></div>
+<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="#cb342-1" tabindex="-1"></a><span class="fu">rbind_spct</span>(<span class="fu">list</span>(sun.spct, shade.spct))</span></code></pre></div>
 <pre><code>## Object: source_spct [1,044 x 4]
 ## containing 2 spectra in long form
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -6085,7 +6082,7 @@ argument, this is used as name for the factor.</p>
 ## 3     282.         0         0 spct_1  
 ## 4     283.         0         0 spct_1  
 ## # ℹ 1,040 more rows</code></pre>
-<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb344-1"><a href="#cb344-1" tabindex="-1"></a><span class="fu">rbindspct</span>(<span class="fu">list</span>(<span class="at">A =</span> sun.spct, <span class="at">B =</span> shade.spct), <span class="at">idfactor =</span> <span class="st">&quot;site&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb344"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb344-1"><a href="#cb344-1" tabindex="-1"></a><span class="fu">rbind_spct</span>(<span class="fu">list</span>(<span class="at">A =</span> sun.spct, <span class="at">B =</span> shade.spct), <span class="at">idfactor =</span> <span class="st">&quot;site&quot;</span>)</span></code></pre></div>
 <pre><code>## Object: source_spct [1,044 x 4]
 ## containing 2 spectra in long form
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -6749,8 +6746,8 @@ should be also used carefully and the results inspected as it can remove
 features of interest from the data. Usually one knows from theory or
 experience if spikes can be real features or not.</p>
 <div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb408-1"><a href="#cb408-1" tabindex="-1"></a><span class="fu">spikes</span>(sun.spct)</span></code></pre></div>
-<pre><code>## Object: source_spct [2 x 2]
-## Wavelength range 398-432 nm, step 34 nm 
+<pre><code>## Object: source_spct [6 x 2]
+## Wavelength range 382-760 nm, step 1-329 nm 
 ## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
 ## Measured at 60.20911 N, 24.96474 E; Kumpula, Helsinki, FI 
@@ -6758,14 +6755,19 @@ experience if spikes can be real features or not.</p>
 ##  w.length: Wavelength [nm]
 ##  s.e.irrad: Spectral energy irradiance [W m-2 nm-1] 
 ## --
-## # A tibble: 2 × 2
+## # A tibble: 6 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1      398     0.504
-## 2      432     0.646</code></pre>
+## 1      382     0.323
+## 2      393     0.242
+## 3      394     0.298
+## 4      397     0.254
+## 5      431     0.414
+## 6      760     0.179</code></pre>
 <div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb410-1"><a href="#cb410-1" tabindex="-1"></a>my_sun.spct <span class="ot">&lt;-</span> <span class="fu">despike</span>(sun.spct)</span>
 <span id="cb410-2"><a href="#cb410-2" tabindex="-1"></a><span class="fu">spikes</span>(my_sun.spct)</span></code></pre></div>
-<pre><code>## Object: source_spct [0 x 2]
+<pre><code>## Object: source_spct [3 x 2]
+## Wavelength range 383-761 nm, step 47-331 nm 
 ## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
 ## Measured at 60.20911 N, 24.96474 E; Kumpula, Helsinki, FI 
@@ -6773,8 +6775,12 @@ experience if spikes can be real features or not.</p>
 ##  w.length: Wavelength [nm]
 ##  s.e.irrad: Spectral energy irradiance [W m-2 nm-1] 
 ## --
-## # A tibble: 0 × 2
-## # ℹ 2 variables: w.length &lt;dbl&gt;, s.e.irrad &lt;dbl&gt;</code></pre>
+## # A tibble: 3 × 2
+##   w.length s.e.irrad
+##      &lt;dbl&gt;     &lt;dbl&gt;
+## 1      383     0.261
+## 2      430     0.457
+## 3      761     0.137</code></pre>
 </div>
 <div id="smoothing-of-spectra" class="section level3">
 <h3>Smoothing of spectra</h3>
@@ -8546,27 +8552,8 @@ called by the name of spikes. The value returned is as in the case of
 <code>peaks</code> a subset of the original spectrum, however, each
 spike can be composed of multiple successive observations.</p>
 <div class="sourceCode" id="cb518"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb518-1"><a href="#cb518-1" tabindex="-1"></a><span class="fu">spikes</span>(sun.spct)</span></code></pre></div>
-<pre><code>## Object: source_spct [2 x 2]
-## Wavelength range 398-432 nm, step 34 nm 
-## Label: sunlight, simulated 
-## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.20911 N, 24.96474 E; Kumpula, Helsinki, FI 
-## Variables:
-##  w.length: Wavelength [nm]
-##  s.e.irrad: Spectral energy irradiance [W m-2 nm-1] 
-## --
-## # A tibble: 2 × 2
-##   w.length s.e.irrad
-##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1      398     0.504
-## 2      432     0.646</code></pre>
-<p>The parameters controlling the sensitivity also differ as the
-algorithm is based on a local estimate of variance, constrained to a
-given maximum width. With <code>z.threshold = 6</code> instead of the
-default <code>z.threshold = 9</code> more spikes are detected.</p>
-<div class="sourceCode" id="cb520"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb520-1"><a href="#cb520-1" tabindex="-1"></a><span class="fu">spikes</span>(sun.spct, <span class="at">z.threshold =</span> <span class="dv">6</span>)</span></code></pre></div>
 <pre><code>## Object: source_spct [6 x 2]
-## Wavelength range 393-760 nm, step 1-328 nm 
+## Wavelength range 382-760 nm, step 1-329 nm 
 ## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
 ## Measured at 60.20911 N, 24.96474 E; Kumpula, Helsinki, FI 
@@ -8577,12 +8564,34 @@ default <code>z.threshold = 9</code> more spikes are detected.</p>
 ## # A tibble: 6 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1      393     0.242
-## 2      395     0.470
-## 3      397     0.254
-## 4      398     0.504
-## 5      432     0.646
+## 1      382     0.323
+## 2      393     0.242
+## 3      394     0.298
+## 4      397     0.254
+## 5      431     0.414
 ## 6      760     0.179</code></pre>
+<p>The parameters controlling the sensitivity also differ as the
+algorithm is based on a local estimate of variance, constrained to a
+given maximum width. With <code>z.threshold = 6</code> instead of the
+default <code>z.threshold = 9</code> more spikes are detected.</p>
+<div class="sourceCode" id="cb520"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb520-1"><a href="#cb520-1" tabindex="-1"></a><span class="fu">spikes</span>(sun.spct, <span class="at">z.threshold =</span> <span class="dv">6</span>)</span></code></pre></div>
+<pre><code>## Object: source_spct [5 x 2]
+## Wavelength range 393-760 nm, step 1-329 nm 
+## Label: sunlight, simulated 
+## Measured on 2010-06-22 09:51:00 UTC 
+## Measured at 60.20911 N, 24.96474 E; Kumpula, Helsinki, FI 
+## Variables:
+##  w.length: Wavelength [nm]
+##  s.e.irrad: Spectral energy irradiance [W m-2 nm-1] 
+## --
+## # A tibble: 5 × 2
+##   w.length s.e.irrad
+##      &lt;dbl&gt;     &lt;dbl&gt;
+## 1      393     0.242
+## 2      394     0.298
+## 3      397     0.254
+## 4      431     0.414
+## 5      760     0.179</code></pre>
 <p>Low level functions <code>find_peaks</code>,
 <code>find_valleys</code>, <code>fit_peaks</code>,
 <code>fit_valleys</code>, and <code>find_spikes</code> take numeric
