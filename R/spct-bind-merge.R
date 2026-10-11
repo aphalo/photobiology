@@ -563,7 +563,7 @@ spct_rmerge <- function(x,
   x[["id"]] <- ids[["x"]]
   y[["id"]] <- ids[["y"]]
   old.setting <- disable_check_spct()
-  z <- rbindspct(list(x, y),
+  z <- spct_rbind(list(x, y),
                  fill = fill,
                  idfactor = FALSE,
                  attrs.simplify = TRUE)

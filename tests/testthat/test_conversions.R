@@ -327,7 +327,7 @@ test_that("e2q", {
   expect_true(is_normalized(norm_s.spct))
   expect_true(is_normalized(e2q(norm_s.spct)))
 
-  slong.spct <- rbindspct(list(a = s.spct, b = s.spct * 2), idfactor = "my_factor")
+  slong.spct <- spct_rbind(list(a = s.spct, b = s.spct * 2), idfactor = "my_factor")
   expect_equal(getIdFactor(slong.spct),
                getIdFactor(e2q(slong.spct, action = "replace")))
 
@@ -357,7 +357,7 @@ test_that("q2e", {
   expect_true(is_normalized(norm_s.spct))
   expect_true(is_normalized(q2e(norm_s.spct)))
 
-  slong.spct <- rbindspct(list(a = s.spct, b = s.spct * 2), idfactor = "my_factor")
+  slong.spct <- spct_rbind(list(a = s.spct, b = s.spct * 2), idfactor = "my_factor")
   expect_equal(getIdFactor(slong.spct),
                getIdFactor(q2e(slong.spct, action = "replace")))
 

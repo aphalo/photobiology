@@ -153,7 +153,7 @@ normalize.source_spct <- function(x,
                              keep.scaling = keep.scaling,
                              na.rm = na.rm,
                              ...)
-    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+    return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   col.names <- intersect(colnames(x), c("s.e.irrad", "s.q.irrad"))
@@ -192,7 +192,7 @@ normalize.response_spct <- function(x,
                                keep.scaling = keep.scaling,
                                na.rm = na.rm,
                                ...)
-    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+    return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   col.names <- intersect(colnames(x), c("s.e.response", "s.q.response"))
@@ -233,7 +233,7 @@ normalize.filter_spct <- function(x,
                                keep.scaling = keep.scaling,
                                na.rm = na.rm,
                                ...)
-      return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     col.names <- intersect(colnames(x), c("Tfr", "A", "Afr"))
@@ -272,7 +272,7 @@ normalize.reflector_spct <- function(x,
                                   keep.scaling = keep.scaling,
                                   na.rm = na.rm,
                                   ...)
-      return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+      return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     normalize_spct(spct = x,
@@ -311,7 +311,7 @@ normalize.solute_spct <- function(x,
                              keep.scaling = keep.scaling,
                              na.rm = na.rm,
                              ...)
-    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+    return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   col.names <- intersect(c("K.mole", "K.mass"), colnames(x))
@@ -345,7 +345,7 @@ normalize.raw_spct <- function(x,
                           keep.scaling = keep.scaling,
                           na.rm = na.rm,
                           ...)
-    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+    return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   col.names <- grep("^counts", names(x), value = TRUE)
@@ -379,7 +379,7 @@ normalize.cps_spct <- function(x,
                           keep.scaling = keep.scaling,
                           na.rm = na.rm,
                           ...)
-    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+    return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   col.names <- grep("^cps", names(x), value = TRUE)
@@ -418,7 +418,7 @@ normalize.generic_spct <- function(x,
                               keep.scaling = keep.scaling,
                               na.rm = na.rm,
                               ...)
-    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
+    return(spct_rbind(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
   col.names <- intersect(col.names, colnames(x))
   if (length(col.names)) {
@@ -1333,7 +1333,7 @@ denormalize_spct <- function(spct, wipe.away = FALSE) {
     mspct <- msmsply(mspct = mspct,
                     .fun = denormalize_spct,
                     wipe.away = wipe.away)
-    return(rbindspct(mspct, idfactor = getIdFactor(spct)))
+    return(spct_rbind(mspct, idfactor = getIdFactor(spct)))
   }
 
   # undo normalization of a single spectrum

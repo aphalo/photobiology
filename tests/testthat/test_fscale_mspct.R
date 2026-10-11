@@ -63,7 +63,7 @@ test_that("scaling of long source_spct", {
 
   spct.l <- list(my1.spct, my2.spct, my3.spct, my4.spct, my5.spct)
   my.mspct <- source_mspct(spct.l)
-  my.spct <- rbindspct(my.mspct, idfactor = "test.id")
+  my.spct <- spct_rbind(my.mspct, idfactor = "test.id")
 
   scaled.spct <- fscale(my.spct)
 

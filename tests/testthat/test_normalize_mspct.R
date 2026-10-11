@@ -57,7 +57,7 @@ test_that("normalization of long source_spct works", {
 
   spct.l <- list(my1.spct, my2.spct, my3.spct, my4.spct, my5.spct)
   my.mspct <- source_mspct(spct.l)
-  my.spct <- rbindspct(my.mspct, idfactor = "test.id")
+  my.spct <- spct_rbind(my.mspct, idfactor = "test.id")
 
   expect_false(is_normalised(my.spct))
   normalized.spct <- normalize(my.spct)
@@ -109,7 +109,7 @@ test_that("normalization of long source_spct works", {
   expect_true(all(unlist(is_normalized(norm.mspct), use.names = FALSE)))
   expect_false(anyNA(unlist(getNormalisation(norm.mspct), use.names = FALSE)))
 
-  norm.spct <- rbindspct(norm.mspct, idfactor = "test.id")
+  norm.spct <- spct_rbind(norm.mspct, idfactor = "test.id")
   expect_true(all(unlist(is_normalized(norm.mspct), use.names = FALSE)))
   expect_false(anyNA(unlist(getNormalisation(norm.mspct), use.names = FALSE)))
 

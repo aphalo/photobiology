@@ -9,7 +9,7 @@ test_that("metadata with no normalization", {
   # my.spct <- sun.spct
   # my.mspct <- source_mspct(list(sun = my.spct, sun_1 = my.spct))
   collection.mspct <- sun_evening.mspct
-  my.spct <- rbindspct(collection.mspct)
+  my.spct <- spct_rbind(collection.mspct)
 
 
   expect_equal(names(where_measured(my.spct, .bind.geocodes = FALSE)),
@@ -73,7 +73,7 @@ test_that("metadata with with normalization", {
   # my.spct <- sun.spct
   # my.mspct <- source_mspct(list(sun = my.spct, sun_1 = my.spct))
   collection.mspct <- normalize(sun_evening.mspct)
-  my.spct <- rbindspct(collection.mspct)
+  my.spct <- spct_rbind(collection.mspct)
 
   expect_equal(names(where_measured(my.spct, .bind.geocodes = FALSE)),
                names(collection.mspct))
@@ -152,36 +152,36 @@ test_that("idfactor", {
   # my.mspct <- source_mspct(list(sun = my.spct, sun_1 = my.spct))
   my.mspct <- e2q(sun_evening.mspct[1:2])
 
-  expect_silent(long.spct <- rbindspct(my.mspct, idfactor = "test.id"))
+  expect_silent(long.spct <- spct_rbind(my.mspct, idfactor = "test.id"))
   expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad", "test.id"))
   expect_equal(levels(long.spct$test.id), names(my.mspct))
   expect_equal(attr(long.spct, "idfactor"), "test.id")
   expect_equal(getIdFactor(long.spct), "test.id")
 
-  expect_silent(long.spct <- rbindspct(my.mspct[1], idfactor = "test.id"))
+  expect_silent(long.spct <- spct_rbind(my.mspct[1], idfactor = "test.id"))
   expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad", "test.id"))
   expect_equal(levels(long.spct$test.id), names(my.mspct)[1])
   expect_equal(attr(long.spct, "idfactor"), "test.id")
   expect_equal(getIdFactor(long.spct), "test.id")
 
-  expect_silent(long.spct <- rbindspct(my.mspct, idfactor = TRUE))
+  expect_silent(long.spct <- spct_rbind(my.mspct, idfactor = TRUE))
   expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad", "spct.idx"))
   expect_equal(levels(long.spct$spct.idx), names(my.mspct))
   expect_equal(attr(long.spct, "idfactor"), "spct.idx")
   expect_equal(getIdFactor(long.spct), "spct.idx")
 
-  expect_silent(long.spct <- rbindspct(my.mspct[1], idfactor = TRUE))
+  expect_silent(long.spct <- spct_rbind(my.mspct[1], idfactor = TRUE))
   expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad", "spct.idx"))
   expect_equal(levels(long.spct$spct.idx), names(my.mspct)[1])
   expect_equal(attr(long.spct, "idfactor"), "spct.idx")
   expect_equal(getIdFactor(long.spct), "spct.idx")
 
-  expect_silent(long.spct <- rbindspct(my.mspct, idfactor = FALSE))
+  expect_silent(long.spct <- spct_rbind(my.mspct, idfactor = FALSE))
   expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad"))
   expect_null(attr(long.spct, "idfactor"))
   expect_true(is.na(getIdFactor(long.spct)))
 
-  expect_silent(long.spct <- rbindspct(my.mspct[1], idfactor = FALSE))
+  expect_silent(long.spct <- spct_rbind(my.mspct[1], idfactor = FALSE))
   expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad"))
   expect_null(attr(long.spct, "idfactor"))
   expect_true(is.na(getIdFactor(long.spct)))
@@ -194,7 +194,7 @@ test_that("unique_names_mspct", {
   comment(my.spct) <- "TEST"
   my.mspct <- source_mspct(list(sun = my.spct, sun_1 = my.spct))
 
-  expect_silent(long.spct <- rbindspct(my.mspct))
+  expect_silent(long.spct <- spct_rbind(my.mspct))
   expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad", "spct.idx"))
   expect_equal(levels(long.spct$spct.idx), c("sun", "sun_1"))
   expect_equal(attr(long.spct, "idfactor"), "spct.idx")
@@ -221,7 +221,7 @@ test_that("duplicated_names_mspct", {
   comment(my.spct) <- "TEST"
   my.mspct <- source_mspct(list(sun = my.spct, sun = my.spct))
 
-  expect_warning(long.spct <- rbindspct(my.mspct))
+  expect_warning(long.spct <- spct_rbind(my.mspct))
   expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad", "spct.idx"))
   expect_equal(levels(long.spct$spct.idx), c("sun", "sun_1"))
   expect_equal(attr(long.spct, "idfactor"), "spct.idx")
@@ -246,7 +246,7 @@ test_that("source_mspct", {
 
   my.spct <- sun.spct
   my.mspct <- source_mspct(list(sun1 = my.spct, sun2 = my.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad", "spct.idx"))
   expect_equal(is_normalized(my.spct), is_normalized(long.spct))
   expect_equal(is_scaled(my.spct), is_scaled(long.spct))
@@ -265,7 +265,7 @@ test_that("source_mspct", {
 
   my.spct <- normalize(q2e(sun.spct, action = "replace"))
   my.mspct <- source_mspct(list(sun1 = my.spct, sun2 = my.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "s.e.irrad", "spct.idx"))
   expect_equal(is_normalized(my.spct), is_normalized(long.spct))
   expect_equal(is_scaled(my.spct), is_scaled(long.spct))
@@ -284,7 +284,7 @@ test_that("source_mspct", {
 
   my.spct <- fscale(sun.spct)
   my.mspct <- source_mspct(list(sun1 = my.spct, sun2 = my.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "s.e.irrad", "spct.idx"))
   expect_equal(is_normalized(my.spct), is_normalized(long.spct))
   expect_equal(is_scaled(my.spct), is_scaled(long.spct))
@@ -303,7 +303,7 @@ test_that("source_mspct", {
 
   my.spct <- tag(sun.spct)
   my.mspct <- source_mspct(list(sun1 = my.spct, sun2 = my.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad", "spct.idx"))
   expect_equal(is_normalized(my.spct), is_normalized(long.spct))
   expect_equal(is_scaled(my.spct), is_scaled(long.spct))
@@ -328,7 +328,7 @@ test_that("response_mspct", {
 
   my.spct <- photodiode.spct
   my.mspct <- response_mspct(list(resp1 = my.spct, resp2 = my.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length",  "s.e.response", "spct.idx"))
   expect_equal(is_normalized(my.spct), is_normalized(long.spct))
   expect_equal(is_scaled(my.spct), is_scaled(long.spct))
@@ -343,7 +343,7 @@ test_that("response_mspct", {
 
   my.spct <- normalize(photodiode.spct)
   my.mspct <- response_mspct(list(resp1 = my.spct, resp2 = my.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "s.e.response", "spct.idx"))
   expect_equal(is_normalized(my.spct), is_normalized(long.spct))
   expect_equal(is_scaled(my.spct), is_scaled(long.spct))
@@ -358,7 +358,7 @@ test_that("response_mspct", {
 
   my.spct <- fscale(photodiode.spct)
   my.mspct <- response_mspct(list(resp1 = my.spct, resp2 = my.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "s.e.response", "spct.idx"))
   expect_equal(is_normalized(my.spct), is_normalized(long.spct))
   expect_equal(is_scaled(my.spct), is_scaled(long.spct))
@@ -373,7 +373,7 @@ test_that("response_mspct", {
 
   my.spct <- tag(photodiode.spct)
   my.mspct <- response_mspct(list(resp1 = my.spct, resp2 = my.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "s.e.response", "spct.idx"))
   expect_equal(is_normalized(my.spct), is_normalized(long.spct))
   expect_equal(is_scaled(my.spct), is_scaled(long.spct))
@@ -396,7 +396,7 @@ test_that("filter_mspct", {
 
   flt.spct <- polyester.spct
   my.mspct <- filter_mspct(list(flt1 = flt.spct, flt2 = flt.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "Tfr", "spct.idx"))
   expect_equal(is_normalized(flt.spct), is_normalized(long.spct))
   expect_equal(is_scaled(flt.spct), is_scaled(long.spct))
@@ -411,7 +411,7 @@ test_that("filter_mspct", {
 
   flt.spct <- normalize(polyester.spct)
   my.mspct <- filter_mspct(list(flt1 = flt.spct, flt2 = flt.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "Tfr", "spct.idx"))
   expect_equal(is_normalized(flt.spct), is_normalized(long.spct))
   expect_equal(is_scaled(flt.spct), is_scaled(long.spct))
@@ -426,7 +426,7 @@ test_that("filter_mspct", {
 
   flt.spct <- fscale(polyester.spct, f = max)
   my.mspct <- filter_mspct(list(flt1 = flt.spct, flt2 = flt.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "Tfr", "spct.idx"))
   expect_equal(is_normalized(flt.spct), is_normalized(long.spct))
   expect_equal(is_scaled(flt.spct), is_scaled(long.spct))
@@ -441,7 +441,7 @@ test_that("filter_mspct", {
 
   flt.spct <- tag(photodiode.spct)
   my.mspct <- response_mspct(list(flt1 = flt.spct, flt2 = flt.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "s.e.response", "spct.idx"))
   expect_equal(is_normalized(flt.spct), is_normalized(long.spct))
   expect_equal(is_scaled(flt.spct), is_scaled(long.spct))
@@ -464,7 +464,7 @@ test_that("reflector_mspct", {
   # "conversion" retains all data columns
   rfl.spct <- as.reflector_spct(white_body.spct)
   my.mspct <- reflector_mspct(list(flt1 = rfl.spct, flt2 = rfl.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "Rfr", "Tfr", "spct.idx"))
   expect_equal(is_normalized(rfl.spct), is_normalized(long.spct))
   expect_equal(is_scaled(rfl.spct), is_scaled(long.spct))
@@ -480,7 +480,7 @@ test_that("reflector_mspct", {
   # "conversion" retains all data columns
   rfl.spct <- normalize(as.reflector_spct(white_body.spct))
   my.mspct <- reflector_mspct(list(flt1 = rfl.spct, flt2 = rfl.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "Rfr", "Tfr", "spct.idx"))
   expect_equal(is_normalized(rfl.spct), is_normalized(long.spct))
   expect_equal(is_scaled(rfl.spct), is_scaled(long.spct))
@@ -495,7 +495,7 @@ test_that("reflector_mspct", {
 
   rfl.spct <- fscale(as.reflector_spct(white_body.spct), f = max)
   my.mspct <- reflector_mspct(list(flt1 = rfl.spct, flt2 = rfl.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "Rfr", "Tfr", "spct.idx"))
   expect_equal(is_normalized(rfl.spct), is_normalized(long.spct))
   expect_equal(is_scaled(rfl.spct), is_scaled(long.spct))
@@ -510,7 +510,7 @@ test_that("reflector_mspct", {
 
   rfl.spct <- tag(as.reflector_spct(white_body.spct))
   my.mspct <- reflector_mspct(list(flt1 = rfl.spct, flt2 = rfl.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "Rfr", "Tfr", "spct.idx"))
   expect_equal(is_normalized(rfl.spct), is_normalized(long.spct))
   expect_equal(is_scaled(rfl.spct), is_scaled(long.spct))
@@ -533,7 +533,7 @@ test_that("object_mspct", {
 
   obj.spct <- white_body.spct
   my.mspct <- object_mspct(list(flt1 = obj.spct, flt2 = obj.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "Rfr", "Tfr", "spct.idx"))
   expect_equal(is_normalized(obj.spct), is_normalized(long.spct))
   expect_equal(is_scaled(obj.spct), is_scaled(long.spct))
@@ -553,7 +553,7 @@ test_that("object_mspct", {
   # there is no normalize method for object_spct
   expect_error(normalize(obj.spct))
   my.mspct <- object_mspct(list(flt1 = obj.spct, flt2 = obj.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "Rfr", "Tfr", "spct.idx"))
   expect_equal(is_normalized(obj.spct), is_normalized(long.spct))
   expect_equal(is_scaled(obj.spct), is_scaled(long.spct))
@@ -573,7 +573,7 @@ test_that("object_mspct", {
   # there is no fscale method for object_spct
   expect_error(fscale(white_body.spct, f = max))
   my.mspct <- object_mspct(list(flt1 = obj.spct, flt2 = obj.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "Rfr", "Tfr", "spct.idx"))
   expect_equal(is_normalized(obj.spct), is_normalized(long.spct))
   expect_equal(is_scaled(obj.spct), is_scaled(long.spct))
@@ -592,7 +592,7 @@ test_that("object_mspct", {
 
   objt.spct <- tag(white_body.spct)
   my.mspct <- object_mspct(list(flt1 = obj.spct, flt2 = obj.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "Rfr", "Tfr", "spct.idx"))
   expect_equal(is_normalized(obj.spct), is_normalized(long.spct))
   expect_equal(is_scaled(obj.spct), is_scaled(long.spct))
@@ -618,7 +618,7 @@ test_that("solute_mspct", {
   # "conversion" retains all data columns
   h20.spct <- as.solute_spct(water.spct)
   my.mspct <- solute_mspct(list(flt1 = h20.spct, flt2 = h20.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "K.mole", "spct.idx"))
   expect_equal(is_normalized(h20.spct), is_normalized(long.spct))
   expect_equal(is_scaled(h20.spct), is_scaled(long.spct))
@@ -634,7 +634,7 @@ test_that("solute_mspct", {
   # "conversion" retains all data columns
   h20.spct <- normalize(as.solute_spct(water.spct))
   my.mspct <- solute_mspct(list(flt1 = h20.spct, flt2 = h20.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "K.mole", "spct.idx"))
   expect_equal(is_normalized(h20.spct), is_normalized(long.spct))
   expect_equal(is_scaled(h20.spct), is_scaled(long.spct))
@@ -649,7 +649,7 @@ test_that("solute_mspct", {
 
   h20.spct <- fscale(as.solute_spct(water.spct), f = max)
   my.mspct <- solute_mspct(list(flt1 = h20.spct, flt2 = h20.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "K.mole", "spct.idx"))
   expect_equal(is_normalized(h20.spct), is_normalized(long.spct))
   expect_equal(is_scaled(h20.spct), is_scaled(long.spct))
@@ -664,7 +664,7 @@ test_that("solute_mspct", {
 
   h20.spct <- tag(water.spct)
   my.mspct <- solute_mspct(list(flt1 = h20.spct, flt2 = h20.spct))
-  long.spct <- rbindspct(my.mspct)
+  long.spct <- spct_rbind(my.mspct)
   expect_named(long.spct, c("w.length", "K.mole", "spct.idx"))
   expect_equal(is_normalized(h20.spct), is_normalized(long.spct))
   expect_equal(is_scaled(h20.spct), is_scaled(long.spct))
