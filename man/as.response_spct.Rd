@@ -17,7 +17,6 @@ as.response_spct(x, ...)
   fill = 0,
   unit.in = getOption("photobiology.radiation.unit", default = "energy"),
   unit.out = unit.in,
-  strict.range = getOption("photobiology.strict.range", default = FALSE),
   na.rm = FALSE,
   ...
 )
@@ -25,7 +24,16 @@ as.response_spct(x, ...)
 \arguments{
 \item{x}{an R object.}
 
-\item{...}{other arguments passed to "set" functions.}
+\item{...}{
+  Arguments passed on to \code{\link{setResponseSpct}}
+  \describe{
+    \item{\code{multiple.wl}}{numeric Maximum number of repeated \code{w.length} entries
+with same value.}
+    \item{\code{idfactor}}{character Name of factor distinguishing multiple spectra when
+stored longitudinally (required if \code{mulitple.wl} > 1).}
+    \item{\code{response.type}}{a character string, either \code{"response"} or
+\code{"action"}.}
+  }}
 
 \item{time.unit}{character string indicating the time unit used for spectral
 irradiance or exposure (\code{"second"}, \code{"day"} or \code{"exposure"})
@@ -39,9 +47,6 @@ range.}
 \item{unit.in, unit.out}{the type of unit we assume as reference: "energy" or
 "photon" based for the waveband definition and the implicit matching
 response plotted.}
-
-\item{strict.range}{logical Flag indicating whether off-range values result
-in an error instead of a warning.}
 
 \item{na.rm}{logical.}
 }

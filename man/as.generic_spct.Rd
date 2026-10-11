@@ -12,7 +12,14 @@ as.generic_spct(x, ...)
 \arguments{
 \item{x}{an R object}
 
-\item{...}{other arguments passed to "set" functions}
+\item{...}{
+  Arguments passed on to \code{\link{setGenericSpct}}
+  \describe{
+    \item{\code{multiple.wl}}{numeric Maximum number of repeated \code{w.length} entries
+with same value.}
+    \item{\code{idfactor}}{character Name of factor distinguishing multiple spectra when
+stored longitudinally (required if \code{mulitple.wl} > 1).}
+  }}
 }
 \value{
 A copy of \code{x} converted into a \code{generic_spct} object.

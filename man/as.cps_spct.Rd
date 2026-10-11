@@ -12,7 +12,19 @@ as.cps_spct(x, ...)
 \arguments{
 \item{x}{an R object.}
 
-\item{...}{other arguments passed to "set" functions.}
+\item{...}{
+  Arguments passed on to \code{\link{setCpsSpct}}
+  \describe{
+    \item{\code{multiple.wl}}{numeric Maximum number of repeated \code{w.length} entries
+with same value.}
+    \item{\code{idfactor}}{character Name of factor distinguishing multiple spectra when
+stored longitudinally (required if \code{mulitple.wl} > 1).}
+    \item{\code{strict.range}}{logical Flag indicating whether off-range values result
+in an error instead of a warning.}
+    \item{\code{time.unit}}{character string indicating the time unit used for spectral
+irradiance or exposure (\code{"second"}, \code{"day"} or \code{"exposure"})
+or an object of class duration as defined in package lubridate.}
+  }}
 }
 \value{
 A copy of \code{x} converted into a \code{cps_spct} object.

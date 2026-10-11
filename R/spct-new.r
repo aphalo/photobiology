@@ -529,7 +529,7 @@ chroma_spct <- function(w.length=NULL,
 #' or convert an R object of a different class into one of the spectral classes.
 #'
 #' @param x an R object
-#' @param ... other arguments passed to "set" functions
+#' @inheritDotParams setGenericSpct multiple.wl idfactor
 #'
 #' @details Data frames, tibbles and similar objects are accepted as input if
 #'   the column names are those expected by the matching class setting
@@ -560,7 +560,7 @@ as.generic_spct.default <- function(x, ...) {
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
 #' @param x an R object.
-#' @param ... other arguments passed to "set" functions.
+#' @inheritDotParams setCalibrationSpct strict.range multiple.wl idfactor
 #'
 #' @return A copy of \code{x} converted into a \code{calibration_spct} object.
 #'
@@ -585,7 +585,7 @@ as.calibration_spct.default <- function(x, ...) {
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
 #' @param x an R object.
-#' @param ... other arguments passed to "set" functions.
+#' @inheritDotParams setRawSpct strict.range multiple.wl idfactor
 #'
 #' @return A copy of \code{x} converted into a \code{raw_spct} object.
 #'
@@ -610,7 +610,7 @@ as.raw_spct.default <- function(x, ...) {
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
 #' @param x an R object.
-#' @param ... other arguments passed to "set" functions.
+#' @inheritDotParams setCpsSpct time.unit strict.range multiple.wl idfactor
 #'
 #' @return A copy of \code{x} converted into a \code{cps_spct} object.
 #'
@@ -634,16 +634,9 @@ as.cps_spct.default <- function(x, ...) {
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
+#' @inheritParams setSourceSpct time.unit bswf.used
 #' @param x an R object.
-#' @param time.unit character string indicating the time unit used for spectral
-#'   irradiance or exposure (\code{"second"}, \code{"day"} or \code{"exposure"})
-#'   or an object of class duration as defined in package lubridate.
-#' @param bswf.used character A string indicating the BSWF used, if any, for
-#'   spectral effective irradiance or exposure (\code{"none"} or the name of the
-#'   BSWF).
-#' @param strict.range logical Flag indicating whether off-range values result
-#'   in an error instead of a warning.
-#' @param ... other arguments passed to "set" functions.
+#' @inheritDotParams setSourceSpct strict.range multiple.wl idfactor
 #'
 #' @return A copy of \code{x} converted into a \code{source_spct} object.
 #'
@@ -663,11 +656,9 @@ as.source_spct.default <-
   function(x,
            time.unit = c("second", "day", "exposure"),
            bswf.used = c("none", "unknown"),
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
            ...) {
     setSourceSpct(x,
                   time.unit = time.unit,
-                  strict.range = strict.range,
                   bswf.used = bswf.used,
                   ...)
   }
@@ -676,11 +667,9 @@ as.source_spct.default <-
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
+#' @inheritParams setResponseSpct time.unit
 #' @param x an R object.
-#' @param time.unit character string indicating the time unit used for spectral
-#'   irradiance or exposure (\code{"second"}, \code{"day"} or \code{"exposure"})
-#'   or an object of class duration as defined in package lubridate.
-#' @param ... other arguments passed to "set" functions.
+#' @inheritDotParams setResponseSpct response.type multiple.wl idfactor
 #'
 #' @return A copy of \code{x} converted into a \code{response_spct} object.
 #'
@@ -708,8 +697,6 @@ as.response_spct.default <- function(x, time.unit = "second", ...) {
 #' @param unit.in,unit.out the type of unit we assume as reference: "energy" or
 #'   "photon" based for the waveband definition and the implicit matching
 #'   response plotted.
-#' @param strict.range logical Flag indicating whether off-range values result
-#'   in an error instead of a warning.
 #' @param na.rm logical.
 #'
 #' @export
@@ -722,8 +709,6 @@ as.response_spct.waveband <-
            unit.in = getOption("photobiology.radiation.unit",
                                default = "energy"),
            unit.out = unit.in,
-           strict.range = getOption("photobiology.strict.range",
-                                    default = FALSE),
            na.rm = FALSE,
            ...) {
     w.band <- x
@@ -776,12 +761,9 @@ as.response_spct.waveband <-
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
+#' @inheritParams setReflectorSpct Rfr.type
 #' @param x an R object.
-#' @param Rfr.type a character string, either \code{"total"} or
-#'   \code{"specular"}.
-#' @param strict.range logical Flag indicating whether off-range values result
-#'   in an error instead of a warning.
-#' @param ... other arguments passed to "set" functions.
+#' @inheritDotParams setReflectorSpct strict.range multiple.wl idfactor
 #'
 #' @return A copy of \code{x} converted into a \code{reflector_spct} object.
 #'
@@ -800,12 +782,10 @@ as.reflector_spct <- function(x, ...) {UseMethod("as.reflector_spct")}
 #'
 as.reflector_spct.default <-
   function(x,
-           Rfr.type = c("total", "specular"),
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           Rfr.type=c("total", "specular"),
            ...) {
     setReflectorSpct(x,
                      Rfr.type = Rfr.type,
-                     strict.range = strict.range,
                      ...)
   }
 
@@ -813,14 +793,9 @@ as.reflector_spct.default <-
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
+#' @inheritParams setObjectSpct Tfr.type Rfr.type
 #' @param x an R object.
-#' @param Tfr.type a character string, either \code{"total"} or
-#'   \code{"internal"}.
-#' @param Rfr.type a character string, either \code{"total"} or
-#'   \code{"specular"}.
-#' @param strict.range logical Flag indicating whether off-range values result
-#'   in an error instead of a warning.
-#' @param ... other arguments passed to "set" functions.
+#' @inheritDotParams setObjectSpct strict.range multiple.wl idfactor
 #'
 #' @return A copy of \code{x} converted into a \code{object_spct} object.
 #'
@@ -839,12 +814,10 @@ as.object_spct <- function(x, ...) {UseMethod("as.object_spct")}
 as.object_spct.default <- function(x,
                                    Tfr.type=c("total", "internal"),
                                    Rfr.type=c("total", "specular"),
-                                   strict.range = getOption("photobiology.strict.range", default = FALSE),
                                    ...) {
   setObjectSpct(x,
                 Tfr.type = Tfr.type,
                 Rfr.type = Rfr.type,
-                strict.range = strict.range,
                 ...)
 }
 
@@ -854,12 +827,9 @@ as.object_spct.default <- function(x,
 #' spectrum. In the case of conversion from a \code{solute_spct} object, compute
 #' the spectral quantity based on additional input from user.
 #'
+#' @inheritParams setFilterSpct Tfr.type Rfr.constant
 #' @param x an R object.
-#' @param Tfr.type a character string, either \code{"total"} or
-#'   \code{"internal"}.
-#' @param strict.range logical Flag indicating whether off-range values result
-#'   in an error instead of a warning.
-#' @param ... other arguments passed to "set" functions.
+#' @inheritDotParams setFilterSpct thickness attenuation.mode strict.range multiple.wl idfactor
 #'
 #' @return A copy of \code{x} converted into a \code{filter_spct}. object.
 #'
@@ -878,18 +848,14 @@ as.filter_spct <- function(x, ...) {UseMethod("as.filter_spct")}
 as.filter_spct.default <-
   function(x,
            Tfr.type = c("total", "internal"),
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
            ...) {
     setFilterSpct(x,
                   Tfr.type = Tfr.type,
-                  strict.range = strict.range,
                   ...)
   }
 
 #'@rdname as.filter_spct
 #'
-#' @param Rfr.constant numeric The value of the reflection factor (/1) to be
-#'   set.
 #' @param comment character A string to be added as a comment attribute to the
 #'   object created. If not supplied, the comment will be copied from \code{x}.
 #' @param molar.concentration,mass.concentration numeric Concentration to be
@@ -904,7 +870,6 @@ as.filter_spct.default <-
 as.filter_spct.solute_spct <-
   function(x,
            Tfr.type = "internal",
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
            Rfr.constant = NA_real_,
            comment = NULL,
            molar.concentration = NULL,
@@ -937,7 +902,6 @@ as.filter_spct.solute_spct <-
                     thickness = path.length,
                     attenuation.mode = attenuation.mode,
                     comment = comment,
-                    strict.range = strict.range,
                     multiple.wl = getMultipleWl(x),
                     ...)
     other.cols <-
@@ -960,9 +924,7 @@ as.filter_spct.solute_spct <-
 #' @param x an R object.
 #' @param K.type a character string, one of \code{"attenuation"},
 #'   \code{"absorption"} or \code{"scattering"}.
-#' @param strict.range logical Flag indicating whether off-range values result
-#'   in an error instead of a warning.
-#' @param ... other arguments passed to "set" functions.
+#' @inheritDotParams setSoluteSpct strict.range multiple.wl idfactor
 #'
 #' @return A copy of \code{x} converted into a \code{solute_spct} object.
 #'
@@ -982,11 +944,9 @@ as.solute_spct <- function(x, ...) {UseMethod("as.solute_spct")}
 as.solute_spct.default <-
   function(x,
            K.type = c("attenuation", "absorption", "scattering"),
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
            ...) {
     setSoluteSpct(x,
                   K.type = K.type,
-                  strict.range = strict.range,
                   ...)
   }
 
@@ -1022,7 +982,6 @@ as.solute_spct.filter_spct <-
            ID = NA_character_,
            solvent.name = NA_character_,
            solvent.ID = NA_character_,
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
            comment = NULL,
            molar.concentration = NULL,
            mass.concentration = NULL,
@@ -1053,7 +1012,6 @@ as.solute_spct.filter_spct <-
                      ID = ID,
                      solvent.name = solvent.name,
                      solvent.ID = solvent.ID,
-                     strict.range = strict.range,
                      multiple.wl = getMultipleWl(x),
                      ...)
     other.cols <-
@@ -1071,7 +1029,7 @@ as.solute_spct.filter_spct <-
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
 #' @param x an R object.
-#' @param ... other arguments passed to "set" functions.
+#' @inheritDotParams setChromaSpct multiple.wl idfactor
 #'
 #' @return A copy of \code{x} converted into a \code{chroma_spct} object.
 #'

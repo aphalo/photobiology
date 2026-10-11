@@ -11,25 +11,30 @@ as.source_spct(x, ...)
   x,
   time.unit = c("second", "day", "exposure"),
   bswf.used = c("none", "unknown"),
-  strict.range = getOption("photobiology.strict.range", default = FALSE),
   ...
 )
 }
 \arguments{
 \item{x}{an R object.}
 
-\item{...}{other arguments passed to "set" functions.}
+\item{...}{
+  Arguments passed on to \code{\link{setSourceSpct}}
+  \describe{
+    \item{\code{multiple.wl}}{numeric Maximum number of repeated \code{w.length} entries
+with same value.}
+    \item{\code{idfactor}}{character Name of factor distinguishing multiple spectra when
+stored longitudinally (required if \code{mulitple.wl} > 1).}
+    \item{\code{strict.range}}{logical Flag indicating whether off-range values result
+in an error instead of a warning.}
+  }}
 
 \item{time.unit}{character string indicating the time unit used for spectral
 irradiance or exposure (\code{"second"}, \code{"day"} or \code{"exposure"})
 or an object of class duration as defined in package lubridate.}
 
-\item{bswf.used}{character A string indicating the BSWF used, if any, for
-spectral effective irradiance or exposure (\code{"none"} or the name of the
-BSWF).}
-
-\item{strict.range}{logical Flag indicating whether off-range values result
-in an error instead of a warning.}
+\item{bswf.used}{character A string, either \code{"none"} or the name of a
+BSWF. (Users seldom need to change the default, as this metadata value
+is in normal use set by operators or functions that apply a BSWF.)}
 }
 \value{
 A copy of \code{x} converted into a \code{source_spct} object.

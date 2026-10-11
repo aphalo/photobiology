@@ -7,23 +7,23 @@
 \usage{
 as.reflector_spct(x, ...)
 
-\method{as.reflector_spct}{default}(
-  x,
-  Rfr.type = c("total", "specular"),
-  strict.range = getOption("photobiology.strict.range", default = FALSE),
-  ...
-)
+\method{as.reflector_spct}{default}(x, Rfr.type = c("total", "specular"), ...)
 }
 \arguments{
 \item{x}{an R object.}
 
-\item{...}{other arguments passed to "set" functions.}
-
-\item{Rfr.type}{a character string, either \code{"total"} or
-\code{"specular"}.}
-
-\item{strict.range}{logical Flag indicating whether off-range values result
+\item{...}{
+  Arguments passed on to \code{\link{setReflectorSpct}}
+  \describe{
+    \item{\code{multiple.wl}}{numeric Maximum number of repeated \code{w.length} entries
+with same value.}
+    \item{\code{idfactor}}{character Name of factor distinguishing multiple spectra when
+stored longitudinally (required if \code{mulitple.wl} > 1).}
+    \item{\code{strict.range}}{logical Flag indicating whether off-range values result
 in an error instead of a warning.}
+  }}
+
+\item{Rfr.type}{character A string, either "total" or "specular".}
 }
 \value{
 A copy of \code{x} converted into a \code{reflector_spct} object.

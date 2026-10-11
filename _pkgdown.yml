@@ -39,7 +39,6 @@ reference:
     - as.object_spct
     - as.chroma_spct
     - setGenericSpct
-    - generic_spct
     - class_spct
     - spct_classes
     - rmDerivedSpct
@@ -61,7 +60,6 @@ reference:
     - as.object_mspct
     - as.chroma_mspct
     - as.matrix-mspct
-    - setGenericSpct
     - mspct_classes
     - rmDerivedMspct
     - shared_member_class
@@ -111,12 +109,12 @@ reference:
   - subtitle: Summary quantities from individual spectra and wavebands, related to wavelength
     desc: Methods for querying about the wavelength values of spectra and wavebands. Each spectrum or wavebdand is described by one or two scalar values.
     contents:
-    - min
-    - max
-    - range
-    - expanse
-    - midpoint
-    - stepsize
+    - wl_min
+    - wl_max
+    - wl_range
+    - wl_expanse
+    - wl_midpoint
+    - wl_stepsize
   - subtitle: Statistical summaries from groups of spectra
     desc: Methods that compute statistical summaries of spectral data, treating individual spectra as replicates or sampled members from a population of spectra. A summary spectrum or fewer spectra than input are returned.
     contents:

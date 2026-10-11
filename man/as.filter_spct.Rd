@@ -8,17 +8,11 @@
 \usage{
 as.filter_spct(x, ...)
 
-\method{as.filter_spct}{default}(
-  x,
-  Tfr.type = c("total", "internal"),
-  strict.range = getOption("photobiology.strict.range", default = FALSE),
-  ...
-)
+\method{as.filter_spct}{default}(x, Tfr.type = c("total", "internal"), ...)
 
 \method{as.filter_spct}{solute_spct}(
   x,
   Tfr.type = "internal",
-  strict.range = getOption("photobiology.strict.range", default = FALSE),
   Rfr.constant = NA_real_,
   comment = NULL,
   molar.concentration = NULL,
@@ -30,16 +24,23 @@ as.filter_spct(x, ...)
 \arguments{
 \item{x}{an R object.}
 
-\item{...}{other arguments passed to "set" functions.}
-
-\item{Tfr.type}{a character string, either \code{"total"} or
-\code{"internal"}.}
-
-\item{strict.range}{logical Flag indicating whether off-range values result
+\item{...}{
+  Arguments passed on to \code{\link{setFilterSpct}}
+  \describe{
+    \item{\code{multiple.wl}}{numeric Maximum number of repeated \code{w.length} entries
+with same value.}
+    \item{\code{idfactor}}{character Name of factor distinguishing multiple spectra when
+stored longitudinally (required if \code{mulitple.wl} > 1).}
+    \item{\code{thickness}}{numeric The thickness of the material.}
+    \item{\code{attenuation.mode}}{character One of \code{"reflection"},
+\code{"absorption"} or \code{"mixed"}.}
+    \item{\code{strict.range}}{logical Flag indicating whether off-range values result
 in an error instead of a warning.}
+  }}
 
-\item{Rfr.constant}{numeric The value of the reflection factor (/1) to be
-set.}
+\item{Tfr.type}{character Either "total" or "internal".}
+
+\item{Rfr.constant}{numeric The value of the reflection factor [\eqn{/1}].}
 
 \item{comment}{character A string to be added as a comment attribute to the
 object created. If not supplied, the comment will be copied from \code{x}.}

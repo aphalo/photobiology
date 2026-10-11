@@ -8,12 +8,7 @@
 \usage{
 as.solute_spct(x, ...)
 
-\method{as.solute_spct}{default}(
-  x,
-  K.type = c("attenuation", "absorption", "scattering"),
-  strict.range = getOption("photobiology.strict.range", default = FALSE),
-  ...
-)
+\method{as.solute_spct}{default}(x, K.type = c("attenuation", "absorption", "scattering"), ...)
 
 \method{as.solute_spct}{filter_spct}(
   x,
@@ -25,7 +20,6 @@ as.solute_spct(x, ...)
   ID = NA_character_,
   solvent.name = NA_character_,
   solvent.ID = NA_character_,
-  strict.range = getOption("photobiology.strict.range", default = FALSE),
   comment = NULL,
   molar.concentration = NULL,
   mass.concentration = NULL,
@@ -36,13 +30,19 @@ as.solute_spct(x, ...)
 \arguments{
 \item{x}{an R object.}
 
-\item{...}{other arguments passed to "set" functions.}
+\item{...}{
+  Arguments passed on to \code{\link{setSoluteSpct}}
+  \describe{
+    \item{\code{multiple.wl}}{numeric Maximum number of repeated \code{w.length} entries
+with same value.}
+    \item{\code{idfactor}}{character Name of factor distinguishing multiple spectra when
+stored longitudinally (required if \code{mulitple.wl} > 1).}
+    \item{\code{strict.range}}{logical Flag indicating whether off-range values result
+in an error instead of a warning.}
+  }}
 
 \item{K.type}{a character string, one of \code{"attenuation"},
 \code{"absorption"} or \code{"scattering"}.}
-
-\item{strict.range}{logical Flag indicating whether off-range values result
-in an error instead of a warning.}
 
 \item{name, solvent.name}{character The names of the substance and of the
 solvent. A named character vector, with member names such as "IUPAC" for
