@@ -12,6 +12,9 @@ spectrum. Can be used to insert fitted peaks into a spectrum or to combine
 peaks and FWHM, or peaks and valleys extracted from the same spectrum.
 * Add method `rbind_spct()` as a synonym for `rbindspct()` for naming 
 consistency.
+* Fix bug: Sampling systematically at equal steps with `pull_sample()` failed
+to pull the expected number of members in the case of spectra stored in long
+form.
 
 # photobiology 0.14.3
 

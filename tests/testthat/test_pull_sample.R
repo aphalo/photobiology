@@ -51,6 +51,36 @@ test_that("source_mspct", {
   expect_is(what.attr, "data.frame")
   expect_equal(nrow(what.attr), 2L)
 
+  sampled.mspct <-
+    pull_sample(sun_evening.mspct, size = 1, method = "equal.steps")
+  expect_is(sampled.mspct, "source_mspct")
+  expect_equal(length(sampled.mspct), 1)
+  expect_named(sampled.mspct, "time.01")
+  expect_equal(sampled.mspct, sun_evening.mspct["time.01"])
+  where.attr <- where_measured(sampled.mspct)
+  expect_is(where.attr, "data.frame")
+  expect_equal(nrow(where.attr), 1L)
+  when.attr <- when_measured(sampled.mspct)
+  expect_is(when.attr, "data.frame")
+  expect_equal(nrow(when.attr), 1L)
+  what.attr <- what_measured(sampled.mspct)
+  expect_is(what.attr, "data.frame")
+  expect_equal(nrow(what.attr), 1L)
+
+  sampled.mspct <-
+    pull_sample(sun_evening.mspct, size = 4, method = "equal.steps")
+  expect_is(sampled.mspct, "source_mspct")
+  expect_equal(length(sampled.mspct), 4)
+  expect_named(sampled.mspct, c("time.01", "time.02", "time.03", "time.04"))
+  expect_equal(sampled.mspct[4], sun_evening.mspct["time.04"])
+
+  sampled.mspct <- pull_sample(sun_evening.mspct, size = 0)
+  expect_equal(sampled.mspct, source_mspct())
+
+  expect_error(pull_sample(sun_evening.mspct, size = -1))
+  expect_silent(pull_sample(sun_evening.mspct,
+                            size = length(sun_evening.mspct) + 1L))
+
 })
 
 test_that("source_spct", {
@@ -74,7 +104,8 @@ test_that("source_spct", {
   sampled.spct <- pull_sample(sun_evening.spct, size = 2)
   expect_is(sampled.spct, "source_spct")
   expect_equal(getMultipleWl(sampled.spct), 2)
-  expect_true(all(as.character(unique(sampled.spct[["spct.idx"]])) %in% c("time.04", "time.05")))
+  expect_true(all(as.character(unique(sampled.spct[["spct.idx"]])) %in%
+                    c("time.04", "time.05")))
   where.attr <- where_measured(sampled.spct)
   expect_is(where.attr, "data.frame")
   expect_equal(nrow(where.attr), 1L)
@@ -84,6 +115,35 @@ test_that("source_spct", {
   what.attr <- what_measured(sampled.spct)
   expect_is(what.attr, "character")
   expect_equal(length(what.attr), 1L)
+
+  sampled.spct <-
+    pull_sample(sun_evening.spct, size = 1, method = "equal.steps")
+  expect_is(sampled.spct, "source_spct")
+  expect_equal(getMultipleWl(sampled.spct), 1)
+  expect_equal(as.character(unique(sampled.spct[["spct.idx"]])), "time.01")
+  where.attr <- where_measured(sampled.spct)
+  expect_is(where.attr, "data.frame")
+  expect_equal(nrow(where.attr), 1L)
+  when.attr <- when_measured(sampled.spct)
+  expect_is(when.attr, "list")
+  expect_equal(length(when.attr), 1L)
+  what.attr <- what_measured(sampled.spct)
+  expect_is(what.attr, "character")
+  expect_equal(length(what.attr), 1L)
+
+  sampled.spct <-
+    pull_sample(sun_evening.spct, size = 4, method = "equal.steps")
+  expect_is(sampled.spct, "source_spct")
+  expect_equal(getMultipleWl(sampled.spct), 4)
+  expect_equal(as.character(unique(sampled.spct[["spct.idx"]])),
+               c("time.01", "time.02", "time.03", "time.04"))
+
+  sampled.spct <- pull_sample(sun_evening.spct, size = 0)
+  expect_equal(sampled.spct, source_spct())
+
+  expect_error(pull_sample(sun_evening.spct, size = -1))
+  expect_silent(pull_sample(sun_evening.spct,
+                            size = getMultipleWl(sun_evening.spct) + 1L))
 
 })
 

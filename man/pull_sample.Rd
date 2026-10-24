@@ -74,8 +74,9 @@ If \code{x} is an spectrum object, such as a
   in most cases containing fewer member spectra than \code{x}.
 }
 \description{
-A method to extract a random sample of members from a list, a collection of
-spectra or a spectrum object containing multiple spectra in long form.
+A method to extract a random or deterministic sample of members from a list,
+a collection of spectra or a spectrum object containing multiple spectra in
+long form.
 }
 \details{
 This function calls \code{\link[base]{sample}()} to generate a random set of
@@ -99,8 +100,10 @@ pull_sample(a.list, size = 1, simplify = TRUE)
 
 set.seed(12345678)
 pull_sample(sun_evening.spct, 2)
+pull_sample(sun_evening.spct, 2, method = "equal.steps")
 set.seed(12345678)
 pull_sample(sun_evening.mspct, 2)
+pull_sample(sun_evening.mspct, 2, method = "equal.steps")
 
 }
 \seealso{

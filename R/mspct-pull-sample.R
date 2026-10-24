@@ -1,7 +1,8 @@
 #' Random sample of spectra
 #'
-#' A method to extract a random sample of members from a list, a collection of
-#' spectra or a spectrum object containing multiple spectra in long form.
+#' A method to extract a random or deterministic sample of members from a list,
+#' a collection of spectra or a spectrum object containing multiple spectra in
+#' long form.
 #'
 #' @param x An R object possibly containing multiple spectra or other
 #'   components.
@@ -50,8 +51,10 @@
 #'
 #' set.seed(12345678)
 #' pull_sample(sun_evening.spct, 2)
+#' pull_sample(sun_evening.spct, 2, method = "equal.steps")
 #' set.seed(12345678)
 #' pull_sample(sun_evening.mspct, 2)
+#' pull_sample(sun_evening.mspct, 2, method = "equal.steps")
 #'
 #' @export
 #'
@@ -80,6 +83,10 @@ pull_sample.list <- function(x,
                              simplify = FALSE,
                              ...) {
   size <- as.integer(size)
+  stopifnot("Size must be a positve integer!" = size >= 0)
+  if (size == 0L) {
+    return(do.call(class(x)[1], args = list()))
+  }
   if (length(x) <= size) {
     # nothing to do
     return(x)
@@ -117,6 +124,10 @@ pull_sample.generic_spct <- function(x,
                                      method = "random",
                                      ...) {
   size <- as.integer(size)
+  stopifnot("Size must be a positve integer!" = size >= 0)
+  if (size == 0L) {
+    return(do.call(class(x)[1], args = list()))
+  }
   num.spectra <- getMultipleWl(x)
   if (num.spectra <= size) {
     # nothing to do
@@ -128,13 +139,19 @@ pull_sample.generic_spct <- function(x,
       selector.idx <- sort(selector.idx)
     }
   } else if (method == "equal.steps") {
-    step <- length(x) %/% size
+    step <- num.spectra %/% size
     selector.idx <- seq(from = 1, by = step, length.out = size)
   } else {
     stop("Bad method: \"", method, "\" instead of \"random\" or \"equal.steps\"")
   }
   id.factor <- x[[getIdFactor(x)]]
-  pulled.ids <- as.character(unique(id.factor)[selector.idx])
+  if (is.factor(id.factor)) {
+    # drop levels not present and sample those present along their ordering
+    pulled.ids <- levels(factor(id.factor))[selector.idx]
+  } else {
+    # use unique values of a type supported by extract methods
+    pulled.ids <- na.omit(unique(id.factor))[selector.idx]
+  }
 
   x[id.factor %in% pulled.ids, ]
 }
@@ -155,6 +172,11 @@ pull_sample.generic_mspct <- function(x,
     # separate multiple spectra within individual members
     x <- subset2mspct(x)
   }
+  size <- as.integer(size)
+  stopifnot("Size must be a positve integer!" = size >= 0)
+  if (size == 0L) {
+    return(do.call(class(x)[1], args = list()))
+  }
   if (length(x) <= size) {
     # nothing to do
     return(x)
@@ -170,7 +192,7 @@ pull_sample.generic_mspct <- function(x,
   } else {
     stop("Bad method: \"", method, "\" instead of \"random\" or \"equal.steps\"")
   }
-  if (simplify && size == 1) {
+  if (simplify && size == 1L) {
     z <- x[[selector.idx]]
   } else {
     z <- x[selector.idx]
